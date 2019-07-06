@@ -14,5 +14,5 @@ function setup() {
 
 function draw() {
 	clear();
-	image(frames[floor(frameCount/3) % 6], 20, 20);
+	image(frames[floor(frameCount/3) % 6], 605, 150);
 }
