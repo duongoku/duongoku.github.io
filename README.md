@@ -1,2 +1,2 @@
 # duongoku.github.io
-nothign here lol
+nothing here lol
