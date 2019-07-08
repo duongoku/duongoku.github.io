@@ -65,8 +65,8 @@ function preload() {
 
 function setup() {
 	createCanvas((w + 1) * f, (l + 1) * f);
-	preyx = floor(random(1,w+0.9));
-	preyy = floor(random(1,l+0.9));
+	preyx = floor(random(1,w-0.1));
+	preyy = floor(random(1,l-0.1));
 }
 
 function draw() {
