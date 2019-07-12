@@ -23,21 +23,22 @@ for (let i = 0; i < 1000; i++) {
 		field[i][j] = 0;
 	}
 }
-field[preyx][preyy] = 1;
 
 function Udt() {
-	console.log(field[5][1]);
+	console.log(snake.length);
 	if (field[snake[0][0]][snake[0][1]]==1) {
-		field[snake[0][0]][snake[0][1]]==0;
-		preyx = floor(random(1,w+0.9));
-		preyy = floor(random(1,l+0.9));
+		field[snake[0][0]][snake[0][1]] = 5;
+		preyx = floor(random(1,w-0.1));
+		preyy = floor(random(1,l-0.1));
 		field[preyx][preyy] = 1;
-		ate++;
-	}
-	if (ate > 0) {
-		ate--;
-		snake[snake.length] = [600, 0]; // set this out of canvas so no one can see :>
-	}
+		snake[snake.length] = [600, 0];
+		// ate++;
+	} else { field[snake[0][0]][snake[0][1]] = 5; }
+
+	// if (ate > 0) {
+	// 	ate--;
+	// 	snake[snake.length] = [600, 0]; // set this out of canvas so no one can see :>
+	// }
 
 	//update body
 	// why this didn't work lol
@@ -52,7 +53,7 @@ function Udt() {
 
 	if (field[snake[0][0]][snake[0][1]] == 5) dead = 1;
 
-	field[snake[0][0]][snake[0][1]] = 5; //set head position to occupied "5"
+	 //set head position to occupied "5"
 }
 
 function preload() {
@@ -65,8 +66,12 @@ function preload() {
 
 function setup() {
 	createCanvas((w + 1) * f, (l + 1) * f);
-	preyx = floor(random(1,w-0.1));
-	preyy = floor(random(1,l-0.1));
+	preyx = 5;
+	preyy = 1;
+	field[preyx][preyy] = 1;
+
+	// preyx = floor(random(1,w-0.1));
+	// preyy = floor(random(1,l-0.1));
 }
 
 function draw() {
@@ -108,7 +113,7 @@ function draw() {
 		//draw snake
 		image(head, snake[0][0] * f, snake[0][1] * f);
 		for (let i = 1; i < snake.length; i++) {
-			if (frameCount % 10 == 0) console.log(i + "," + snake[i][0]);
+			// if (frameCount % 10 == 0) console.log(i + "," + snake[i][0]);
 			image(body, snake[i][0] * f, snake[i][1] * f);
 		}
 
