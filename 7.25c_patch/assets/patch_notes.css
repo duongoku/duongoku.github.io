@@ -1,0 +1,246 @@
+
+@font-face {
+    font-family: 'Radiance';
+    src: url('http://cdn.dota2.com/apps/dota2/fonts/radiance.eot');
+    src: url('http://cdn.dota2.com/apps/dota2/fonts/radiance.eot?#iefix') format('embedded-opentype'),
+         url('http://cdn.dota2.com/apps/dota2/fonts/radiance.woff') format('woff'),
+         url('http://cdn.dota2.com/apps/dota2/fonts/radiance.ttf') format('truetype'),
+         url('http://cdn.dota2.com/apps/dota2/fonts/radiance.svg#ywftsvg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Radiance-Bold';
+    src: url('http://cdn.dota2.com/apps/dota2/fonts/radiance-bold.eot');
+    src: url('http://cdn.dota2.com/apps/dota2/fonts/radiance-bold.eot?#iefix') format('embedded-opentype'),
+         url('http://cdn.dota2.com/apps/dota2/fonts/radiance-bold.woff') format('woff'),
+         url('http://cdn.dota2.com/apps/dota2/fonts/radiance-bold.ttf') format('truetype'),
+         url('http://cdn.dota2.com/apps/dota2/fonts/radiance-bold.svg#ywftsvg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Radiance-SemiBold';
+    src: url('http://cdn.dota2.com/apps/dota2/fonts/radiance-semibold.eot');
+    src: url('http://cdn.dota2.com/apps/dota2/fonts/radiance-semibold.eot?#iefix') format('embedded-opentype'),
+         url('http://cdn.dota2.com/apps/dota2/fonts/radiance-semibold.woff') format('woff'),
+         url('http://cdn.dota2.com/apps/dota2/fonts/radiance-semibold.ttf') format('truetype'),
+         url('http://cdn.dota2.com/apps/dota2/fonts/radiance-semibold.svg#ywftsvg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body
+{
+    font-family: 'Consolas';
+    background-color: #000000;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    color: #999999;
+}
+
+*
+{
+    font-family: 'Consolas';
+}
+
+p, h1, h2, h3, ul
+{
+    margin: 0 0 0 0;
+}
+
+.ErrorTitle
+{
+	margin-top: 24px;
+	text-align: center;
+	font-size: 32pt;
+	color: #c00;
+}
+
+.ErrorMessage
+{
+	text-align: center;
+	font-size: 24px;
+	color: #999;
+}
+
+.MainContents
+{
+	padding-top: 32px;
+    background-image: url( 'http://cdn.dota2.com/apps/dota2/images/720/featured.jpg' );
+	background-repeat: repeat-y;
+    background-color: #151618;
+	background-position: center;
+	clear: both;
+}
+
+.CenterContents
+{
+	margin-left: auto; 
+    margin-right: auto;
+    width: 1050px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.PatchHeader
+{
+	padding-top: 24px;
+	padding-bottom: 24px;
+}
+
+.PatchTitle
+{
+	font-size: 72px;
+    color: #ED3B1C;
+    letter-spacing: 8px;
+    font-weight: bold;
+	margin-top: -12px;
+}
+
+.PatchSubtitle
+{
+	font-size: 36px;
+    text-transform: uppercase;
+    color: #ED3B1C;
+    letter-spacing: 4px;
+    font-weight: normal;
+}
+
+.PatchPicker
+{
+	float: right;
+	padding-top: 56px;
+	text-align: right;
+}
+
+.PatchSelectorTitle
+{
+	text-align: right;
+	margin-top: 8px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+}
+
+.SectionHeader
+{
+    text-transform: uppercase;
+    font-weight: normal;
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: #ED3B1C;
+    text-shadow: 1px 1px 1px #000000;
+	padding-bottom: 20px;
+}
+
+.PatchSection
+{
+	padding-bottom: 50px;
+}
+
+.PatchNote
+{
+	font-size: 18px;
+	margin-bottom: 12px;
+}
+
+.ItemNotes
+{
+	margin-bottom: 32px;
+	clear: both;
+}
+
+.ItemImage
+{
+	margin-left: 16px;
+	width: 48px;
+	height: 36px;
+	margin-bottom: 8px;
+	float: left;
+}
+
+.ItemName
+{
+	color: white;
+	text-transform: uppercase;
+	font-size: 20px;
+	letter-spacing: 1px;
+	margin-bottom: 8px;
+	padding-left: 76px;
+}
+
+.PatchNotesList
+{
+	padding-left: 96px;
+}
+
+#GeneralSection .PatchNotesList
+{
+	padding-left: 20px;
+}
+
+.HeroNotes
+{
+	clear: both;
+	margin-bottom: 36px;
+}
+
+.HeroImage
+{
+	width: 64px;
+	height: 36px;
+	margin-bottom: 8px;
+	float: left;
+}
+
+.HeroName
+{
+	color: white;
+	text-transform: uppercase;
+	font-size: 20px;
+	letter-spacing: 1px;
+	margin-bottom: 8px;
+	padding-left: 76px;
+}
+
+.HeroAbilityNotes
+{
+	clear: both;
+	padding-top: 8px;
+}
+
+.AbilityName
+{
+	color: #ccc;
+	text-transform: uppercase;
+	font-size: 18px;
+	letter-spacing: 1px;
+	margin-bottom: 8px;
+	padding-left: 76px;
+}
+
+.AbilityImage
+{
+	width: 36px;
+	height: 36px;
+	margin-left: 28px;
+	float: left;
+}
+
+.TalentNotes
+{
+	clear: both;
+}
+
+.TalentsLabel
+{
+	color: #ccc;
+	text-transform: uppercase;
+	font-size: 18px;
+	letter-spacing: 1px;
+	margin-bottom: 8px;
+	padding-left: 76px;
+}
