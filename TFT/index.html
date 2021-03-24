@@ -8,7 +8,8 @@
 </head>
 <body>
 
-<h2>Items</h2>
+<button onclick="initTable_Items()"><h2>Items</h2></button>
+<button onclick="initTable_Champions()"><h2>Champions</h2></button>
 <h3>Notes: All the images are from Riotgames</h3>
 
 <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
@@ -16,24 +17,34 @@
 <table id="myTable">
 <tbody id="tableBody">
 	<tr class="header">
-		<th style="width:25%;">Item Name</th>
-		<th style="width:75%;">Popular Units</th>
+		<th style="width:25%;" id="name_header">Name</th>
+		<th style="width:75%;" id="prop_header">Prop</th>
 	</tr>
 </tbody>
 </table>
 
 <script>
 items = null;
+champions = null;
+
 fetch("./data/items.json")
 .then(response => response.json())
 .then(data => {
 	items = data;
-	// console.log(items[1]);
-	initTable()
+	initTable_Items();
 });
 
-function initTable() {
+fetch("./data/champions.json")
+.then(response => response.json())
+.then(data => {
+	champions = data;
+	console.log(champions)
+});
+
+function initTable_Items() {
 	var input, filter, table, tr, td, i, txtValue;
+	document.getElementById("name_header").innerHTML = "Items";
+	document.getElementById("prop_header").innerHTML = "Popular Champions";
 	input = document.getElementById("myInput");
 	filter = input.value.toUpperCase();
 	table = document.getElementById("myTable");
@@ -46,21 +57,18 @@ function initTable() {
 			i--;
 		}
 	}
-	for(const property in items) {
+	for(const item_id in items) {
 		var row = document.createElement("tr");
 		var name = document.createElement("td");
-		var desc = document.createElement("td");
 		var units = document.createElement("td");
 		var img = document.createElement("img");
-		var url = "./assets/items/" + (property.length == 1 ? "0" : "") + property + ".png";
+		var url = "./assets/items/" + (item_id.length == 1 ? "0" : "") + item_id + ".png";
 		img.src = url;
 		img.style.padding = "0px 10px 0px 0px";
 		img.style.verticalAlign = "middle";
-		// name.style.background = "url(" + url + ") right no-repeat";
 		name.appendChild(img);
-		name.appendChild(document.createTextNode(items[property].name));
-		desc.appendChild(document.createTextNode(items[property].description));
-		units = get_units(items[property].units);
+		name.appendChild(document.createTextNode(items[item_id].name));
+		units = get_units(items[item_id].units);
 		row.appendChild(name);
 		row.appendChild(units);
 		tbody.appendChild(row);
@@ -79,6 +87,54 @@ function get_units(units) {
 			img.title = unit;
 			rt.appendChild(img);
 		}
+	}
+	return rt;
+}
+
+function initTable_Champions() {
+	var input, filter, table, tr, td, i, txtValue;
+	document.getElementById("name_header").innerHTML = "Champions";
+	document.getElementById("prop_header").innerHTML = "Popular Items";
+	input = document.getElementById("myInput");
+	filter = input.value.toUpperCase();
+	table = document.getElementById("myTable");
+	tbody = document.getElementById("tableBody");
+	tr = table.getElementsByTagName("tr");
+	for(i = 0; i < tr.length; i++) {
+		td = tr[i].getElementsByTagName("td")[0];
+		if(td) {
+			tbody.removeChild(tr[i]);
+			i--;
+		}
+	}
+	for(const champion_id in champions) {
+		var row = document.createElement("tr");
+		var name = document.createElement("td");
+		var equips = document.createElement("td");
+		var img = document.createElement("img");
+		var url = "./assets/champions/" + (champion_id.length == 1 ? "0" : "") + champion_id + ".png";
+		img.src = url;
+		img.style.padding = "0px 10px 0px 0px";
+		img.style.verticalAlign = "middle";
+		name.appendChild(img);
+		name.appendChild(document.createTextNode(champions[champion_id].name + " $" + champions[champion_id].cost.toString()));
+		equips = get_equips(champions[champion_id].top_items);
+		row.appendChild(name);
+		row.appendChild(equips);
+		tbody.appendChild(row);
+	}
+}
+
+function get_equips(equips) {
+	var rt = document.createElement("td");
+	var tmp = 0;
+	rt.style.textAlign = "left";
+	for(const equip in equips) {
+		var img = document.createElement("img");
+		img.style.verticalAlign = "top";
+		img.style.padding = "0px 0px 0px 10px";
+		img.src = ("./assets/items/" + (equips[equip].length==1 ? "0" : "") + equips[equip] + ".png");
+		rt.appendChild(img);
 	}
 	return rt;
 }
