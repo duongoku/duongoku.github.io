@@ -1,0 +1,107 @@
+<!-- Code taken from https://www.w3schools.com/howto/howto_js_filter_table.asp -->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+
+<h2>Items</h2>
+<h3>Notes: All the images are from Riotgames</h3>
+
+<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+
+<table id="myTable">
+<tbody id="tableBody">
+	<tr class="header">
+		<th style="width:25%;">Item Name</th>
+		<th style="width:75%;">Popular Units</th>
+	</tr>
+</tbody>
+</table>
+
+<script>
+items = null;
+fetch("./data/items.json")
+.then(response => response.json())
+.then(data => {
+	items = data;
+	// console.log(items[1]);
+	initTable()
+});
+
+function initTable() {
+	var input, filter, table, tr, td, i, txtValue;
+	input = document.getElementById("myInput");
+	filter = input.value.toUpperCase();
+	table = document.getElementById("myTable");
+	tbody = document.getElementById("tableBody");
+	tr = table.getElementsByTagName("tr");
+	for(i = 0; i < tr.length; i++) {
+		td = tr[i].getElementsByTagName("td")[0];
+		if(td) {
+			tbody.removeChild(tr[i]);
+			i--;
+		}
+	}
+	for(const property in items) {
+		var row = document.createElement("tr");
+		var name = document.createElement("td");
+		var desc = document.createElement("td");
+		var units = document.createElement("td");
+		var img = document.createElement("img");
+		var url = "./assets/items/" + (property.length == 1 ? "0" : "") + property + ".png";
+		img.src = url;
+		img.style.padding = "0px 10px 0px 0px";
+		img.style.verticalAlign = "middle";
+		// name.style.background = "url(" + url + ") right no-repeat";
+		name.appendChild(img);
+		name.appendChild(document.createTextNode(items[property].name));
+		desc.appendChild(document.createTextNode(items[property].description));
+		units = get_units(items[property].units);
+		row.appendChild(name);
+		row.appendChild(units);
+		tbody.appendChild(row);
+	}
+}
+
+function get_units(units) {
+	var rt = document.createElement("td");
+	rt.style.textAlign = "left";
+	for(const unit in units) {
+		if(units[unit] >= 30) {
+			var img = document.createElement("img");
+			img.style.verticalAlign = "top";
+			img.style.padding = "0px 0px 0px 10px";
+			img.src = ("./assets/champions/" + unit + ".png");
+			img.title = unit;
+			rt.appendChild(img);
+		}
+	}
+	return rt;
+}
+
+function myFunction() {
+	var input, filter, table, tr, td, i, txtValue;
+	input = document.getElementById("myInput");
+	filter = input.value.toUpperCase();
+	table = document.getElementById("myTable");
+	tr = table.getElementsByTagName("tr");
+	for(i = 0; i < tr.length; i++) {
+		td = tr[i].getElementsByTagName("td")[0];
+		if(td) {
+			txtValue = td.textContent || td.innerText;
+			if (txtValue.toUpperCase().indexOf(filter) > -1) {
+				tr[i].style.display = "";
+			} else {
+				tr[i].style.display = "none";
+			}
+		}
+	}
+}
+</script>
+
+</body>
+</html>
