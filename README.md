@@ -1,2 +1,2 @@
 # duongoku.github.io
-nothing here lol
+This is my github page repo
