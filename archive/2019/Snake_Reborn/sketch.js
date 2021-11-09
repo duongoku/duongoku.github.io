@@ -37,6 +37,7 @@ function setup() {
 			}
 		}
 	} while (overlap == 1);
+	theme.loop();
 }
 
 function keyTyped() {
@@ -48,10 +49,6 @@ function keyTyped() {
 }
 
 function keyPressed() {
-	if (!isThemePlaying) {
-		isThemePlaying = true;
-		theme.loop();
-	}
 	if (check == 0) {
 		if (keyCode == UP_ARROW && snake.dir != 2) {
 			snake.dir = 0;
