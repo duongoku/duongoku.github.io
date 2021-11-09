@@ -10,35 +10,49 @@ let overlap = 0;
 let dirX = [0, 1, 0, -1, 0],
 	dirY = [-1, 0, 1, 0, 0]; //UP, RIGHT, DOWN, LEFT, STOP
 
+let isThemePlaying = false;
+let theme;
+let eat_sound;
+
+function preload() {
+	soundFormats('mp3');
+	theme = loadSound('theme.mp3');
+	eat_sound = loadSound('eat.mp3');
+}
+
 function setup() {
 	frameRate(fps);
 	createCanvas(width * scale, height * scale);
 	field = new Field();
 	snake = new Snake();
-	snake.body.push([0, Math.floor(height/2)]);
+	snake.body.push([0, Math.floor(height / 2)]);
 	snake.dir = 4;
-	do{
+	do {
 		overlap = 0;
-		field.food = [Math.floor(Math.random()*width), Math.floor(Math.random()*height)];
-		for(let i = 0; i < snake.body.length; i++){
-			if(field.food[0]==snake.body[i][0] && field.food[1]==snake.body[i][1]){
-				overlap=1;
+		field.food = [Math.floor(Math.random() * width), Math.floor(Math.random() * height)];
+		for (let i = 0; i < snake.body.length; i++) {
+			if (field.food[0] == snake.body[i][0] && field.food[1] == snake.body[i][1]) {
+				overlap = 1;
 				break;
 			}
 		}
-	}while(overlap==1);
+	} while (overlap == 1);
 }
 
 function keyTyped() {
-	if (key=='w') {
-		if(wall==0) wall=1;
-		else wall=0;
+	if (key == 'w') {
+		if (wall == 0) wall = 1;
+		else wall = 0;
 		setup();
 	}
 }
 
 function keyPressed() {
-	if(check==0){
+	if (!isThemePlaying) {
+		isThemePlaying = true;
+		theme.loop();
+	}
+	if (check == 0) {
 		if (keyCode == UP_ARROW && snake.dir != 2) {
 			snake.dir = 0;
 		} else if (keyCode == RIGHT_ARROW && snake.dir != 3) {
@@ -48,23 +62,24 @@ function keyPressed() {
 		} else if (keyCode == LEFT_ARROW && snake.dir != 1) {
 			snake.dir = 3;
 		}
-		check=1;
+		check = 1;
 	}
 }
 
-function eat_food(){
-	console.log(snake.body);
+function eat_food() {
+	// console.log(snake.body);
+	eat_sound.play();
 	snake.body.push([snake.body[snake.body.length - 1][0], snake.body[snake.body.length - 1][1]]);
-	do{
+	do {
 		overlap = 0;
-		field.food = [Math.floor(Math.random()*width), Math.floor(Math.random()*height)];
-		for(let i = 0; i < snake.body.length; i++){
-			if(field.food[0]==snake.body[i][0] && field.food[1]==snake.body[i][1]){
-				overlap=1;
+		field.food = [Math.floor(Math.random() * width), Math.floor(Math.random() * height)];
+		for (let i = 0; i < snake.body.length; i++) {
+			if (field.food[0] == snake.body[i][0] && field.food[1] == snake.body[i][1]) {
+				overlap = 1;
 				break;
 			}
 		}
-	}while(overlap==1);
+	} while (overlap == 1);
 	// console.log(snake.body);
 }
 
@@ -82,16 +97,16 @@ function draw() {
 	}
 	if (snake.dir != 4) { //if game is started then we start updating things
 		let die = 0;
-		if(snake.body.length==width*height) die = 1;
-		for(let i = 1; i<len;i++){
-			if(snake.body[i][0]==snake.body[0][0] && snake.body[i][1]==snake.body[0][1]) die = 1;
+		if (snake.body.length == width * height) die = 1;
+		for (let i = 1; i < len; i++) {
+			if (snake.body[i][0] == snake.body[0][0] && snake.body[i][1] == snake.body[0][1]) die = 1;
 		}
-		if(wall==1){
-			if(snake.body[0][0] < 0 || snake.body[0][1] < 0) die = 1;
-			if(snake.body[0][0] >= width || snake.body[0][1] >= height) die = 1;
+		if (wall == 1) {
+			if (snake.body[0][0] < 0 || snake.body[0][1] < 0) die = 1;
+			if (snake.body[0][0] >= width || snake.body[0][1] >= height) die = 1;
 		}
-		if(die == 1) setup();
-		else{
+		if (die == 1) setup();
+		else {
 			if (snake.body[0][0] == field.food[0] && snake.body[0][1] == field.food[1]) eat_food();
 			for (let i = len - 1; i > 0; i--) {
 				snake.body[i][0] = snake.body[i - 1][0];
@@ -99,7 +114,7 @@ function draw() {
 			}
 			snake.body[0][0] += dirX[snake.dir];
 			snake.body[0][1] += dirY[snake.dir];
-			if(wall==0){
+			if (wall == 0) {
 				if (snake.body[0][0] < 0) snake.body[0][0] += width;
 				if (snake.body[0][1] < 0) snake.body[0][1] += height;
 				snake.body[0][0] %= width;
@@ -108,9 +123,9 @@ function draw() {
 		}
 	}
 	noFill();
-	if(wall==1){
+	if (wall == 1) {
 		strokeWeight(3);
-		rect(0,0,width * scale, height * scale);
+		rect(0, 0, width * scale, height * scale);
 	}
-	check=0;
+	check = 0;
 }

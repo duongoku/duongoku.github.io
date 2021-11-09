@@ -1,5 +1,5 @@
-class Snake{
-	constructor(){
+class Snake {
+	constructor() {
 		this.body = [];
 		this.dir = 4;
 	}
