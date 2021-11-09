@@ -10,7 +10,6 @@ let overlap = 0;
 let dirX = [0, 1, 0, -1, 0],
 	dirY = [-1, 0, 1, 0, 0]; //UP, RIGHT, DOWN, LEFT, STOP
 
-let isThemePlaying = false;
 let theme;
 let eat_sound;
 
