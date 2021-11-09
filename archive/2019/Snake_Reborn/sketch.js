@@ -36,7 +36,9 @@ function setup() {
 			}
 		}
 	} while (overlap == 1);
+	getAudioContext().suspend();
 	theme.loop();
+	userStartAudio();
 }
 
 function keyTyped() {
