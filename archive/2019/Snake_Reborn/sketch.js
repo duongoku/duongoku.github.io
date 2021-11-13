@@ -20,6 +20,13 @@ function preload() {
 }
 
 function setup() {
+	load();
+	getAudioContext().suspend();
+	theme.loop();
+	userStartAudio();
+}
+
+function load() {
 	frameRate(fps);
 	createCanvas(width * scale, height * scale);
 	field = new Field();
@@ -36,16 +43,13 @@ function setup() {
 			}
 		}
 	} while (overlap == 1);
-	getAudioContext().suspend();
-	theme.loop();
-	userStartAudio();
 }
 
 function keyTyped() {
 	if (key == 'w') {
 		if (wall == 0) wall = 1;
 		else wall = 0;
-		setup();
+		load();
 	}
 }
 
@@ -103,7 +107,7 @@ function draw() {
 			if (snake.body[0][0] < 0 || snake.body[0][1] < 0) die = 1;
 			if (snake.body[0][0] >= width || snake.body[0][1] >= height) die = 1;
 		}
-		if (die == 1) setup();
+		if (die == 1) load();
 		else {
 			if (snake.body[0][0] == field.food[0] && snake.body[0][1] == field.food[1]) eat_food();
 			for (let i = len - 1; i > 0; i--) {
