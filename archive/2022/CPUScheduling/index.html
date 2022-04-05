@@ -277,8 +277,8 @@
                 queue.push(processes.shift());
                 let current_time = 0;
                 while (queue.length > 0) {
-                    // console.log(JSON.stringify(processes));
-                    // console.log(JSON.stringify(queue));
+                    // console.log(`Processes: ${JSON.stringify(processes)}`);
+                    // console.log(`Queue: ${JSON.stringify(queue)}`);
                     let process = queue.shift();
                     if (process.arrival_time > current_time) {
                         ret += `${current_time} - ${process.arrival_time}: Idle <br />`;
@@ -317,7 +317,7 @@
                         if (result.get(process.name).end_time == Infinity) {
                             result.get(process.name).end_time = current_time;
                         }
-                        if (processes.length > 0) {
+                        if (processes.length > 0 && queue.length == 0) {
                             queue.push(processes.shift());
                         }
                     }
