@@ -20,11 +20,6 @@
                 margin-left: 10px;
                 flex-grow: 3;
             }
-            footer {
-                position: fixed;
-                right: 10px;
-                bottom: 10px;
-            }
         </style>
     </head>
     <body>
@@ -259,7 +254,7 @@
 
             function RR(processes, quantum) {
                 let ret = "";
-                // processes.sort(STF_SORT);
+                processes.sort(FCFS_SORT);
                 let processes_count = processes.length;
                 let result = new Map();
                 for (process of processes) {
@@ -277,6 +272,8 @@
                 queue.push(processes.shift());
                 let current_time = 0;
                 while (queue.length > 0) {
+                    // console.log(JSON.stringify(processes));
+                    // console.log(JSON.stringify(queue));
                     let process = queue.shift();
                     if (process.arrival_time > current_time) {
                         ret += `${current_time} - ${process.arrival_time}: Idle <br />`;
@@ -299,7 +296,7 @@
                                 if (next_process.arrival_time <= current_time) {
                                     queue.push(next_process);
                                 } else {
-                                    processes.push(next_process);
+                                    processes.unshift(next_process);
                                     break;
                                 }
                             } else {
@@ -391,6 +388,5 @@
             </div>
             <div id="result"></div>
         </div>
-        <footer>Author: Nguyễn Vũ Bình Dương aka duongoku</footer>
     </body>
 </html>
