@@ -50,6 +50,13 @@
             .result-container {
                 vertical-align: text-top;
             }
+            .log {
+                display: inline-block;
+                border: 1px solid black;
+                border-radius: 3px;
+                padding: 0.5rem;
+                margin-top: 1rem;
+            }
         </style>
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.4.2/math.js"
@@ -107,6 +114,7 @@
                 </tr>
             </table>
         </div>
+        <div class="log"></div>
         <script>
             async function init_check() {
                 let resource_count = parseInt(
@@ -152,10 +160,10 @@
                 let init = await init_check();
                 let processes = init.processes;
                 let available = init.available;
-                let result = true;
+                let log = `Available: ${JSON.stringify(available)}`;
                 let changed = true;
-                console.log(JSON.stringify(processes));
-                console.log(JSON.stringify(available));
+                // console.log(JSON.stringify(processes));
+                // console.log(JSON.stringify(available));
                 while (changed) {
                     changed = false;
                     for (process of processes) {
@@ -169,6 +177,11 @@
                                     .reduce((a, b) => a && b)
                             ) {
                                 math.add(available, process.allocation);
+                                log = `${log}<br />${
+                                    process.name
+                                } finished, available: ${JSON.stringify(
+                                    available
+                                )}`;
                                 process.finished = true;
                                 changed = true;
                                 break;
@@ -176,7 +189,6 @@
                         }
                     }
                 }
-                console.log(JSON.stringify(processes));
                 if (processes.every((process) => process.finished)) {
                     document.getElementById("result").innerText =
                         "The system is safe";
@@ -186,6 +198,7 @@
                         "The system is NOT safe";
                     document.getElementById("result").classList.add("red");
                 }
+                document.getElementsByClassName("log")[0].innerHTML = log;
             }
 
             async function generate() {
