@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Safety Check</title>
+        <style>
+            table {
+                border: 1px solid black;
+                border-radius: 3px;
+                border-spacing: 5px;
+            }
+            td {
+                padding: 5px;
+                text-align: center;
+            }
+            input {
+                max-width: 1.5rem;
+            }
+            .input-size {
+                display: inline-block;
+                padding: 0.5rem;
+                border: 1px solid black;
+                border-radius: 3px;
+                margin-bottom: 1rem;
+            }
+            .input-size > div {
+                display: inline-block;
+            }
+            .input-size > div :first-child {
+                margin-bottom: 0.5rem;
+            }
+            .input-size button {
+                margin-left: 1rem;
+                vertical-align: top;
+                height: 3.75rem;
+            }
+            .input-size button[disabled] {
+                text-decoration: underline;
+                border: 0px;
+                border-radius: 3px;
+                color: green;
+                background-color: black;
+            }
+            .input-size button[disabled].red {
+                color: red;
+            }
+            .input-row input {
+                margin: 0.1rem;
+            }
+            .result-container {
+                vertical-align: text-top;
+            }
+        </style>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.4.2/math.js"
+            integrity="sha512-6q5sXPMxpoSt9FYL1BtwBFqzIsu75X90/zWkaz7wxsB0+n68hEvKDAKsHbdBuYmH/WZuMm5sYWStJli++GS/SA=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        ></script>
+    </head>
+    <body>
+        <div class="input-size">
+            <div>
+                <div>
+                    Resource types count:
+                    <input type="text" id="res-cnt" value="3" />
+                </div>
+                <div>
+                    Processes count:
+                    <input type="text" id="pro-cnt" value="5" />
+                </div>
+            </div>
+            <!-- no whitespace
+            --><button onclick="generate();">Generate</button
+            ><!-- no whitespace
+            --><button onclick="check();">Check Safety</button
+            ><!-- no whitespace
+            --><button id="result" disabled>The system is safe</button>
+        </div>
+        <div class="input-table">
+            <table>
+                <tr class="header-row">
+                    <td>Name</td>
+                    <td>Allocation</td>
+                    <td>Max</td>
+                    <td>Available</td>
+                </tr>
+                <tr class="input-row">
+                    <td>
+                        <input type="text" value="P1" />
+                    </td>
+                    <td>
+                        <input type="text" value="1" /><!-- no whitespace
+                     --><input type="text" value="1" /><!-- no whitespace
+                     --><input type="text" value="0" />
+                    </td>
+                    <td>
+                        <input type="text" value="7" /><!-- no whitespace
+                     --><input type="text" value="5" /><!-- no whitespace
+                     --><input type="text" value="3" />
+                    </td>
+                    <td>
+                        <input type="text" value="3" /><!-- no whitespace
+                     --><input type="text" value="3" /><!-- no whitespace
+                     --><input type="text" value="2" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <script>
+            async function init_check() {
+                let resource_count = parseInt(
+                    document.getElementById("res-cnt").value
+                );
+                let process_elems =
+                    document.getElementsByClassName("input-row");
+                let processes = [];
+                let available = [];
+                for (elem of process_elems) {
+                    let process = {
+                        name: elem.children[0].children[0].value,
+                        allocation: [],
+                        max: [],
+                        need: [],
+                    };
+                    for (let i = 0; i < resource_count; i++) {
+                        process.allocation.push(
+                            parseInt(elem.children[1].children[i].value)
+                        );
+                        process.max.push(
+                            parseInt(elem.children[2].children[i].value)
+                        );
+                        if (elem.children.length > 3) {
+                            available.push(
+                                parseInt(elem.children[3].children[i].value)
+                            );
+                        }
+                    }
+                    process.need = math.subtract(
+                        process.max,
+                        process.allocation
+                    );
+                    processes.push(process);
+                }
+                return {
+                    processes,
+                    available,
+                };
+            }
+
+            async function check() {
+                let init = await init_check();
+                let processes = init.processes;
+                let available = init.available;
+                let result = true;
+                let changed = true;
+                console.log(JSON.stringify(processes));
+                console.log(JSON.stringify(available));
+                while (changed) {
+                    changed = false;
+                    for (process of processes) {
+                        if (!("finished" in process)) {
+                            process.finished = false;
+                        }
+                        if (!process.finished) {
+                            if (
+                                math
+                                    .smallerEq(process.need, available)
+                                    .reduce((a, b) => a && b)
+                            ) {
+                                math.add(available, process.allocation);
+                                process.finished = true;
+                                changed = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                console.log(JSON.stringify(processes));
+                if (processes.every((process) => process.finished)) {
+                    document.getElementById("result").innerText =
+                        "The system is safe";
+                    document.getElementById("result").classList.remove("red");
+                } else {
+                    document.getElementById("result").innerText =
+                        "The system is NOT safe";
+                    document.getElementById("result").classList.add("red");
+                }
+            }
+
+            async function generate() {
+                let resource_count = parseInt(
+                    document.getElementById("res-cnt").value
+                );
+                let processes_count = parseInt(
+                    document.getElementById("pro-cnt").value
+                );
+                let table_div =
+                    document.getElementsByClassName("input-table")[0];
+                let table = table_div.firstElementChild;
+                let tbody = table.firstElementChild;
+                let rows = tbody.children;
+                for (let i = rows.length - 1; i > 0; i--) {
+                    tbody.removeChild(rows[i]);
+                }
+                for (let i = 0; i < processes_count; i++) {
+                    let row = document.createElement("tr");
+                    let name_cell = document.createElement("td");
+                    let name_input = document.createElement("input");
+                    name_input.setAttribute("type", "text");
+                    name_input.setAttribute("value", "P" + (i + 1));
+                    name_cell.appendChild(name_input);
+                    row.appendChild(name_cell);
+                    let max_j;
+                    if (i == 0) {
+                        max_j = 4;
+                    } else {
+                        max_j = 3;
+                    }
+                    for (let j = 1; j < max_j; j++) {
+                        let cell = document.createElement("td");
+                        for (let k = 0; k < resource_count; k++) {
+                            let input = document.createElement("input");
+                            input.setAttribute("type", "text");
+                            input.setAttribute(
+                                "value",
+                                Math.floor(Math.random() * 10)
+                            );
+                            cell.appendChild(input);
+                        }
+                        row.appendChild(cell);
+                    }
+                    row.classList.add("input-row");
+                    tbody.appendChild(row);
+                }
+            }
+        </script>
+    </body>
+</html>
