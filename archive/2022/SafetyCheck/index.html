@@ -162,8 +162,8 @@
                 let available = init.available;
                 let log = `Available: ${JSON.stringify(available)}`;
                 let changed = true;
-                // console.log(JSON.stringify(processes));
-                // console.log(JSON.stringify(available));
+                console.log(JSON.stringify(processes));
+                console.log(JSON.stringify(available));
                 while (changed) {
                     changed = false;
                     for (process of processes) {
@@ -171,12 +171,14 @@
                             process.finished = false;
                         }
                         if (!process.finished) {
-                            if (
-                                math
-                                    .smallerEq(process.need, available)
-                                    .reduce((a, b) => a && b)
-                            ) {
-                                math.add(available, process.allocation);
+                            let comparison = math.smallerEq(process.need, available);
+                            if (comparison.length < 2) {
+                            				comparison.push(true);
+                            				comparison.push(true);
+                            }
+ 
+                            if(comparison.reduce((a, b) => a && b)) {
+                                available = math.add(available, process.allocation);
                                 log = `${log}<br />${
                                     process.name
                                 } finished, available: ${JSON.stringify(
