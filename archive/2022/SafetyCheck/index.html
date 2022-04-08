@@ -321,7 +321,6 @@ P4 0 0 1 0 6
                         if (!("finished" in processes[i])) {
                             processes[i].finished = false;
                         }
-<<<<<<< HEAD
                         if (!processes[i].finished) {
                             let comparison = math.smallerEq(
                                 processes[i].need,
@@ -338,23 +337,6 @@ P4 0 0 1 0 6
                                     processes[i].allocation
                                 );
                                 processes[i].finished = true;
-=======
-                        if (!process.finished) {
-                            let comparison = math.smallerEq(process.need, available);
-                            if (comparison.length < 2) {
-                            				comparison.push(true);
-                            				comparison.push(true);
-                            }
- 
-                            if(comparison.reduce((a, b) => a && b)) {
-                                available = math.add(available, process.allocation);
-                                log = `${log}<br />${
-                                    process.name
-                                } finished, available: ${JSON.stringify(
-                                    available
-                                )}`;
-                                process.finished = true;
->>>>>>> 17c977be7e9b28468c808049a77e5d16092dad2d
                                 changed = true;
                                 log = `${log}<br />${
                                     processes[i].name
