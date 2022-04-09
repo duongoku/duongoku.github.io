@@ -337,8 +337,27 @@ P4 0 0 1 0 6
                 let available = init.available;
                 let log = `AVAILABLE: ${JSON.stringify(available)}`;
                 let changed = true;
-                console.log(JSON.stringify(processes));
-                console.log(JSON.stringify(available));
+                // console.log(JSON.stringify(processes));
+                // console.log(JSON.stringify(available));
+                if (problem_type === "resreq") {
+                    let zeros = math.zeros(available.length);
+                    for (let i = 0; i < processes.length; i++) {
+                        let process = processes[i];
+                        processes[i].finished = false;
+                        if (
+                            math.deepEqual(process.need, zeros) &&
+                            math.deepEqual(process.allocation, zeros)
+                        ) {
+                            processes[i].finished = true;
+                            log = `${log}<br />${
+                                processes[i].name
+                            } FINISHED, FINISH: ${JSON.stringify(
+                                get_finish_array(processes)
+                            )}, WORK: ${JSON.stringify(available)}`;
+                            break;
+                        }
+                    }
+                }
                 while (changed) {
                     changed = false;
                     for (let i = 0; i < processes.length; i++) {
