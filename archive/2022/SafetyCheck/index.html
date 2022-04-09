@@ -32,7 +32,7 @@
             .input-size button {
                 margin-left: 1rem;
                 vertical-align: top;
-                height: 3.75rem;
+                height: 6rem;
             }
             .input-size button[disabled] {
                 text-decoration: underline;
@@ -94,6 +94,17 @@
                 <div class="input-size">
                     <div>
                         <div>
+                            Problem type:
+                            <select id="problem-type">
+                                <option value="banker">
+                                    Deadlock Avoidance (Banker)
+                                </option>
+                                <option value="resreq">
+                                    Deadlock Detection
+                                </option>
+                            </select>
+                        </div>
+                        <div>
                             Resource types count:
                             <input type="text" id="res-cnt" value="3" />
                         </div>
@@ -111,7 +122,7 @@
                 </div>
                 <div class="input-table">
                     <table>
-                        <tr class="header-row">
+                        <tr id="header-row">
                             <td>Name</td>
                             <td>Allocation</td>
                             <td>Max</td>
@@ -152,6 +163,7 @@
             </div>
             <div class="container-2">
                 <textarea id="text-to-parse">
+Paste the problem here, it'll work as long as the table in the problem is pasted here. Just remember to choose problem type first. Also, you'll have to tweak the input a little bit with questions with extra requests.
 Pro Allocation Max
 Available
 A B C A B
@@ -173,6 +185,12 @@ P4 0 0 1 0 6
             </div>
         </div>
         <script>
+            function get_problem_type() {
+                let problem_type =
+                    document.getElementById("problem-type").value;
+                return problem_type;
+            }
+
             async function apply_changes(processes, available) {
                 let res_elem = document.getElementById("res-cnt");
                 let pro_elem = document.getElementById("pro-cnt");
@@ -261,6 +279,7 @@ P4 0 0 1 0 6
                 );
                 let process_elems =
                     document.getElementsByClassName("input-row");
+                let problem_type = get_problem_type();
                 let processes = [];
                 let available = [];
                 for (elem of process_elems) {
@@ -283,10 +302,14 @@ P4 0 0 1 0 6
                             );
                         }
                     }
-                    process.need = math.subtract(
-                        process.max,
-                        process.allocation
-                    );
+                    if (problem_type === "banker") {
+                        process.need = math.subtract(
+                            process.max,
+                            process.allocation
+                        );
+                    } else if (problem_type === "resreq") {
+                        process.need = process.max;
+                    }
                     processes.push(process);
                 }
                 return {
@@ -309,9 +332,10 @@ P4 0 0 1 0 6
 
             async function check() {
                 let init = await init_check();
+                let problem_type = get_problem_type();
                 let processes = init.processes;
                 let available = init.available;
-                let log = `Available: ${JSON.stringify(available)}`;
+                let log = `AVAILABLE: ${JSON.stringify(available)}`;
                 let changed = true;
                 console.log(JSON.stringify(processes));
                 console.log(JSON.stringify(available));
@@ -340,27 +364,47 @@ P4 0 0 1 0 6
                                 changed = true;
                                 log = `${log}<br />${
                                     processes[i].name
-                                } finished, finish: ${JSON.stringify(
+                                } FINISHED, FINISH: ${JSON.stringify(
                                     get_finish_array(processes)
-                                )}, available: ${JSON.stringify(available)}`;
+                                )}, WORK: ${JSON.stringify(available)}`;
                                 break;
                             }
                         }
                     }
                 }
+
                 if (processes.every((process) => process.finished)) {
-                    document.getElementById("result").innerText =
-                        "The system is safe";
+                    if (problem_type === "banker") {
+                        document.getElementById("result").innerText =
+                            "The system is safe";
+                    } else if (problem_type === "resreq") {
+                        document.getElementById("result").innerText =
+                            "Deadlock NOT DETECTED";
+                    }
                     document.getElementById("result").classList.remove("red");
                 } else {
-                    document.getElementById("result").innerText =
-                        "The system is NOT safe";
+                    if (problem_type === "banker") {
+                        document.getElementById("result").innerText =
+                            "The system is NOT safe";
+                    } else if (problem_type === "resreq") {
+                        document.getElementById("result").innerText =
+                            "Deadlock DETECTED";
+                    }
                     document.getElementById("result").classList.add("red");
                 }
                 document.getElementsByClassName("log")[0].innerHTML = log;
             }
 
             async function generate() {
+                let problem_type = get_problem_type();
+                let header_row = document.getElementById("header-row");
+
+                if (problem_type === "banker") {
+                    header_row.children[2].textContent = "Max";
+                } else if (problem_type === "resreq") {
+                    header_row.children[2].textContent = "Request";
+                }
+
                 let resource_count = parseInt(
                     document.getElementById("res-cnt").value
                 );
@@ -384,7 +428,7 @@ P4 0 0 1 0 6
                     name_cell.appendChild(name_input);
                     row.appendChild(name_cell);
                     let max_j;
-                    if (i == 0) {
+                    if (i === 0) {
                         max_j = 4;
                     } else {
                         max_j = 3;
