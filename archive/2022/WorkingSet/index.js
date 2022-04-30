@@ -14,8 +14,8 @@ function render_output(result) {
 async function calculate() {
     let temp = document.getElementById("reflist").value;
     temp = temp.trim();
-    temp = temp.replace(/\s+/g, " ");
     temp = temp.replace(/[^0-9\s]+/g, " ");
+    temp = temp.replace(/\s+/g, " ");
     const reflist = temp.split(" ");
 
     temp = document.getElementById("index").value;

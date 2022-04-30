@@ -253,8 +253,8 @@ async function calculate() {
 
     /** @type {string} */
     let reflist = document.getElementById("reflist").value;
-    reflist = reflist.replace(/\s+/g, " ");
     reflist = reflist.replace(/[^0-9\s]+/g, "");
+    reflist = reflist.replace(/\s+/g, " ");
     reflist = reflist.trim();
 
     const references = reflist.split(" ").map(Number);
