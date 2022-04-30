@@ -160,11 +160,11 @@ function lfu(references, frames) {
         }
         if (!in_use.includes(ref)) {
             in_use.push(ref);
-            freq.set(ref, freq.get(ref) + 1);
             faults.push(true);
         } else {
             faults.push(false);
         }
+        freq.set(ref, freq.get(ref) + 1);
     }
     render_output(references, faults, removes);
 }
