@@ -93,35 +93,41 @@ function sc(references, frames) {
     if (references.length < 1) {
         return;
     }
-    const ref_bit = new Map();
     const in_use = [];
     const faults = [];
     const removes = [];
-    for (let i = 0; i < references.length; i++) {
-        ref_bit.set(references[i], false);
-    }
+    const ref_bit = new Array(frames).fill(false);
     let pointer = 0;
     for (let i = 0; i < references.length; i++) {
-        console.log(ref_bit);
         const ref = references[i];
-        if (in_use.length === frames && !in_use.includes(ref)) {
-            while (ref_bit.get(in_use[pointer])) {
-                ref_bit.set(in_use[pointer], false);
-                pointer = (pointer + 1) % in_use.length;
-            }
-            console.log(in_use[pointer]);
-            ref_bit.set(in_use[pointer], true);
-            removes.push(in_use[pointer]);
-            in_use.splice(in_use.indexOf(in_use[pointer]), 1);
-        } else {
-            removes.push(null);
-        }
+        // console.log(
+        //     `Frames: ${in_use} | Current: ${ref} | Pointer: ${pointer}`
+        // );
         if (!in_use.includes(ref)) {
-            in_use.push(ref);
-            ref_bit.set(ref, true);
             faults.push(true);
         } else {
             faults.push(false);
+        }
+        if (in_use.includes(ref)) {
+            ref_bit[in_use.indexOf(ref)] = true;
+            removes.push(null);
+            continue;
+        }
+        if (in_use.length < frames && !in_use.includes(ref)) {
+            in_use.push(ref);
+            removes.push(null);
+            continue;
+        }
+        if (in_use.length === frames && !in_use.includes(ref)) {
+            while (ref_bit[pointer]) {
+                ref_bit[pointer] = false;
+                pointer += 1;
+                pointer %= frames;
+            }
+            removes.push(in_use[pointer]);
+            in_use[in_use.indexOf(in_use[pointer])] = ref;
+            pointer += 1;
+            pointer %= frames;
         }
     }
     render_output(references, faults, removes);
