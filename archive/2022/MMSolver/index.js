@@ -13,31 +13,28 @@ function parse_text(text) {
     text = text.replace(/is\s+/g, "= ");
     text = text.replace(/\s+/g, "");
     if (text.includes("slowdown")) {
-        let raw_access_time = text.match(/accesstime=[0-9\.]+nano/g);
-        let raw_handling_time = text.match(/handlingtime=[0-9\.]+milli/g);
-        let raw_fault_rate = text.match(/faultrate=[0-9\./]+/g);
-        console.log(text);
-        console.log(raw_access_time, raw_handling_time, raw_fault_rate);
-        raw_access_time = raw_access_time[0].split("=")[1].split("nano")[0];
-        raw_handling_time = raw_handling_time[0]
-            .split("=")[1]
-            .split("milli")[0];
-        raw_fault_rate = raw_fault_rate[0].split("=")[1];
+        let raw_access_time = text.match(/accesstime=[0-9\.]+nano/g)[0];
+        let raw_handling_time = text.match(/handlingtime=[0-9\.]+milli/g)[0];
+        let raw_fault_rate = text.match(/faultrate=[0-9\./]+/g)[0];
+        raw_access_time = raw_access_time.split("=")[1].split("nano")[0];
+        raw_handling_time = raw_handling_time.split("=")[1].split("milli")[0];
+        raw_fault_rate = raw_fault_rate.split("=")[1];
         const numerator = raw_fault_rate.split("/")[0];
         const denominator = raw_fault_rate.split("/")[1];
         let access_time = parseFloat(raw_access_time) / 1e9;
         let handling_time = parseFloat(raw_handling_time) / 1e3;
         let fault_rate = parseFloat(numerator) / parseFloat(denominator);
         calculate_slow(access_time, handling_time, fault_rate);
-    } else if (text.includes("(eat)") && text.includes("without")) {
-        let raw_access_time = text.match(/accesstime=[0-9\.]+nano/g);
-        let raw_handling_time = text.match(/servicetime=[0-9\.]+milli/g);
-        let raw_fault_rate = text.match(/faultrate=[0-9\./]+/g);
-        raw_access_time = raw_access_time[0].split("=")[1].split("nano")[0];
-        raw_handling_time = raw_handling_time[0]
-            .split("=")[1]
-            .split("milli")[0];
-        raw_fault_rate = raw_fault_rate[0].split("=")[1];
+    } else if (
+        text.includes("(eat)") &&
+        (text.includes("without") || text.includes("notuse"))
+    ) {
+        let raw_access_time = text.match(/accesstime=[0-9\.]+nano/g)[0];
+        let raw_handling_time = text.match(/servicetime=[0-9\.]+milli/g)[0];
+        let raw_fault_rate = text.match(/faultrate=[0-9\./]+/g)[0];
+        raw_access_time = raw_access_time.split("=")[1].split("nano")[0];
+        raw_handling_time = raw_handling_time.split("=")[1].split("milli")[0];
+        raw_fault_rate = raw_fault_rate.split("=")[1];
         const numerator = raw_fault_rate.split("/")[0];
         const denominator = raw_fault_rate.split("/")[1];
         let access_time = parseFloat(raw_access_time) / 1e9;
@@ -47,14 +44,12 @@ function parse_text(text) {
     } else if (text.includes("(eat)")) {
         let raw_access_time = text.match(
             /accesstimeofthememory=[0-9\.]+milli/g
-        );
-        let raw_handling_time = text.match(/accesstimeoftlb=[0-9\.]+milli/g);
-        let raw_fault_rate = text.match(/hitrateoftlb=[0-9\./]+/g);
-        raw_access_time = raw_access_time[0].split("=")[1].split("nano")[0];
-        raw_handling_time = raw_handling_time[0]
-            .split("=")[1]
-            .split("milli")[0];
-        raw_fault_rate = raw_fault_rate[0].split("=")[1];
+        )[0];
+        let raw_handling_time = text.match(/accesstimeoftlb=[0-9\.]+milli/g)[0];
+        let raw_fault_rate = text.match(/hitrateoftlb=[0-9\./]+/g)[0];
+        raw_access_time = raw_access_time.split("=")[1].split("nano")[0];
+        raw_handling_time = raw_handling_time.split("=")[1].split("milli")[0];
+        raw_fault_rate = raw_fault_rate.split("=")[1];
         const numerator = raw_fault_rate.split("/")[0];
         const denominator = raw_fault_rate.split("/")[1];
         let access_time = parseFloat(raw_access_time) / 1e3;
@@ -99,19 +94,7 @@ async function solve() {
     try {
         parse_text(problem);
     } catch (e) {
-        answer.textContent = "Error";
-        rounded.textContent = "Error";
+        answer.textContent = "Not supported";
+        rounded.textContent = "Not supported";
     }
 }
-
-// function run() {
-//     const problem =
-//         "Suppose in a paging on demand system has the page fault rate = 0.2%; the memory access time=300 nano seconds; and the page fault handling time is 7 milli seconds. How many times the performance are slowdown? (e.g. 87)";
-//     const another_problem =
-//         "Suppose a paging system has the page fault rate=0.048%; the memory access time is: 320 nano seconds; and the page fault handling time is: 9 milli seconds. How many times the performance is slowdown? (eg. 87).";
-
-//     console.log(parse_text(problem));
-//     console.log((calculate_slow(problem)));
-// }
-
-// run();
