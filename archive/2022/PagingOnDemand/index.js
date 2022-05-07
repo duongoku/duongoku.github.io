@@ -81,7 +81,6 @@ function lru(references, frames) {
             faults.push(false);
         }
     }
-    console.log(removes);
     render_output(references, faults, removes);
 }
 
