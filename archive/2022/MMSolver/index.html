@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Memory Management Solver</title>
+        <style>
+            #container {
+                display: flex;
+                gap: 0.5rem;
+            }
+            #note {
+                font-size: 0.8rem;
+                margin: 1rem 0;
+            }
+            #note label {
+                padding: 0.5rem;
+                border: 1px solid black;
+            }
+            .output {
+                border: 1px solid black;
+                padding: 0.5rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <textarea rows="10" cols="50" id="problem" onchange="solve();">
+PASTE PROBLEM HERE!!! Example: Suppose in a paging on demand system has the page fault rate = 0.2%; the memory access time=300 nano seconds; and the page fault handling time is 7 milli seconds. How many times the performance are slowdown? (e.g. 87)</textarea
+            >
+            <button onclick="solve();">Solve</button>
+            <div class="output">
+                <label>Answer: </label>
+                <div id="answer"></div>
+            </div>
+            <div class="output">
+                <label>Rounded Answer: </label>
+                <div id="rounded"></div>
+            </div>
+        </div>
+        <div id="note">
+            <label
+                >Note: Only supports Effective Access Time (EAT) problems,
+                slowdown paging problems.</label
+            >
+        </div>
+        <script src="index.js"></script>
+        <script>
+            solve();
+        </script>
+    </body>
+</html>
