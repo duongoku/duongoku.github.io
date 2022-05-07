@@ -239,7 +239,7 @@ function render_output(references, faults, removes) {
     remove_row.appendChild(remove_cell);
     for (let i = 0; i < removes.length; i++) {
         remove_cell = document.createElement("td");
-        if (removes[i] === null) {
+        if (!(removes[i] === null)) {
             remove_cell.textContent = removes[i];
         } else {
             remove_cell.textContent = "–";
