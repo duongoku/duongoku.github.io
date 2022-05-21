@@ -8,7 +8,7 @@ function fcfs_seek(request_list, current) {
     let order = [];
     let distance = 0;
     if (request_list.includes(current)) {
-        request_list = request_list.splice(request_list.indexOf(current), 1);
+        request_list.splice(request_list.indexOf(current), 1);
         order.push(current);
     }
     for (let i = 0; i < request_list.length; i++) {
@@ -29,7 +29,7 @@ function sstf_seek(request_list, current) {
     let order = [];
     let distance = 0;
     if (request_list.includes(current)) {
-        request_list = request_list.splice(request_list.indexOf(current), 1);
+        request_list.splice(request_list.indexOf(current), 1);
         order.push(current);
     }
     while (request_list.length > 0) {
@@ -631,11 +631,65 @@ function parse_fs(text) {
 /**
  *
  * @param {String} text
+ * @returns
+ */
+function parse_raid(text) {
+    if (text.includes("parityblock")) {
+        const blocks_as_str = text
+            .match(/\([01]+\)/g)
+            .map((x) => x.replace("(", "").replace(")", ""));
+        const blocks = blocks_as_str.map((x) => parseInt(x, 2));
+        const parity_block = blocks.reduce((a, b) => a ^ b);
+        return {
+            "Parity Block": parity_block
+                .toString(2)
+                .padStart(blocks_as_str[0].length, "0"),
+        };
+    }
+    if (text.includes("level-5")) {
+        let temp = text.match(/[0-9]+hard-disk/g)[0];
+        temp = temp.replace("hard-disk", "");
+        const disk_count = parseInt(temp);
+
+        temp = text.match(/size[0-9]+[a-z]+/g)[0];
+        let temp_2 = temp.match(/size[0-9]+/g)[0];
+        const unit = temp.replace(temp_2, "");
+        const disk_size = parseInt(temp_2.replace("size", ""));
+        const performance = disk_count - 1;
+        const max_size = `${disk_size * performance} ${unit.toUpperCase()}`;
+
+        return {
+            "Performance Improvement": `${performance} times`,
+            "Maximum Size": max_size,
+        };
+    }
+    if (text.includes("level-6")) {
+        let temp = text.match(/[0-9]+hard-disk/g)[0];
+        temp = temp.replace("hard-disk", "");
+        const disk_count = parseInt(temp);
+
+        temp = text.match(/size[0-9]+[a-z]+/g)[0];
+        let temp_2 = temp.match(/size[0-9]+/g)[0];
+        const unit = temp.replace(temp_2, "");
+        const disk_size = parseInt(temp_2.replace("size", ""));
+        const performance = disk_count - 2;
+        const max_size = `${disk_size * performance} ${unit}`;
+
+        return {
+            "Performance Improvement": `${performance} times`,
+            "Maximum Size": max_size,
+        };
+    }
+}
+
+/**
+ *
+ * @param {String} text
  */
 function parse_text(text) {
     text = preprocess(text);
+    const answer = document.getElementById("answer");
     if (text.includes("cylinder")) {
-        const answer = document.getElementById("answer");
         const result = parse_cylinder(text);
         answer.innerText = `Distance: ${
             result.distance
@@ -643,8 +697,15 @@ function parse_text(text) {
         return;
     }
     if (text.includes("allocation") || text.includes("filesystem")) {
-        const answer = document.getElementById("answer");
         const result = parse_fs(text);
+        answer.innerText = "";
+        for (const key in result) {
+            answer.innerText += `${key}: ${result[key]}\n`;
+        }
+        return;
+    }
+    if (text.includes("raid")) {
+        const result = parse_raid(text);
         answer.innerText = "";
         for (const key in result) {
             answer.innerText += `${key}: ${result[key]}\n`;
@@ -662,60 +723,3 @@ async function solve() {
         answer.innerText = "Not supported";
     }
 }
-
-function test_request_list(request_list, current, begin, end) {
-    console.log(`Request list: ${request_list}`);
-    console.log(
-        `FCFS: ${JSON.stringify(fcfs_seek(request_list.slice(), current))}`
-    );
-    console.log(
-        `SSTF: ${JSON.stringify(sstf_seek(request_list.slice(), current))}`
-    );
-    console.log(
-        `SCAN: ${JSON.stringify(
-            scan_seek(request_list.slice(), current, begin, end, false)
-        )}`
-    );
-    console.log(
-        `CSCAN: ${JSON.stringify(
-            cscan_seek(request_list.slice(), current, begin, end, false)
-        )}`
-    );
-    console.log(
-        `LOOK: ${JSON.stringify(
-            look_seek(request_list.slice(), current, false)
-        )}`
-    );
-    console.log(
-        `CLOOK: ${JSON.stringify(
-            clook_seek(request_list.slice(), current, false)
-        )}`
-    );
-}
-
-async function test() {
-    const current = 47;
-    const begin = 0;
-    const end = 320;
-    test_request_list(
-        [87, 312, 147, 64, 212, 15, 89, 5, 128, 192, 50],
-        current,
-        begin,
-        end
-    );
-    test_request_list(
-        [14, 82, 198, 237, 7, 319, 192, 71, 281, 194, 47],
-        current,
-        begin,
-        end
-    );
-    test_request_list(
-        [89, 303, 78, 298, 132, 14, 93, 147, 249, 152],
-        current,
-        begin,
-        end
-    );
-    // test_request_list([98, 183, 37, 122, 14, 124, 65, 67], current, begin, end);
-}
-
-// test();
