@@ -130,6 +130,8 @@ async function solve() {
     try {
         parse_text(problem);
     } catch (e) {
+        const answer = document.getElementById("answer");
+        const rounded = document.getElementById("rounded");
         answer.textContent = "Not supported";
         rounded.textContent = "Not supported";
     }
