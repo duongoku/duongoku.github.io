@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Storage Solver</title>
+        <style>
+            #container {
+                display: flex;
+                gap: 0.5rem;
+            }
+            #note {
+                font-size: 0.8rem;
+                margin: 1rem 0;
+            }
+            #note label {
+                padding: 0.5rem;
+                border: 1px solid black;
+            }
+            .output {
+                border: 1px solid black;
+                padding: 0.5rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <textarea rows="10" cols="50" id="problem" onchange="solve();">
+PASTE PROBLEM HERE!!! Example: Suppose a disk has 200 cylinders (marked from 0 to 199); the head is currently at the cylinder 53 with the direction toward the cylinder 199; The disk request string is 98, 183, 37, 122, 14. Suppose C-SCAN disk scheduling algorithm is used (serving direction is from 0- 199), calculate the total numbers of cylinders the head has to move (e.g. 432)?</textarea
+            >
+            <button onclick="solve();">Solve</button>
+            <div class="output">
+                <label>Answer</label>
+                <div id="answer"></div>
+            </div>
+        </div>
+        <div id="note">
+            <label
+                >Note: Supports almost every file system and storage system
+                problem (in the test bank ofc)</label
+            >
+        </div>
+        <script src="index.js"></script>
+        <script>
+            solve();
+        </script>
+    </body>
+</html>
