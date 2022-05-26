@@ -244,7 +244,7 @@ function parse_fs(text) {
     }
 
     if (text.includes("allocation")) {
-        temp = text.match(/\(from0\)[0-9\.]+[a-z]+/g);
+        temp = text.match(/\(from0\)[0-9\.]+[a-z]+/g)[0];
         if (temp == null) {
             temp = "(from0)0byte";
         }
