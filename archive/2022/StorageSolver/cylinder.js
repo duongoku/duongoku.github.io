@@ -301,7 +301,7 @@ function parse_cylinder(text) {
     if (text.includes("sstf") || text.includes("ssft")) {
         return sstf_seek(request_list, current, begin, end, isForward);
     }
-    if (text.includes("c-scan")) {
+    if (text.includes("c-scan") || text.includes("cscan")) {
         return cscan_seek(request_list, current, begin, end, isForward);
     }
     if (text.includes("scan")) {
