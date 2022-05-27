@@ -307,7 +307,7 @@ function parse_cylinder(text) {
     if (text.includes("scan")) {
         return scan_seek(request_list, current, begin, end, isForward);
     }
-    if (text.includes("c-look")) {
+    if (text.includes("c-look") || text.includes("clook")) {
         return clook_seek(request_list, current, isForward);
     }
     if (text.includes("look")) {
