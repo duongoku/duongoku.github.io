@@ -1,0 +1,58 @@
+[
+    {
+        "question": "Which is INCORRECT about File Control Block (FCB)?",
+        "answer": "It is a data structure storing file data\nOS needs a FCB to access a file"
+    },
+    {
+        "question": "Which is the BEST goal of stripping in Redundant Array of Inexpensive Disks (RAID)",
+        "answer": "To increase the IO speed"
+    },
+    {
+        "question": "Which is the BEST goal of mirroring in Redundant Array of Inexpensive Disks (RAID)",
+        "answer": "To recover data of a file if a disk crashed"
+    },
+    {
+        "question": "Which is the most correct about parity blocks?",
+        "answer": "Used to recover data efficiently, similar to mirroring"
+    },
+    {
+        "question": "Which is INCORRECT about hard disk?",
+        "answer": "Transfer rate is the most significant factor for disk scheduling algorithms"
+    },
+    {
+        "question": "Consider a stable storage system, suppose the crash occurs before writing the first copy. Which is correct about the read protocol to recover the data?",
+        "answer": "The two copies of old data are intact, so no need to do anything"
+    },
+    {
+        "question": "How many disks can be broken without losing data in the RAID level 1",
+        "answer": "1"
+    },
+    {
+        "question": "Which is correct about mirroring data among multiple disks",
+        "answer": "Increase the I/O bandwidth"
+    },
+    {
+        "question": "Which is the main reason of stripping data among multiple disks",
+        "answer": "Increase data volume"
+    },
+    {
+        "question": "Which is the reason why a number of sectors in each cylinder is unused?",
+        "answer": "To be used to recover bad sectors"
+    },
+    {
+        "question": "Which is the reason why the sector numbers of different cylinders are not the same?",
+        "answer": "To reduce waiting time"
+    },
+    {
+        "question": "Suppose a file has access mode 664. Which is correct?",
+        "answer": "Any user can read the file"
+    },
+    {
+        "question": "Which of the following is a correct description of a directory?",
+        "answer": "A directory is actually a file containing partial information about its files"
+    },
+    {
+        "question": "Which of the following is incorrect about VFS?",
+        "answer": "VFS is available in all OSes"
+    }
+]
