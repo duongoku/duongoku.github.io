@@ -244,9 +244,11 @@ function parse_fs(text) {
     }
 
     if (text.includes("allocation")) {
-        temp = text.match(/\(from0\)[0-9\.]+[a-z]+/g)[0];
+        temp = text.match(/\(from0\)[0-9\.]+[a-z]+/g);
         if (temp == null) {
             temp = "(from0)0byte";
+        } else {
+            temp = temp[0];
         }
         const reference = parse_size(temp.replace("(from0)", ""));
         if (text.includes("linkedlist")) {
