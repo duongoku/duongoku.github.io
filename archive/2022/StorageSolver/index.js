@@ -45,6 +45,7 @@ function parse_text(text) {
         }
         return;
     }
+    throw new Error("Not supported");
 }
 
 async function solve() {
@@ -53,7 +54,11 @@ async function solve() {
         parse_text(problem);
     } catch (e) {
         const answer = document.getElementById("answer");
-        answer.innerText = "Not supported";
+        const search = document.createElement("a");
+        search.href = "../OSSearcher";
+        search.innerText = "here";
+        answer.innerText = "Not supported, you might want to search ";
+        answer.appendChild(search);
     }
 }
 

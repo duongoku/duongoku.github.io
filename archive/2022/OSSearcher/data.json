@@ -54,5 +54,25 @@
     {
         "question": "Which of the following is incorrect about VFS?",
         "answer": "VFS is available in all OSes"
+    },
+    {
+        "question": "Suppose a system uses linked list disk allocation. Which is the reason why we cannot have random access?",
+        "answer": "Because it is impossible to know the location of nth block from the first block"
+    },
+    {
+        "question": "A UNIX file system with the block size of 4KB; pointer size of 4 bytes; 12 direct pointers; 1 indirect pointer; 1 double indirect pointer; and 1 triple indirect pointer. Which is the maximum number of index blocks the system can use to create a file?",
+        "answer": "3+1024*2+1024*1024"
+    },
+    {
+        "question": "The disk partition is 500GB (1GB=1024MB, 1MB=1024KB, ...); the block size is 1KB. Suppose a system uses linked list disk allocation. Which is the suitable data type of the pointer (e.g. long)?",
+        "answer": "int"
+    },
+    {
+        "question": "Consider a stable storage system, suppose the crash occurs during writing the second copy. Which is correct about the read protocol to recover the data?",
+        "answer": "Second copy is bad, while the first copy is good, thus, replace the second with the first"
+    },
+    {
+        "question": "A UNIX file system with the block size of 4KB; pointer size of 4 bytes; 12 direct pointers; 1 indirect pointer; 1 double indirect pointer; and 1 triple indirect pointer. Which is the maximum file size when the (single) indirect pointer is used?Which is the maximum file size when the (single) indirect pointer is used?",
+        "answer": "(12+1024)*4 KB"
     }
 ]
