@@ -10,6 +10,9 @@ input_button.onclick = search;
  * @returns
  */
 function check_match(str_a, str_b) {
+    if (str_a.length === 0 || str_b.length === 0) {
+        return false;
+    }
     const a = str_a.toLowerCase().replaceAll(/[^a-z0-9]/g, "");
     const b = str_b.toLowerCase().replaceAll(/[^a-z0-9]/g, "");
     if (a.includes(b) || b.includes(a)) {
