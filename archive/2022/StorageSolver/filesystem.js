@@ -42,18 +42,18 @@ function parse_size(text) {
 function parse_disk_size(text) {
     const numstring = text.replace(/[^0-9\.]/g, "");
     if (text.endsWith("kb") || text.endsWith("kbs")) {
-        return (parseFloat(numstring) / 2 ** 10) * 10 ** 3;
+        return `${(parseFloat(numstring) / 2 ** 10) * 10 ** 3} KB`;
     }
     if (text.endsWith("mb") || text.endsWith("mbs")) {
-        return (parseFloat(numstring) / 2 ** 20) * 10 ** 6;
+        return `${(parseFloat(numstring) / 2 ** 20) * 10 ** 6} MB`;
     }
     if (text.endsWith("gb") || text.endsWith("gbs")) {
-        return (parseFloat(numstring) / 2 ** 30) * 10 ** 9;
+        return `${(parseFloat(numstring) / 2 ** 30) * 10 ** 9} GB`;
     }
     if (text.endsWith("tb") || text.endsWith("tbs")) {
-        return (parseFloat(numstring) / 2 ** 40) * 10 ** 12;
+        return `${(parseFloat(numstring) / 2 ** 40) * 10 ** 12} TB`;
     }
-    return parseFloat(numstring);
+    return `${parseFloat(numstring)} bytes`;
 }
 
 /**
