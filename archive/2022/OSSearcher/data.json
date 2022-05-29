@@ -74,5 +74,9 @@
     {
         "question": "A UNIX file system with the block size of 4KB; pointer size of 4 bytes; 12 direct pointers; 1 indirect pointer; 1 double indirect pointer; and 1 triple indirect pointer. Which is the maximum file size when the (single) indirect pointer is used?Which is the maximum file size when the (single) indirect pointer is used?",
         "answer": "(12+1024)*4 KB"
+    },
+    {
+        "question": "A UNIX file system with the block size of 4KB; pointer size of 4 bytes; 12 direct pointers; 1 indirect pointer; 1 double indirect pointer; and 1 triple indirect pointer. Calculate the maximum file size in KB (e.g. 12) when only the direct pointers are used?",
+        "answer": "12*4 KB = 48 KB"
     }
 ]
