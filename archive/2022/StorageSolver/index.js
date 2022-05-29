@@ -29,7 +29,11 @@ function parse_text(text) {
         }\nOrder: ${result.order.join(" ")}`;
         return;
     }
-    if (text.includes("allocation") || text.includes("filesystem")) {
+    if (
+        text.includes("allocation") ||
+        text.includes("filesystem") ||
+        (text.includes("windows") && text.includes("reportedsize"))
+    ) {
         const result = parse_fs(text);
         answer.innerText = "";
         for (const key in result) {

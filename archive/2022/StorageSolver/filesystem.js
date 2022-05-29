@@ -18,6 +18,7 @@ function parse_file_size(size_in_bytes) {
 /**
  *
  * @param {String} text
+ * @returns
  */
 function parse_size(text) {
     const numstring = text.replace(/[^0-9\.]/g, "");
@@ -31,6 +32,28 @@ function parse_size(text) {
         return Math.round(parseFloat(numstring) * 1024 * 1024 * 1024);
     }
     return parseInt(numstring);
+}
+
+/**
+ *
+ * @param {String} text
+ * @returns
+ */
+function parse_disk_size(text) {
+    const numstring = text.replace(/[^0-9\.]/g, "");
+    if (text.endsWith("kb") || text.endsWith("kbs")) {
+        return (parseFloat(numstring) / 2 ** 10) * 10 ** 3;
+    }
+    if (text.endsWith("mb") || text.endsWith("mbs")) {
+        return (parseFloat(numstring) / 2 ** 20) * 10 ** 6;
+    }
+    if (text.endsWith("gb") || text.endsWith("gbs")) {
+        return (parseFloat(numstring) / 2 ** 30) * 10 ** 9;
+    }
+    if (text.endsWith("tb") || text.endsWith("tbs")) {
+        return (parseFloat(numstring) / 2 ** 40) * 10 ** 12;
+    }
+    return parseFloat(numstring);
 }
 
 /**
@@ -219,6 +242,14 @@ function calculate_indexed_alloc(block_size, pointer_size, reference, level) {
  * @returns
  */
 function parse_fs(text) {
+    if (text.includes("windows") && text.includes("reportedsize")) {
+        let temp = text.match(/size=thedisk=[0-9\.]+[a-z]+/g)[0];
+        const sizeofdisk = parse_disk_size(temp.replace("size=thedisk=", ""));
+        return {
+            "Reported size": sizeofdisk,
+        };
+    }
+
     let temp = text.match(/blocksize=[0-9\.]+[a-z]+/g)[0];
     const block_size = parse_size(temp.replace("blocksize=", ""));
 
