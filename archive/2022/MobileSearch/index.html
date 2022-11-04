@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>OS Searcher</title>
+        <style>
+            #container {
+                display: flex;
+                gap: 0.5rem;
+            }
+            #input {
+                border: 1px solid black;
+                border-radius: 3px;
+                display: inline-flex;
+                gap: 0.5rem;
+                padding: 0.5rem;
+                flex-direction: column;
+            }
+            #output {
+                border: 1px solid black;
+                border-radius: 3px;
+                display: inline-flex;
+                gap: 0.5rem;
+                padding: 0.5rem;
+                flex-direction: column;
+                min-width: 15rem;
+            }
+            #input_button {
+                height: 3rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <div id="input">
+                <label>Question:</label
+                ><textarea rows="8" cols="45" id="input_textarea">
+Paste question you wants to search for here</textarea
+                >
+                <button id="input_button">Search</button>
+            </div>
+            <div id="output">
+                <label>Answer (Probably):</label>
+                <div id="answer"></div>
+            </div>
+            <script src="index.js"></script>
+        </div>
+    </body>
+</html>

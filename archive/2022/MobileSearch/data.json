@@ -1,0 +1,950 @@
+[
+    {
+        "q": "Choose the correct for first-time use.",
+        "a": "They don't particularly know how to use this specific interface"
+    },
+    {
+        "q": "In a cognitive walkthrough procedure, one would consider each action in a scenario and do what?",
+        "a": "Tell the story of why the user will do it."
+    },
+    {
+        "q": "In cognitive walkthrough, formal method for evaluating a UI without who?",
+        "a": "users"
+    },
+    {
+        "q": "The cognitive walkthrough mainly evaluates a product's_____.",
+        "a": "Learnability"
+    },
+    {
+        "q": "What does cognitive walkthrough method focus on?",
+        "a": "It focuses on first-time use."
+    },
+    {
+        "q": "What general factors should be considered when making an assessment?",
+        "a": "The impact, persistence, frequency of the problem and market effect"
+    },
+    {
+        "q": "What is cognitive walkthrough?",
+        "a": "Formal method for evaluating UI without users"
+    },
+    {
+        "q": "What is the cognitive walkthrough method?",
+        "a": "Task oriented"
+    },
+    {
+        "q": "What is the correct definition of first-time use in Cognitive Walkthrough method?",
+        "a": "Presuming a normal user using the service for the first time who knows how to handle basic tasks and has general knowledge of how to use the interface but doesn't know how to particularly use this specific interface"
+    },
+    {
+        "q": "What is the main requirement for Cognitive Walkthrough Method?",
+        "a": "A specific set of actions"
+    },
+    {
+        "q": "What is the right UCD cycle?",
+        "a": "Plan -> Analyze -> Design -> Test"
+    },
+    {
+        "q": "What is the specific procedure for a cognitive walkthrough?",
+        "a": "Walk through each action in your scenario."
+    },
+    {
+        "q": "When we do not need Cognitive Walkthrough Assignment?",
+        "a": "When your app is too simple"
+    },
+    {
+        "q": "Which of the following instances illustrates ‘cognitive walkthrough’?",
+        "a": "Imagine yourself as the user and think from their perspective"
+    },
+    {
+        "q": "Which of the following is false about cognitive walkthrough?",
+        "a": "Formal method for evaluating UI with users"
+    },
+    {
+        "q": "Which one is not belong to Cognitive Walkthrough?",
+        "a": "Learn about app developers"
+    },
+    {
+        "q": "How do Nielsen and Molich’s Heuristics compare with prior checklists like the MITRE Guidelines?",
+        "a": "The MITRE Guidelines are more generally relevant to modern interfaces like web and app interfaces, while Nielsen and Molich’s Heuristics are mostly focused on classic computer interfaces."
+    },
+    {
+        "q": "How many points do you get for having the heuristic be correctly applied and the severity assessment be reasonable?",
+        "a": "2 points"
+    },
+    {
+        "q": "In a heuristic evaluation_____.",
+        "a": "A group of test users conducts a formal experiment"
+    },
+    {
+        "q": "Identify the evaluation technique that is useful to evaluate early design such as prototype and storyboard?",
+        "a": "Heuristic evaluation"
+    },
+    {
+        "q": "The scale for the heuristic evaluation report is?",
+        "a": "3"
+    },
+    {
+        "q": "When you get 2 point for evaluate reports using a simple 3 point scale?",
+        "a": "The heuristic is correctly applied, and the severity assessment is reasonable."
+    },
+    {
+        "q": "Which of the following is a primary learning objective of Heuristic Evaluation?",
+        "a": "To become fluent in basic heuristic evaluation"
+    },
+    {
+        "q": "Which one is not belong to Heuristic Evaluation reports?",
+        "a": "Need detailed prototype (all labels) and detailed task descriptions and user descriptions"
+    },
+    {
+        "q": "How can you improve the correctness of your plan?",
+        "a": "Choose tester from different background"
+    },
+    {
+        "q": "What is not important when choosing user as tester?",
+        "a": "Body"
+    },
+    {
+        "q": "When you do not need to build user test plan?",
+        "a": "When your app is internal service"
+    },
+    {
+        "q": "Which tips is false for user test plan?",
+        "a": "be generality in each of the sections"
+    },
+    {
+        "q": "Which will be provided with of a situating context for your user test?",
+        "a": "Short description"
+    },
+    {
+        "q": "In the first step of planning, what are first things you must select and documenting?",
+        "a": "Users and settings"
+    },
+    {
+        "q": "What is a usability test step?",
+        "a": "Plan ahead"
+    },
+    {
+        "q": "What is not a reason to develop a user test plan?",
+        "a": "System easy to use"
+    },
+    {
+        "q": "What is the 4 step procedure for testing with a user? 1.Analyze the results. 2.Start with a clear goal. 3.Perform the test. 4.Recruit participants.",
+        "a": "2,4,3,1"
+    },
+    {
+        "q": "What is the correct set of things you need to prepare first when planning user tests?",
+        "a": "1. Users & setting\r\n2. Methods & metrics\r\n3. Tasks, prompts, etc.\r\n4. Researcher roles"
+    },
+    {
+        "q": "When might it especially be appropriate to recruit 40-60 participants?",
+        "a": "Summative tests"
+    },
+    {
+        "q": "Which of the following is not a design principle that allow the user to maintain control?",
+        "a": "Show technical internals from the casual user"
+    },
+    {
+        "q": "Which is not a reason for developing a user test plan?",
+        "a": "Give users a better experience"
+    },
+    {
+        "q": "Which is one of quantitative measures of usability?",
+        "a": "Comparison to prior/alternative version"
+    },
+    {
+        "q": "Which one is not Qualitative experiences of usability?",
+        "a": "Measures of user satisfaction"
+    },
+    {
+        "q": "Which one is not Qualitative measures of usability?",
+        "a": "Trouble spots in completing tasks"
+    },
+    {
+        "q": "Which one is not true when develop a User Test Plan?",
+        "a": "Unknow what you're measuring."
+    },
+    {
+        "q": "Which type of question do qualitative methods usually answer?",
+        "a": "Why?"
+    },
+    {
+        "q": "Why develop a user test plan?",
+        "a": "All of the answers"
+    },
+    {
+        "q": "Benefits of direct manipulation interfaces not INCLUDES?",
+        "a": "Continuous representation of the objects and actions of interest"
+    },
+    {
+        "q": "Direct manipulation has THREE (3) fundamental properties, EXCEPT?",
+        "a": "Infrequent users can remember how to carry out operations over time"
+    },
+    {
+        "q": "Ethical User Evaluations should be voluntary in that participants are volunteering to do the study (without any external pressure) and what else?",
+        "a": "Participants can stop at any time"
+    },
+    {
+        "q": "Ethical User Evaluations should be voluntary in that participants are volunteering to do the study (without any external pressure) and what else?",
+        "a": "Participants can stop at any time"
+    },
+    {
+        "q": "How many important principles of ethics in User evaluation?",
+        "a": "2"
+    },
+    {
+        "q": "What's not one of three ways to think about kind of harm?",
+        "a": "People who don't try hard in project."
+    },
+    {
+        "q": "What are 2 principles in Ethics in User Evaluation?",
+        "a": "Informed consent and Do no harm"
+    },
+    {
+        "q": "What behavior is harmful to Users?",
+        "a": "Loud, insulting users"
+    },
+    {
+        "q": "What is principle number two when evaluating users?",
+        "a": "Do no harm"
+    },
+    {
+        "q": "What is usability study?",
+        "a": "Using person to study a product"
+    },
+    {
+        "q": "Which are principles in Ethics in User Evaluation?",
+        "a": "Informed consent, Do no harm"
+    },
+    {
+        "q": "Which is the key principle when evaluating users ?",
+        "a": "Voluntary, informed consent"
+    },
+    {
+        "q": "Which of the following is false about \"do no harm\" principle of ethics in user evaluation?",
+        "a": "Right to stop at any time"
+    },
+    {
+        "q": "Which of the following is not a best practices about ethics in user evaluation?",
+        "a": "Take note of user preferences"
+    },
+    {
+        "q": "Which of the following is one of best practices about ethics in user evaluation?",
+        "a": "Culture of Treating Participants Well"
+    },
+    {
+        "q": "Which one is not Best Practice in Ethics in User Evaluation?",
+        "a": "Do not harm"
+    },
+    {
+        "q": "A ........... is a more controlled thing where you actually trying to do an experiment where you're changing or putting in multiple versions of a feature in a developed system.\r\nChoose 1 answer to fill in the blank?",
+        "a": "Field experiment"
+    },
+    {
+        "q": "A design process is a ____ methods for designing user interfaces.",
+        "a": "Systematic"
+    },
+    {
+        "q": "Benefits of the design process?",
+        "a": "Easier to improve"
+    },
+    {
+        "q": "Choose the correct circle order of three aspects\r\n- User research\r\n- Evaluation\r\n- Design and prototyping",
+        "a": "Evaluation - User research - Design and prototyping"
+    },
+    {
+        "q": "How many times can the devaluation occur during the design process?",
+        "a": "Multiple times"
+    },
+    {
+        "q": "In KLM which of these actions is cognitive?",
+        "a": "Decide among alternatives"
+    },
+    {
+        "q": "It tests the usability, functionality and acceptability of an interaction system",
+        "a": "Evaluation"
+    },
+    {
+        "q": "The action of remembering a password and deciding between a list of options are examples of what kind of step?",
+        "a": "Cognitive"
+    },
+    {
+        "q": "The forms of evaluation were primarily divided into which two groups?",
+        "a": "Action Analysis and Qualitative Methods"
+    },
+    {
+        "q": "What is a design process ?",
+        "a": "A Systematic Method For Designing User Interfaces"
+    },
+    {
+        "q": "What is the center/main focus of the design process?",
+        "a": "The users"
+    },
+    {
+        "q": "What is the goal of design process?",
+        "a": "User-Centric"
+    },
+    {
+        "q": "What is the purpose of Design and Prototype process?",
+        "a": "To sketch UI/UX ideas getting from the User Research process"
+    },
+    {
+        "q": "What is the purpose of User Research process?",
+        "a": "To understand the tasks users doing and the problems they facing so that the UI/UX team can have an appropriate sketch in Design and Prototyping process"
+    },
+    {
+        "q": "Which is NOT one of the three aspects of the user interface design process.",
+        "a": "Installing app"
+    },
+    {
+        "q": "Which of the following is a type of evaluation methods without user?",
+        "a": "Heuristic Evaluation"
+    },
+    {
+        "q": "Which of the following is not a benefit of evaluation without users?",
+        "a": "Maybe more expensive"
+    },
+    {
+        "q": "Which of the following is not a type of evaluation methods with user?",
+        "a": "User behavior studies"
+    },
+    {
+        "q": "Which of the following is one of three aspects of user interface design process?",
+        "a": "User-research"
+    },
+    {
+        "q": "Which of the following is true when talking about the benefits of iterative design?",
+        "a": "Easier to improve than get it right for the first time"
+    },
+    {
+        "q": "Which of these is not the focus of qualitative usability method?",
+        "a": "Different ways of displaying interfaces"
+    },
+    {
+        "q": "Which of these is not the problem of formal action analysis method?",
+        "a": "There are bottlenecks in usage that need to be streamlined"
+    },
+    {
+        "q": "Which one of three aspects of user interface in design process?",
+        "a": "User research"
+    },
+    {
+        "q": "Which speed improvement did telephone operators incorporate to be able to handle calls faster?",
+        "a": "Automating the conversation."
+    },
+    {
+        "q": "Why evaluating user interfaces without user make sense?",
+        "a": "Because it can be cheaper"
+    },
+    {
+        "q": "What do Researcher Roles include?",
+        "a": "Research Lead, Research Apprentice, Tech Support Lead and 2 or 3 Helpers"
+    },
+    {
+        "q": "What is Sharetable?",
+        "a": "Is a system with no buttons or keyboard"
+    },
+    {
+        "q": "Which is not a strength of field studies?",
+        "a": "Cost, time, recruitment struggles"
+    },
+    {
+        "q": "Which one is not true about strengths of field studies?",
+        "a": "getting feedbacks from the developers and customers"
+    },
+    {
+        "q": "Why might you want to run a usability study in a field setting?",
+        "a": "To study how users interact with a product in a real-world environment"
+    },
+    {
+        "q": "Why was the ShareTable deployed for 4 weeks in the middle of the study?",
+        "a": "It was part of the A-B-A study design."
+    },
+    {
+        "q": "In evaluating user interfaces, evaluation is part of an ...?",
+        "a": "Iterative design process"
+    },
+    {
+        "q": "Methods to evaluate UIs?",
+        "a": "Both of them"
+    },
+    {
+        "q": "What is a heuristic evaluation useful for?",
+        "a": "A heuristic evaluation is useful for assessing the usability of a website, a landing page, a new design, or a new functionality"
+    },
+    {
+        "q": "What will you achieve after completing this course?",
+        "a": "develop an actionable and effective plan for testing a UI with users"
+    },
+    {
+        "q": "What's not how to evaluate UIs?",
+        "a": "Self evaluate"
+    },
+    {
+        "q": "Which of following interface design principles is about comfort:",
+        "a": "Simplify Usage"
+    },
+    {
+        "q": "Which of the following is one of the methods to evaluate UIs?",
+        "a": "With users"
+    },
+    {
+        "q": "Which one is not one of the methods to evaluate UI?",
+        "a": "Without tools"
+    },
+    {
+        "q": "Why is it helpful to rely on real world models within interface design?",
+        "a": "Real world models are already familiar to a user, and therefore\r\ncan help make the user's experience much more seamless."
+    },
+    {
+        "q": "Is heuristic evaluation independent of the sets of heuristics that you are using?",
+        "a": "Yes it is"
+    },
+    {
+        "q": "Heuristic evaluation can only be used with Nielsen's set of 10 heuristics?",
+        "a": "False"
+    },
+    {
+        "q": "How many common heuristics that were developed by Jakob Nielsen?",
+        "a": "10"
+    },
+    {
+        "q": "Which are NOT factors to consider in Heuristic Evaluation?",
+        "a": "Cost"
+    },
+    {
+        "q": "How many standard severity scales are there?",
+        "a": "5"
+    },
+    {
+        "q": "In Nielsens set of heuristics, the rule \"visibility and system status\" states that:",
+        "a": "The system should always \r\nkeep the user informed about\r\n what is going on."
+    },
+    {
+        "q": "Reasons for using an inspection \r\nmethod instead of usability \r\ntesting are:",
+        "a": "The users are not available and you are short on time"
+    },
+    {
+        "q": "What are the cons (disadvantages) of a heuristic evaluation?",
+        "a": "Requires 5 evaluators to uncover 75% of usability issues"
+    },
+    {
+        "q": "What are the pros (advantages) of a heuristic evaluation?",
+        "a": "Usable early in development"
+    },
+    {
+        "q": "What are the two minimum passes when going through interface in heuristic evaluation?",
+        "a": "Explore the interface and find problems"
+    },
+    {
+        "q": "Idea of heuristics evaluation is ?",
+        "a": "Independent of list of heuristics"
+    },
+    {
+        "q": "What factors should be considered to assess severity ?",
+        "a": "All answers are correct"
+    },
+    {
+        "q": "What is not output of Heuristic Evaluation?",
+        "a": "Evaluation"
+    },
+    {
+        "q": "What is the purpose of the severity assessment in heuristic evaluation?",
+        "a": "To ensure that evaluators are being accurate by checking their output against that of other evaluators"
+    },
+    {
+        "q": "What is the severity score scale of problems?",
+        "a": "0-4"
+    },
+    {
+        "q": "What's thing called Heuristic Evaluation?",
+        "a": "Examine a existing user interface and list the problems of the interface with established usability principles."
+    },
+    {
+        "q": "Which of the following answers is false about Heuristic evaluation?",
+        "a": "Not applied throughout the design process"
+    },
+    {
+        "q": "Which of the following best describes a typical approach to heuristic evaluation?",
+        "a": "3-5 evaluators go through an interface at least twice."
+    },
+    {
+        "q": "Which of the following best describes a typical approach to heuristic evaluation?",
+        "a": "3-5 evaluators go through an interface at least twice."
+    },
+    {
+        "q": "Which of the following is false about heuristic evaluation?",
+        "a": "Focus on problem solving, not on problem identification"
+    },
+    {
+        "q": "Which of the following is false about the output of heuristic evaluation?",
+        "a": "List of {severity rating, problem detail} sets"
+    },
+    {
+        "q": "Which of the following is not a basic idea of Heuristic evaluation?",
+        "a": "Heuristic evaluation is an inspection technique"
+    },
+    {
+        "q": "Which of the following is true about the standard scale of severity assessment?",
+        "a": "2 is minor usability problem"
+    },
+    {
+        "q": "Which of the following is true about Visibility of System Status?",
+        "a": "Keep user informed about what is going on via feedback"
+    },
+    {
+        "q": "Which of these factors is not considered in severity assessment in Heuristic evaluation?",
+        "a": "Time to find the problem"
+    },
+    {
+        "q": "The evaluation must produce with the product design or prototype to be evaluate by the user?",
+        "a": "Usability testing"
+    },
+    {
+        "q": "What does Nielsen's heuristic definition state?",
+        "a": "Users should not have to wonder whether different words, situations, or actions mean the same thing."
+    },
+    {
+        "q": "What are the two broad unit testing approaches?",
+        "a": "Formative and summative"
+    },
+    {
+        "q": "What does testing not do?",
+        "a": "Difficult to test unusual situations"
+    },
+    {
+        "q": "What does the user testing test?",
+        "a": "Testing the technology"
+    },
+    {
+        "q": "What is the main focus of user testing?",
+        "a": "To collect feedback from users to improve the technology"
+    },
+    {
+        "q": "What is the most important property that protocol should have?",
+        "a": "Should allow the key concepts to be tested with users"
+    },
+    {
+        "q": "What is the purpose of usability testing?",
+        "a": "It allows researchers to uncover any problems with their uncover any problems with their product's user experience, decide how to fix these problems"
+    },
+    {
+        "q": "What's one of the names of IBM's design system?",
+        "a": "Material design system"
+    },
+    {
+        "q": "Which method is not in User Testing?",
+        "a": "Technology studies"
+    },
+    {
+        "q": "Which of the following is not an user testing method?",
+        "a": "Unsupervised study"
+    },
+    {
+        "q": "Why we need a lab with the one way silent glass for doing user tests of software and interfaces?",
+        "a": "It shows the raw experience of somebody trying to use the system"
+    },
+    {
+        "q": "\"Support undo and redo\" is a tip in which of the Nielsen's heuristic?",
+        "a": "User control and freedom"
+    },
+    {
+        "q": "Are the users able to undo every important action they've taken?",
+        "a": "Yes"
+    },
+    {
+        "q": "Choose the correct answers about user control and freedom in Nielsen's Heuristic?",
+        "a": "All answers are correct"
+    },
+    {
+        "q": "Which is users often choose system functions by mistake and will need a clearly marked ‘emergency exit’ to leave the unwanted state without having to go through an extended dialogue?",
+        "a": "User Control and Freedom"
+    },
+    {
+        "q": "How should these category definitions be implemented when doing Heuristic evaluations?",
+        "a": "These definitions help you get focus, but don't capture everything"
+    },
+    {
+        "q": "The “Pottery Barn” effect is when the fear of the rule “You break it, you bought it” makes people overly careful when in the store. How would this idea transfer to not having an undo-redo option in a design.",
+        "a": "Users would be less likely to explore the interface."
+    },
+    {
+        "q": "User often choose system functions by mistake, so the \"undo and redo\" system will be the solution for user. This belongs to which Heuristics?",
+        "a": "User control and freedom"
+    },
+    {
+        "q": "What does the definition of accelerators in Nielsen's Heuristics mean?",
+        "a": "Flexibility and ease of use"
+    },
+    {
+        "q": "What is an accelerator?",
+        "a": "Something that reduces the number of steps a task takes to complete"
+    },
+    {
+        "q": "What is the convention for the result of a right-click?",
+        "a": "Bringing up a contextual menu"
+    },
+    {
+        "q": "Which is not Nielsen's learning experience?",
+        "a": "Error prevention"
+    },
+    {
+        "q": "Which is not one of common accelerators?",
+        "a": "Mouse pointer"
+    },
+    {
+        "q": "Which is true about undo option in an application?",
+        "a": "\"Undo\" should always undo the last action"
+    },
+    {
+        "q": "Which of the following is a common means by which the \"Flexibility and Ease of Use\" heuristic is addressed?",
+        "a": "An accelerator"
+    },
+    {
+        "q": "Assertion and condition which are true at the point of execution?",
+        "a": "Always"
+    },
+    {
+        "q": "Data structure suitable for an application discussed in?",
+        "a": "Data design"
+    },
+    {
+        "q": "Design phase will usually be?",
+        "a": "Top-down"
+    },
+    {
+        "q": "Does every part of the screen start with a header or \"title\" that describes its content?",
+        "a": "Yes"
+    },
+    {
+        "q": "Imagine a user interface that relies heavily on an infographic in which a continuous value is represented with a rainbow color scheme. Which of Nielsen's heuristics does this violate the most?",
+        "a": "Match Between System and the Real World"
+    },
+    {
+        "q": "The design phase includes.....",
+        "a": "Data, architectural interface, and procedural design"
+    },
+    {
+        "q": "The system should always keep users informed about what is going on through appropriate feedback in reasonable time?",
+        "a": "Visibility of system status"
+    },
+    {
+        "q": "There are two types of errors, one of them is called slips error. Which one is a solution of avoiding slips?",
+        "a": "Providing helpful constraints and good defaults."
+    },
+    {
+        "q": "Two types of error prevention is?",
+        "a": "Slips and Mistakes"
+    },
+    {
+        "q": "Usability flaws reduce the relevance of the user interface and generate a sense of frustration for the user. The most common usability problems are mainly related to: \r\n1. Content.\r\n2. Security.\r\n3. Accessibility.\r\n4. Ergonomics.\r\n5. Information prioritization.",
+        "a": "1,2,3,4,5"
+    },
+    {
+        "q": "Usability flaws reduce the user interface relevance related to ...",
+        "a": "Security, Ergonomics"
+    },
+    {
+        "q": "Users should not have to wonder whether different words, situations, or actions mean the same thing. Follow platform conventions?",
+        "a": "Consistency and standards"
+    },
+    {
+        "q": "What are 2 types of errors users, typically, make in a system?",
+        "a": "Slips and Mistakes"
+    },
+    {
+        "q": "What does the philosophy, “no such thing as a user error,” mean?",
+        "a": "All errors are the designer’s fault, not the users."
+    },
+    {
+        "q": "What is another name for the \"auto pilot\" error? Explain more about this error?",
+        "a": "Slips: user intends to perform one action but ends up doing something else."
+    },
+    {
+        "q": "What is the usual convention for the result of a right-click?",
+        "a": "Pop up support sheet"
+    },
+    {
+        "q": "Which is NOT a error prevention solutions?",
+        "a": "Blame user for committing errors"
+    },
+    {
+        "q": "Which is not in ten heuristic developed by Nielsen?",
+        "a": "Flexibility and ease of create"
+    },
+    {
+        "q": "Which is not true about rules in Eight Golden Rules of Interface Design?",
+        "a": "Permit difficult reversal of actions"
+    },
+    {
+        "q": "Which is the best design for system processing that takes more than a few seconds?",
+        "a": "Show a progress bar of the process"
+    },
+    {
+        "q": "Which of the following is not a solution of error prevention?",
+        "a": "Provide accelerators"
+    },
+    {
+        "q": "Which of the following is not in Nielsen's Heuristíc?",
+        "a": "Creative design"
+    },
+    {
+        "q": "Who should be blamed for system failure/error?",
+        "a": "The designers"
+    },
+    {
+        "q": "Does the graphical interface allow us to work more easily with applications (yes or no) - if yes, what is the abstract name representation of that ease of operation called, expand it?",
+        "a": "Yes. Recognition - Intuitive and requires less documentation"
+    },
+    {
+        "q": "Error messages should be expressed in plain language (no codes), precisely indicate the problem, and constructively suggest a solution?",
+        "a": "Help users recognize, diagnose, and recover from errors"
+    },
+    {
+        "q": "Even though it is better if the system can be used without documentation, it may be necessary to provide help and documentation?",
+        "a": "Help and documentation"
+    },
+    {
+        "q": "How do you design to match between the system and the real world?",
+        "a": "The system should speak the users language, using words and concepts familiar to the user"
+    },
+    {
+        "q": "Minimize the user's memory load by making elements, actions, and options visible. This is the definition of which heuristics?",
+        "a": "Recognition rather than recall"
+    },
+    {
+        "q": "Recognition vs. Recall is defined as? Choose the best answer.",
+        "a": "Instructions for use of the system should be visible or easily retrievable whenever appropriate"
+    },
+    {
+        "q": "Showing visited links in a different color than link that have not been visited is addressing which of the following heuristics?",
+        "a": "Recognition vs Recall"
+    },
+    {
+        "q": "The most common reason for a person to revisit a website?",
+        "a": "To look at something that you've looked at before"
+    },
+    {
+        "q": "The system should always keep users informed about what is going on through appropriate feedback in reasonable time?",
+        "a": "Visibility of system status"
+    },
+    {
+        "q": "The system should speak the users' language, with words, phrases and concepts familiar to the user, rather than system oriented terms?",
+        "a": "Match between system and the real world"
+    },
+    {
+        "q": "Which of the following are good reasons to consciously violate minimalist design?",
+        "a": "If the addition supports brand associations and memorability."
+    },
+    {
+        "q": "Which of the following are good reasons to consciously violate minimalist design?",
+        "a": "If the design isn't extremely distracting."
+    },
+    {
+        "q": "Which of the following are good reasons to consciously violate minimalist design?",
+        "a": "If the design isn't extremely distracting / If the addition supports brand associations and memorability"
+    },
+    {
+        "q": "Which of the following is not true about Nielsen's Usability Heuristics?",
+        "a": "Evaluating user interface with user"
+    },
+    {
+        "q": "Which one is Jakob Nielsen's 10 Usability Heuristics for UI design?",
+        "a": "Error prevention"
+    },
+    {
+        "q": "What is the best way to find information that is address specific?",
+        "a": "Be All In- Recycle"
+    },
+    {
+        "q": "What is the task description?",
+        "a": "Is the brief information about the Task Activity. This will help the Assigned Person to what is the task about. Task Name is a optional field in most cases."
+    },
+    {
+        "q": "Which one is not the evaluation techniques used for evaluation concept?",
+        "a": "Field studies"
+    },
+    {
+        "q": "Fill the blank: ... must produce with the product design or prototype to be evaluate by the user.",
+        "a": "Usability testing"
+    },
+    {
+        "q": "Which one is not included in conceptual model based on activity?",
+        "a": "Usability testing"
+    },
+    {
+        "q": "Fill the blank: Benefits of direct manipulation interfaces do not include a continuous representation of the ... and actions of interest.",
+        "a": "Objects"
+    },
+    {
+        "q": "Fill the blank: To help the user testing conduction take place more effective, ... is the most important in lab room.",
+        "a": "A bright lighting"
+    },
+    {
+        "q": "Testing typical users on typical tasks in a controlled laboratory?",
+        "a": "User testing"
+    },
+    {
+        "q": "The design must be minimalist to be simple?",
+        "a": "It should not be"
+    },
+    {
+        "q": "This usability lab has a lot of tools for running usability studies. What is one benefit of using such a sophisticated lab?",
+        "a": "A product team can watch and easily take notes during a usability study without disturbing the participant."
+    },
+    {
+        "q": "Which of the following is NOT an example of a context research method?",
+        "a": "Usability test"
+    },
+    {
+        "q": "Which is types of evaluation we will be talking ?",
+        "a": "Formative and summative."
+    },
+    {
+        "q": "Design rationale can also provide useful information?",
+        "a": "Model-Based Methods"
+    },
+    {
+        "q": "How can you measure the usability of a system?",
+        "a": "By observing how long it takes the user to complete a specific task and learn how to do that."
+    },
+    {
+        "q": "How many main types of user testing evaluation are there?",
+        "a": "Two"
+    },
+    {
+        "q": "How to combine \"formative\" and \"summative\" evaluation methods for user testing goals?",
+        "a": "Combine elements of both, at times. Keep an eye on the final result."
+    },
+    {
+        "q": "Only experts will be evaluate using this approach?",
+        "a": "Predictive evaluation"
+    },
+    {
+        "q": "Running a user test session and your participant wants to leave half way through",
+        "a": "After ensuring they do not need medical help, let them leave, with your thank"
+    },
+    {
+        "q": "This evaluation gives in early of design to check users' needs are assessed to the problems or met with the design opportunity?",
+        "a": "Field studies"
+    },
+    {
+        "q": "User testing allows you to begin understanding who the target user of your product or service is. what is one of its objectives?",
+        "a": "Validate ideas"
+    },
+    {
+        "q": "What kind of learning do the two approaches formative and summative have in common?",
+        "a": "Type of data"
+    },
+    {
+        "q": "What type of data does Formative Evaluation want?",
+        "a": "Qualitative"
+    },
+    {
+        "q": "What type of data does Summative Evaluation use?",
+        "a": "Quantitative"
+    },
+    {
+        "q": "Which of the following does not quantify usability?",
+        "a": "Error rates"
+    },
+    {
+        "q": "Which of the following would be the most suitable example of a situation where a GOMS analysis might be useful?",
+        "a": "Evaluating the interface for an online system for renewing a passport, designed to be used by the passport holder when the passport expires."
+    },
+    {
+        "q": "which one is the same between formative and summative?",
+        "a": "Type of data"
+    },
+    {
+        "q": "Which phase in that we use formative user testing approach?",
+        "a": "Design/Prototype"
+    },
+    {
+        "q": "Which phase in that we use summative user testing approach?",
+        "a": "Testing"
+    },
+    {
+        "q": "Which user testing approach is often cheaper and less formal, but also often better for exploration of open tasks?",
+        "a": "Formative"
+    },
+    {
+        "q": "Qualitative methods include?",
+        "a": "Both"
+    },
+    {
+        "q": "Showing visited links in a different color than links that have not been visited is addressing which of the following heuristics?",
+        "a": "Recognition vs. Recall"
+    },
+    {
+        "q": "What is not a property of evaluation without user by formal action analysis?",
+        "a": "It is cheap"
+    },
+    {
+        "q": "What is not kind of qualitative methods ?",
+        "a": "Action analysis"
+    },
+    {
+        "q": "What is the purpose of the severity assessment in heuristic evaluation?",
+        "a": "Ranked list of problems"
+    },
+    {
+        "q": "What is the similarity of cognitive walkthrough and heuristic evaluation?",
+        "a": "Moderate investment"
+    },
+    {
+        "q": "When planning an eluavation, what is not key factor?",
+        "a": "How long does it take to evaluate?"
+    },
+    {
+        "q": "Which is not a qualitative method?",
+        "a": "Informal action analysis"
+    },
+    {
+        "q": "Which key is not belong to factors of Planning Evaluation?",
+        "a": "Can you explain anything you see?"
+    },
+    {
+        "q": "Which of the following best describes the reason we carry out evaluation without users?",
+        "a": "Because users are very different from each other, so evaluation without users is likely to provide a more consistent result."
+    },
+    {
+        "q": "Which of the following is a common means by which the \"Flexibility and Ease of Use\" heuristic is addressed?",
+        "a": "An accelerator"
+    },
+    {
+        "q": "Which of the following is not a action analysis?",
+        "a": "Cognitive Walkthrough"
+    },
+    {
+        "q": "Which of the following is one of qualitative method?",
+        "a": "Cognitive walkthrough"
+    },
+    {
+        "q": "Which of the following is true about informal action analysis?",
+        "a": "Easy to carry out at prototype stage"
+    },
+    {
+        "q": "Which one is not qualitative methods of Evaluation without Users?",
+        "a": "Informal Action Analysis"
+    },
+    {
+        "q": "In Figma, what's the name of component's state?",
+        "a": "Options"
+    },
+    {
+        "q": "Which is not true about Ethics in User Evaluation",
+        "a": "Ethics in User Evaluation is not necessary"
+    },
+    {
+        "q": "What is the final step of the \"testing with users\" process?",
+        "a": "Analyze the results"
+    },
+    {
+        "q": "What characterizes organizations at stage 3(Emergent) of NN/g's latest UX-maturity model?",
+        "a": "UX work is functional and promising but done inconsistently and inefficiently"
+    },
+    {
+        "q": "Which is one of the main principle of ethics in user evaluation?",
+        "a": "Do no harm"
+    }
+]
