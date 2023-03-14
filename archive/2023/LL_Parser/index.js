@@ -7,6 +7,12 @@ let first_set = new Map();
 let follow_set = new Map();
 let select_set = new Map();
 
+let DEFAULT_ERROR_MSG = "Errors will be displayed here";
+
+function show_error(msg) {
+    document.getElementById("error").innerHTML = msg;
+}
+
 function non_empty_filter(e) {
     return e.length > 0;
 }
@@ -19,6 +25,8 @@ function set_on_modified(element, callback) {
 }
 
 function reset() {
+    show_error(DEFAULT_ERROR_MSG);
+
     grammar = new Map();
     first_set = new Map();
     follow_set = new Map();
@@ -39,10 +47,13 @@ function reset() {
 }
 
 function create_parse_table() {
-    return;
     let parse_table = new Map();
+    let terminals = new Set();
     for (let [key, value] of select_set) {
         for (let select of value) {
+            if (select != EPSILON) {
+                terminals.add(select);
+            }
             if (parse_table.has(key[0])) {
                 if (parse_table.get(key[0]).has(select)) {
                     show_error("Grammar is not LL(1)");
@@ -61,19 +72,20 @@ function create_parse_table() {
     let row = header.insertRow(0);
     let cell = row.insertCell(0);
     cell.innerHTML = "Non-Terminal";
-    for (let [key, value] of parse_table) {
+    for (let terminal of terminals) {
         cell = row.insertCell(-1);
-        cell.innerHTML = key;
+        cell.innerHTML = terminal;
     }
     let body = table.createTBody();
     for (let [key, value] of parse_table) {
         row = body.insertRow(-1);
         cell = row.insertCell(0);
         cell.innerHTML = key;
-        for (let [key, value] of parse_table) {
-            console.log(value);
+        for (let terminal of terminals) {
             cell = row.insertCell(-1);
-            cell.innerHTML = value;
+            if (value.has(terminal)) {
+                cell.innerHTML = value.get(terminal);
+            }
         }
     }
 }
@@ -109,10 +121,6 @@ function parse() {
         }
     }
     create_parse_table();
-}
-
-function show_error(msg) {
-    document.getElementById("error").innerHTML = msg;
 }
 
 function load_grammar() {
