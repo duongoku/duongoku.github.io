@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>LL(1)</title>
+        <style>
+            #input {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            #constants {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            #grammar-container {
+                margin: 0.5rem 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            #grammar {
+                resize: none;
+            }
+            #parse-button {
+                margin: 0.5rem;
+                width: 12rem;
+                height: 3rem;
+            }
+            #error {
+                max-width: 25%;
+                min-height: 1rem;
+                text-align: center;
+                border: 1px solid red;
+                color: red;
+            }
+            #output {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                border: 1px solid black;
+                padding: 1rem;
+                margin: 1rem;
+            }
+            #output > * {
+                margin: 0 1rem;
+            }
+            #output > div > h3 {
+                margin: 0 0 0.5rem 0;
+            }
+            #output > div > table {
+                border: 1px solid black;
+            }
+            #output > div > table > tbody > tr > td {
+                border: 1px solid black;
+                padding: 0.25rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="input">
+            <div id="constants">
+                <label for="epsilon">Epsilon</label>
+                <input type="text" id="epsilon" value="ε" />
+                <label for="start">Start Symbol</label>
+                <input type="text" id="start" value="S" />
+            </div>
+            <div id="grammar-container">
+                <label for="grammar">Grammar</label>
+                <textarea id="grammar" rows="10" cols="50">
+E → T Q
+Q → + T Q | − T Q | ε
+T → F R
+R → ∗ F R | / F R | ε
+F → INT | ( E )
+                </textarea>
+                <button id="parse-button">Parse</button>
+            </div>
+            <div id="error">Errors will be displayed here</div>
+        </div>
+        <div id="output">
+            <div>
+                <h3>First</h3>
+                <table id="first"></table>
+            </div>
+            <div>
+                <h3>Follow</h3>
+                <table id="follow"></table>
+            </div>
+            <div>
+                <h3>Select</h3>
+                <table id="select"></table>
+            </div>
+            <div>
+                <h3>Parse Table</h3>
+                <table id="parse-table">Not implemented</table>
+            </div>
+        </div>
+        <script src="index.js"></script>
+    </body>
+</html>
