@@ -36,6 +36,7 @@
                 text-align: center;
                 border: 1px solid red;
                 color: red;
+                padding: 0.5rem;
             }
             #output {
                 display: flex;
@@ -54,9 +55,18 @@
             #output > div > table {
                 border: 1px solid black;
             }
+            #output > div > table > thead > tr > td {
+                border: 1px solid black;
+                padding: 0.25rem;
+                min-width: 3rem;
+                text-align: center;
+                background-color: #ccc;
+            }
             #output > div > table > tbody > tr > td {
                 border: 1px solid black;
                 padding: 0.25rem;
+                min-width: 3rem;
+                text-align: center;
             }
         </style>
     </head>
@@ -66,7 +76,7 @@
                 <label for="epsilon">Epsilon</label>
                 <input type="text" id="epsilon" value="ε" />
                 <label for="start">Start Symbol</label>
-                <input type="text" id="start" value="S" />
+                <input type="text" id="start" value="E" />
             </div>
             <div id="grammar-container">
                 <label for="grammar">Grammar</label>
@@ -75,8 +85,8 @@ E → T Q
 Q → + T Q | − T Q | ε
 T → F R
 R → ∗ F R | / F R | ε
-F → INT | ( E )
-                </textarea>
+F → INT | ( E )</textarea
+                >
                 <button id="parse-button">Parse</button>
             </div>
             <div id="error">Errors will be displayed here</div>
@@ -96,7 +106,7 @@ F → INT | ( E )
             </div>
             <div>
                 <h3>Parse Table</h3>
-                <table id="parse-table">Not implemented</table>
+                <table id="parse-table"></table>
             </div>
         </div>
         <script src="index.js"></script>
