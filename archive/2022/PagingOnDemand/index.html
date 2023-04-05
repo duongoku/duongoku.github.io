@@ -69,7 +69,7 @@
                         cols="30"
                         onchange="calculate();"
                     >
-1 2 3 4 1 2 5 1 2 3 4 5</textarea
+7 0 1 2 0 3 0 4 2 3 0 3 2 1 2 0 1 7 0 1</textarea
                     >
                 </div>
                 <div>
@@ -77,7 +77,7 @@
                     <input
                         type="text"
                         id="frames"
-                        value="4"
+                        value="3"
                         onchange="calculate();"
                     />
                 </div>
@@ -89,6 +89,15 @@
                         <option value="lru">LRU</option>
                         <option value="lfu">LFU</option>
                         <option value="sc">Second Chance</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Second Chance Algo: </label>
+                    <select id="ptr" onchange="calculate();">
+                        <option value="stay">Mr.Th's algorithm</option>
+                        <option value="incremental">
+                            The rest of the world
+                        </option>
                     </select>
                 </div>
             </div>

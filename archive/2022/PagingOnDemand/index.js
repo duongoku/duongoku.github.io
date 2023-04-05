@@ -89,7 +89,7 @@ function lru(references, frames) {
  * @param {Number[]} references
  * @param {Number} frames
  */
-function sc(references, frames) {
+function sc(references, frames, pointer_behavior) {
     if (references.length < 1) {
         return;
     }
@@ -99,6 +99,7 @@ function sc(references, frames) {
     const ref_bit = new Array(frames).fill(false);
     let pointer = 0;
     for (let i = 0; i < references.length; i++) {
+        console.log(in_use, ref_bit, pointer);
         const ref = references[i];
         // console.log(
         //     `Frames: ${in_use} | Current: ${ref} | Pointer: ${pointer}`
@@ -126,8 +127,10 @@ function sc(references, frames) {
             }
             removes.push(in_use[pointer]);
             in_use[in_use.indexOf(in_use[pointer])] = ref;
-            pointer += 1;
-            pointer %= frames;
+            if (pointer_behavior === "incremental") {
+                pointer += 1;
+                pointer %= frames;
+            }
         }
     }
     render_output(references, faults, removes);
@@ -284,7 +287,8 @@ async function calculate() {
             fifo(references, frames);
             break;
         case "sc":
-            sc(references, frames);
+            const pointer_behavior = document.getElementById("ptr").value;
+            sc(references, frames, pointer_behavior);
             break;
         default:
             break;
