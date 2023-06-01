@@ -1,0 +1,121 @@
+{
+  "operationName": "claimReward",
+  "variables": {
+    "planetId": 1,
+    "missionId": 2
+  },
+  "query":"mutation claimReward($planetId: Int!, $missionId: Int!) {
+  claimReward(planetId: $planetId, missionId: $missionId) {
+    updatedProfile {
+      id
+      token
+      usedToken
+      mission
+      noSpecialItemDraws
+      claimedRewards
+      ownership
+      rp
+      __typename
+    }
+    history {
+      id
+      source
+      extra
+      costStr
+      itemList {
+        itemId
+        category
+        __typename
+      }
+      createdAt
+      __typename
+    }
+    __typename
+  }
+}
+"}
+
+{
+  "data": {
+    "user": {
+      "id": 454180,
+      "name": "duongoku",
+      "profile": {
+        "id": 454184,
+        "token": 30,
+        "usedToken": 0,
+        "mission": {
+          "KILLS": 20,
+          "ASSISTS": 60,
+          "WIN_GAMES": 4,
+          "PLAY_GAMES": 1,
+          "BARON_KILLS": 0,
+          "FIRST_BLOOD": 0,
+          "MINIONS_KILLED": 416,
+          "TURRET_TAKEDOWNS": 14,
+          "PENTAKILLS_RANKED": 0,
+          "PLAY_GAMES_WITH_FRIEND": 0
+        },
+        "noSpecialItemDraws": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0,
+          "7": 0,
+          "8": 0,
+          "9": 0,
+          "10": 0
+        },
+        "claimedRewards": {
+          "1": [
+            9,
+            19
+          ],
+          "2": [
+            22,
+            10
+          ],
+          "3": [
+            25,
+            11
+          ],
+          "4": [
+            27
+          ],
+          "5": [
+            20
+          ],
+          "6": [],
+          "7": [],
+          "8": [],
+          "9": [],
+          "10": []
+        },
+        "ownership": [
+          79,
+          103,
+          112,
+          142,
+          146,
+          241,
+          242,
+          264,
+          411,
+          530,
+          543,
+          544,
+          593,
+          675,
+          704,
+          832
+        ],
+        "rp": 0,
+        "__typename": "Profile"
+      },
+      "currentTime": "2022-07-19T18:14:46+07:00",
+      "__typename": "User"
+    }
+  }
+}
