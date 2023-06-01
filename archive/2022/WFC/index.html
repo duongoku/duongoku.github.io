@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Google tag (gtag.js) -->
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-PJP05JF1CJ"
+        ></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+
+            gtag("config", "G-PJP05JF1CJ");
+        </script>
+        <meta charset="utf-8" />
+        <title>WFC</title>
+        <style>
+            #restart {
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+
+            #upload {
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+
+            #blocksize {
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+
+            #canvas {
+                border: 1px solid #000000;
+            }
+        </style>
+    </head>
+    <body>
+        <input id="upload" type="file" accept="image/*"/>
+        <img src="pipe2.png" id="tileset" style="display: none" />
+        <button id="restart">RESTART</button>
+        <label>Block size: </label>
+        <input id="blocksize" type="text" value="32" />
+        <canvas id="canvas" width="256" height="256"> </canvas>
+        <script src="index.js"></script>
+        <script src="event.js"></script>
+    </body>
+</html>
