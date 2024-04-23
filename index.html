@@ -68,9 +68,16 @@
             a {
                 display: block;
             }
+            canvas {
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                z-index: -1;
+            }
         </style>
     </head>
     <body>
+        <canvas id="canvas" width="500" height="250"></canvas>
         <h1>Welcome to my page</h1>
         <h3>
             My name is <i>Dương</i> and <i>duongoku</i> is my alias on the
@@ -78,5 +85,6 @@
         </h3>
         <div>Directory listing:</div>
         <a href="./archive/">/archive</a>
+        <script src="./index.js"></script>
     </body>
 </html>
