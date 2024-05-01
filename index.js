@@ -60,7 +60,7 @@ function gameLoop() {
     }, 1000 / 60);
 }
 
-const MIN_DISTANCE_TO_MOUSE = 20;
+const MIN_DISTANCE_TO_MOUSE = SCALED_WIDTH / 2;
 function handleMouseMove(event) {
     var eventDoc, doc, body;
 
