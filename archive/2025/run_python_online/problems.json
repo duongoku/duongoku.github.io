@@ -1,0 +1,566 @@
+[
+    {
+        "id": "sum-two-numbers",
+        "title": "Tổng hai số",
+        "description": "<p>Đọc hai số nguyên từ đầu vào, mỗi số trên một dòng và in ra tổng của chúng.</p>",
+        "initialCode": "a = int(input())\nb = int(input())\nprint(a + b)",
+        "testCases": [
+            {
+                "input": "1\n2",
+                "expectedOutput": "3"
+            },
+            {
+                "input": "10\n20",
+                "expectedOutput": "30"
+            },
+            {
+                "input": "-5\n5",
+                "expectedOutput": "0"
+            }
+        ]
+    },
+    {
+        "id": "hello-world",
+        "title": "Hello, World!",
+        "description": "<p>In ra chuỗi \"Hello, World!\".</p>",
+        "initialCode": "print(\"Hello, World!\")",
+        "testCases": [
+            {
+                "input": "",
+                "expectedOutput": "Hello, World!"
+            }
+        ]
+    },
+    {
+        "id": "w3a2",
+        "title": "W3A2: Hoán đổi hai số",
+        "description": "<p>Hoán đổi hai số không sử dụng biến tạm thời. Sử dụng phép toán XOR trên bit để hoán đổi giá trị của hai biến.</p>",
+        "initialCode": "a = int(input())\nb = int(input())\n\n# Your code here\n\nprint(a)\nprint(b)",
+        "testCases": [
+            {
+                "input": "5\n10",
+                "expectedOutput": "10\n5"
+            },
+            {
+                "input": "-1\n-5",
+                "expectedOutput": "-5\n-1"
+            }
+        ]
+    },
+    {
+        "id": "w3a3",
+        "title": "W3A3: Kiểm tra lũy thừa của 2",
+        "description": "<p>Kiểm tra xem một số có phải là lũy thừa của 2 hay không. Sử dụng các toán tử bitwise.</p><p><b>Gợi ý:</b> Đối với lũy thừa của 2, <code>n & (n-1) == 0</code> (với n > 0).</p>",
+        "initialCode": "n = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "8",
+                "expectedOutput": "Yes"
+            },
+            {
+                "input": "9",
+                "expectedOutput": "No"
+            },
+            {
+                "input": "1",
+                "expectedOutput": "Yes"
+            }
+        ]
+    },
+    {
+        "id": "w3a4",
+        "title": "W3A4: Chia làm tròn xuống",
+        "description": "<p>Viết chương trình chia một số m cho n, kết quả thu được làm tròn xuống.</p>",
+        "initialCode": "m = int(input())\nn = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "10\n3",
+                "expectedOutput": "3"
+            },
+            {
+                "input": "-10\n3",
+                "expectedOutput": "-4"
+            }
+        ]
+    },
+    {
+        "id": "w3a5",
+        "title": "W3A5: Chia làm tròn lên",
+        "description": "<p>Viết chương trình chia một số m cho n, kết quả thu được làm tròn lên.</p>",
+        "initialCode": "m = int(input())\nn = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "10\n3",
+                "expectedOutput": "4"
+            },
+            {
+                "input": "-10\n3",
+                "expectedOutput": "-3"
+            }
+        ]
+    },
+    {
+        "id": "w3a6",
+        "title": "W3A6: Even and Odd",
+        "description": "<p>Nhập vào một số nguyên dương x, bạn hãy kiểm tra xem x là số chẵn hay lẻ. Nếu x là số chẵn, in ra \"Even\". Nếu x là số lẻ, in ra \"Odd\".</p>",
+        "initialCode": "x = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "10",
+                "expectedOutput": "Even"
+            },
+            {
+                "input": "7",
+                "expectedOutput": "Odd"
+            }
+        ]
+    },
+    {
+        "id": "w3a7",
+        "title": "W3A7: Check negative numbers",
+        "description": "<p>Nhập vào hai số nguyên a, b. Nếu cả hai số a, b đều âm thì in ra \"Yes\", ngược lại in ra \"No\".</p>",
+        "initialCode": "a = int(input())\nb = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "-1\n-2",
+                "expectedOutput": "Yes"
+            },
+            {
+                "input": "-1\n2",
+                "expectedOutput": "No"
+            },
+            {
+                "input": "1\n-2",
+                "expectedOutput": "No"
+            },
+            {
+                "input": "1\n2",
+                "expectedOutput": "No"
+            }
+        ]
+    },
+    {
+        "id": "w3a8",
+        "title": "W3A8: Longer string",
+        "description": "<p>Nhập vào hai chuỗi a, b gồm các chữ cái thường. In ra \"True\" nếu chuỗi a dài hơn chuỗi b. Ngược lại in ra \"False\".</p>",
+        "initialCode": "a = input()\nb = input()\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "hello\nhi",
+                "expectedOutput": "True"
+            },
+            {
+                "input": "hi\nhello",
+                "expectedOutput": "False"
+            },
+            {
+                "input": "abc\ndef",
+                "expectedOutput": "False"
+            }
+        ]
+    },
+    {
+        "id": "w3a9",
+        "title": "W3A9: Triangle",
+        "description": "<p>Nhập vào 3 số nguyên dương a, b, c. Kiểm tra xem a, b, c có cấu thành độ dài cạnh của 1 tam giác được không. Nếu có, in ra \"Yes\". Ngược lại in ra \"No\".</p>",
+        "initialCode": "a = int(input())\nb = int(input())\nc = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "3\n4\n5",
+                "expectedOutput": "Yes"
+            },
+            {
+                "input": "1\n2\n4",
+                "expectedOutput": "No"
+            }
+        ]
+    },
+    {
+        "id": "w3a10",
+        "title": "W3A10: Largest number",
+        "description": "<p>Nhập vào 4 số nguyên. In ra màn hình số nguyên lớn nhất trong 4 số.</p>",
+        "initialCode": "a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "1\n2\n3\n4",
+                "expectedOutput": "4"
+            },
+            {
+                "input": "4\n3\n2\n1",
+                "expectedOutput": "4"
+            },
+            {
+                "input": "-1\n-5\n-2\n-8",
+                "expectedOutput": "-1"
+            }
+        ]
+    },
+    {
+        "id": "w3a11",
+        "title": "W3A11: Phân loại tam giác",
+        "description": "<p>Nhập vào 3 số nguyên dương a,b,c là độ dài 3 cạnh của một tam giác. Kiểm tra 3 số đã nhập có tạo thành một tam giác hợp lệ hay không. Nếu không in ra \"Không phải tam giác\". Nếu có, phân loại tam giác đó là \"Tam giác đều\", \"Tam giác cân\", hay \"Tam giác thường\".</p>",
+        "initialCode": "a = int(input())\nb = int(input())\nc = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "3\n3\n3",
+                "expectedOutput": "Tam giác đều"
+            },
+            {
+                "input": "3\n3\n4",
+                "expectedOutput": "Tam giác cân"
+            },
+            {
+                "input": "3\n4\n5",
+                "expectedOutput": "Tam giác thường"
+            },
+            {
+                "input": "1\n2\n4",
+                "expectedOutput": "Không phải tam giác"
+            }
+        ]
+    },
+    {
+        "id": "w3a12",
+        "title": "W3A12: Kiểm tra năm nhuận",
+        "description": "<p>Nhập vào một số nguyên dương n là số năm, kiểm tra xem năm đó có phải là năm nhuận hay không. Năm nhuận là năm chia hết cho 4 nhưng không chia hết cho 100, hoặc chia hết cho 400. Nếu là năm nhuận in ra \"Yes\", nếu không in ra \"No\".</p>",
+        "initialCode": "n = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "2000",
+                "expectedOutput": "Yes"
+            },
+            {
+                "input": "2024",
+                "expectedOutput": "Yes"
+            },
+            {
+                "input": "1900",
+                "expectedOutput": "No"
+            },
+            {
+                "input": "2023",
+                "expectedOutput": "No"
+            }
+        ]
+    },
+    {
+        "id": "w3a14",
+        "title": "W3A14: Giải phương trình bậc nhất",
+        "description": "<p>Nhập vào hai số thực a và b của phương trình ax + b = 0. Tìm và in ra nghiệm của phương trình, kết quả làm tròn đến số thập phân thứ 2. In ra \"Vô nghiệm\" hoặc \"Vô số nghiệm\" trong trường hợp tương ứng.</p>",
+        "initialCode": "a = float(input())\nb = float(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "2\n-4",
+                "expectedOutput": "2.00"
+            },
+            {
+                "input": "0\n5",
+                "expectedOutput": "Vô nghiệm"
+            },
+            {
+                "input": "0\n0",
+                "expectedOutput": "Vô số nghiệm"
+            }
+        ]
+    },
+    {
+        "id": "w3a15",
+        "title": "W3A15: Xếp loại học lực",
+        "description": "<p>Nhập vào điểm trung bình của một học sinh và in ra học lực của học sinh đó. Xếp loại học lực theo quy tắc:<br>- >= 8.0: Giỏi<br>- >= 6.5: Khá<br>- >= 5.0: Trung bình<br>- < 5.0: Yếu</p>",
+        "initialCode": "diem = float(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "9.0",
+                "expectedOutput": "Giỏi"
+            },
+            {
+                "input": "7.5",
+                "expectedOutput": "Khá"
+            },
+            {
+                "input": "6.0",
+                "expectedOutput": "Trung bình"
+            },
+            {
+                "input": "4.0",
+                "expectedOutput": "Yếu"
+            }
+        ]
+    },
+    {
+        "id": "w3a16",
+        "title": "W3A16: Rounding",
+        "description": "<p>Nhập vào một số thực: in ra kết quả làm tròn lên, tròn xuống, làm tròn tới số nguyên gần nhất (không được sử dụng hàm sẵn có của python). Các kết quả cách nhau một dấu cách.</p>",
+        "initialCode": "x = float(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "3.14",
+                "expectedOutput": "4 3 3"
+            },
+            {
+                "input": "3.8",
+                "expectedOutput": "4 3 4"
+            },
+            {
+                "input": "-2.7",
+                "expectedOutput": "-2 -3 -3"
+            }
+        ]
+    },
+    {
+        "id": "w3a17",
+        "title": "W3A17: Cấp số nhân",
+        "description": "<p>Cho 4 số a, b, c, d. Hãy kiểm tra xem 4 số này có thể theo thứ tự tạo thành 1 cấp số nhân với công bội nguyên theo đúng thứ tự a, b, c, d hay không?</p><p><b>Gợi ý:</b> Tìm công bội (b / a) nếu b chia hết cho a, sau đó lấy b nhân công bội và so sánh với c, c nhân công bội và so sánh với d.</p>",
+        "initialCode": "a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "2\n4\n8\n16",
+                "expectedOutput": "Yes"
+            },
+            {
+                "input": "3\n9\n27\n81",
+                "expectedOutput": "Yes"
+            },
+            {
+                "input": "1\n2\n3\n4",
+                "expectedOutput": "No"
+            }
+        ]
+    },
+    {
+        "id": "w4a1",
+        "title": "W4A1: SumOfNumbers",
+        "description": "<p>Viết chương trình Python sử dụng một trong 2 loại vòng lặp for hoặc while để tính tổng các số nguyên từ 1 đến n. (n <= 1000)</p>",
+        "initialCode": "n = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "10",
+                "expectedOutput": "55"
+            },
+            {
+                "input": "100",
+                "expectedOutput": "5050"
+            }
+        ]
+    },
+    {
+        "id": "w4a2",
+        "title": "W4A2: PrimeNumber",
+        "description": "<p>Viết chương trình nhập vào một số tới khi được một số nguyên dương thì thôi. Kiểm tra số này có phải là số nguyên tố hay không?</p>",
+        "initialCode": "# Your code here",
+        "testCases": [
+            {
+                "input": "7",
+                "expectedOutput": "Yes"
+            },
+            {
+                "input": "10",
+                "expectedOutput": "No"
+            }
+        ]
+    },
+    {
+        "id": "w4a3",
+        "title": "W4A3: Factorial",
+        "description": "<p>Viết chương trình tính giai thừa của một số nguyên n cho trước (n!=1×2×…×n) với 0 < n < 100.</p>",
+        "initialCode": "n = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "5",
+                "expectedOutput": "120"
+            },
+            {
+                "input": "10",
+                "expectedOutput": "3628800"
+            }
+        ]
+    },
+    {
+        "id": "w4a4",
+        "title": "W4A4: CountingDigits",
+        "description": "<p>Viết chương trình nhập vào một số nguyên n và in ra màn hình số chữ số (trừ dấu) của số đó. Không dùng kiểu dữ liệu string.</p>",
+        "initialCode": "n = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "12345",
+                "expectedOutput": "5"
+            },
+            {
+                "input": "-987",
+                "expectedOutput": "3"
+            },
+            {
+                "input": "0",
+                "expectedOutput": "1"
+            }
+        ]
+    },
+    {
+        "id": "w4a5",
+        "title": "W4A5: MeaningOfLife",
+        "description": "<p>Hãy viết một chương trình nhận vào một số nguyên dương n và một dãy gồm n số nguyên. Nếu dãy số đó có số 42 thì in ra màn hình dòng chữ \"I've found the meaning of life!\", ngược lại in ra dòng chữ \"It's a joke!\".</p>",
+        "initialCode": "n = int(input())\nnumbers = list(map(int, input().split()))\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "5\n1 2 42 4 5",
+                "expectedOutput": "I've found the meaning of life!"
+            },
+            {
+                "input": "3\n1 2 3",
+                "expectedOutput": "It's a joke!"
+            }
+        ]
+    },
+    {
+        "id": "w4a6",
+        "title": "W4A6: SumPrimesInRange",
+        "description": "<p>Nhập hai số nguyên dương a, b (a ≤ b). Hãy tính tổng các số nguyên tố trong đoạn [a, b].</p>",
+        "initialCode": "a, b = map(int, input().split())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "1 10",
+                "expectedOutput": "17"
+            },
+            {
+                "input": "20 50",
+                "expectedOutput": "311"
+            }
+        ]
+    },
+    {
+        "id": "w4a7",
+        "title": "W4A7: LargestPrimeFactor",
+        "description": "<p>Nhập vào số nguyên dương n (n ≥ 2). Hãy in ra ước số nguyên tố lớn nhất của n.</p>",
+        "initialCode": "n = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "13195",
+                "expectedOutput": "29"
+            },
+            {
+                "input": "100",
+                "expectedOutput": "5"
+            }
+        ]
+    },
+    {
+        "id": "w4a8",
+        "title": "W4A8: ReverseAddPalindrome",
+        "description": "<p>Nhập số nguyên dương n. Lặp lại phép toán n = n + reverse(n) cho đến khi n là số đối xứng (palindrome). In ra số bước và giá trị palindrome thu được.</p>",
+        "initialCode": "n = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "87",
+                "expectedOutput": "4 8813200023188"
+            }
+        ]
+    },
+    {
+        "id": "w4a9",
+        "title": "W4A9: PerfectSquaresDistinctDigits",
+        "description": "<p>Nhập vào số nguyên dương n. In ra tất cả các số chính phương ≤ n có các chữ số đôi một khác nhau (in theo thứ tự tăng dần, cùng hàng, cách nhau bởi một dấu cách). Nếu không có, in ra \"no number\".</p>",
+        "initialCode": "n = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "100",
+                "expectedOutput": "0 1 4 9 16 25 36 49 64 81"
+            },
+            {
+                "input": "3",
+                "expectedOutput": "0 1"
+            }
+        ]
+    },
+    {
+        "id": "w4a10",
+        "title": "W4A10: LongestCollatzUpToN",
+        "description": "<p>Nhập vào số nguyên dương n. Tìm số x trong [1, n] có độ dài dãy Collatz lớn nhất và in ra x cùng độ dài dãy tương ứng (x L). Nếu có nhiều số cùng độ dài, chọn số nhỏ nhất.</p>",
+        "initialCode": "n = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "10",
+                "expectedOutput": "9 20"
+            }
+        ]
+    },
+    {
+        "id": "w4a11",
+        "title": "W4A11: EvenDivisors",
+        "description": "<p>Viết chương trình đếm số lượng ước số chẵn của số nguyên dương n với n < 10^6.</p>",
+        "initialCode": "n = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "100",
+                "expectedOutput": "6"
+            },
+            {
+                "input": "99",
+                "expectedOutput": "0"
+            }
+        ]
+    },
+    {
+        "id": "w4a12",
+        "title": "W4A12: Interest",
+        "description": "<p>Một người có tài khoản tiết kiệm ở ngân hàng và gửi vào X đồng với lãi suất là 0.7% mỗi tháng. Viết chương trình tính số tiền sau N tháng người ấy rút được (cả gốc và lãi, bỏ qua phần lẻ thập phân).</p>",
+        "initialCode": "X = int(input())\nN = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "1000000\n12",
+                "expectedOutput": "1087338"
+            }
+        ]
+    },
+    {
+        "id": "w4a13",
+        "title": "W4A13: ClosePairNumber",
+        "description": "<p>Hai số nguyên dương tạo thành một cặp số thân thiết khi chúng tuân theo quy luật: Số này bằng tổng tất cả các ước của số kia (trừ chính nó) và ngược lại. Nhập hai số từ bàn phím và kiểm tra xem chúng có phải là cặp số thân thiết không. Nếu có, in ra \"true\", ngược lại, in ra \"false\".</p>",
+        "initialCode": "a = int(input())\nb = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "220\n284",
+                "expectedOutput": "true"
+            },
+            {
+                "input": "100\n200",
+                "expectedOutput": "false"
+            }
+        ]
+    },
+    {
+        "id": "w4a14",
+        "title": "W4A14: GCD",
+        "description": "<p>Cho hai số m và n là hai số nguyên dương nhập từ bàn phím. Viết chương trình tìm ước chung lớn nhất của hai số m và n.</p>",
+        "initialCode": "m = int(input())\nn = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "54\n24",
+                "expectedOutput": "6"
+            },
+            {
+                "input": "48\n180",
+                "expectedOutput": "12"
+            }
+        ]
+    },
+    {
+        "id": "w4a15",
+        "title": "W4A15: ChickenAndDog",
+        "description": "<p>Từ bài toán dân gian \"Vừa gà vừa chó...\", mở rộng thành chương trình nhận đầu vào là tổng số con và tổng số chân của gà và chó. Nếu tìm được số phù hợp, in ra số lượng gà và số lượng chó. Ngược lại, in ra \"invalid\".</p>",
+        "initialCode": "total_animals = int(input())\ntotal_legs = int(input())\n\n# Your code here",
+        "testCases": [
+            {
+                "input": "36\n100",
+                "expectedOutput": "22 14"
+            },
+            {
+                "input": "10\n30",
+                "expectedOutput": "5 5"
+            },
+            {
+                "input": "10\n10",
+                "expectedOutput": "invalid"
+            }
+        ]
+    }
+]

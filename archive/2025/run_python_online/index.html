@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script>
+            !(function (t, e) {
+                var o, n, p, r;
+                e.__SV ||
+                    ((window.posthog = e),
+                    (e._i = []),
+                    (e.init = function (i, s, a) {
+                        function g(t, e) {
+                            var o = e.split('.');
+                            2 == o.length && ((t = t[o[0]]), (e = o[1])),
+                                (t[e] = function () {
+                                    t.push(
+                                        [e].concat(
+                                            Array.prototype.slice.call(
+                                                arguments,
+                                                0
+                                            )
+                                        )
+                                    );
+                                });
+                        }
+                        ((p = t.createElement('script')).type =
+                            'text/javascript'),
+                            (p.async = !0),
+                            (p.src = s.api_host + '/static/array.js'),
+                            (r =
+                                t.getElementsByTagName(
+                                    'script'
+                                )[0]).parentNode.insertBefore(p, r);
+                        var u = e;
+                        for (
+                            void 0 !== a ? (u = e[a] = []) : (a = 'posthog'),
+                                u.people = u.people || [],
+                                u.toString = function (t) {
+                                    var e = 'posthog';
+                                    return (
+                                        'posthog' !== a && (e += '.' + a),
+                                        t || (e += ' (stub)'),
+                                        e
+                                    );
+                                },
+                                u.people.toString = function () {
+                                    return u.toString(1) + '.people (stub)';
+                                },
+                                o =
+                                    'capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId'.split(
+                                        ' '
+                                    ),
+                                n = 0;
+                            n < o.length;
+                            n++
+                        )
+                            g(u, o[n]);
+                        e._i.push([i, s, a]);
+                    }),
+                    (e.__SV = 1));
+            })(document, window.posthog || []);
+            posthog.init('phc_BpkbKRJbJrAPJpiQju5qqM4X2p38vtTKZAs4Qtp0K1K', {
+                api_host: 'https://app.posthog.com',
+            });
+        </script>
+        <script
+            type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/brython@3.13.2/brython.min.js"
+        ></script>
+        <script
+            type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/brython@3.13.2/brython_stdlib.js"
+        ></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/dracula.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/eclipse.min.css"
+        />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+        <link rel="stylesheet" href="styles.css" />
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Python</title>
+    </head>
+    <body onload="brython()">
+        <div id="app-container">
+            <header class="app-header">
+                <div class="header-left">
+                    <h1>Python Online</h1>
+                    <div class="progress-indicator">
+                        <span id="progress-text">0/0 bài đã giải</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button id="theme-toggle" class="theme-toggle">
+                        🌙 Chế độ tối
+                    </button>
+                </div>
+            </header>
+
+            <div id="main-container">
+                <div class="panel left-panel">
+                    <div id="coding-area" class="coding-area">
+                        <div class="editor-header">
+                            <span>Trình soạn thảo code</span>
+                            <div class="editor-controls">
+                                <button
+                                    id="validate-btn"
+                                    class="control-btn"
+                                    style="display: none"
+                                >
+                                    Kiểm tra cú pháp
+                                </button>
+                                <button id="run-button" class="run-button">
+                                    Chạy Code
+                                </button>
+                            </div>
+                        </div>
+                        <div id="code" class="code-editor"></div>
+                        <div class="editor-footer">
+                            <div
+                                id="validation-result"
+                                class="validation-result"
+                            ></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel right-panel">
+                    <div class="problem-section">
+                        <div class="problem-header">
+                            <div class="problem-selector-container">
+                                <label for="problem-selector"
+                                    >Chọn bài tập:</label
+                                >
+                                <select id="problem-selector"></select>
+                            </div>
+                            <div class="tabs-container">
+                                <div
+                                    class="tabs-navigation"
+                                    id="problem-tabs"
+                                ></div>
+                                <button id="add-tab-btn" class="add-tab-btn">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                        <div
+                            id="problem-description"
+                            class="problem-description"
+                        >
+                            <h2 id="problem-title"></h2>
+                            <div id="problem-description-content"></div>
+                        </div>
+                    </div>
+
+                    <div id="output-area" class="output-area">
+                        <div class="output-header">
+                            <h2>Kết quả</h2>
+                            <div class="output-stats">
+                                <span id="execution-time"></span>
+                            </div>
+                        </div>
+                        <div id="output" class="output-content">
+                            Nhấn "Chạy Code" để xem kết quả.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mobile-controls" class="mobile-controls">
+                <button id="mobile-run-btn" class="mobile-run-btn">Chạy</button>
+                <button id="mobile-toggle-panel" class="mobile-toggle-btn">
+                    Chuyển panel
+                </button>
+            </div>
+        </div>
+        <script src="index.js"></script>
+    </body>
+</html>
