@@ -278,7 +278,7 @@ def print(*args, sep=' ', end='\\n'):
                 passedCount++;
             }
             const status = passed ? 'pass' : 'fail';
-            const statusText = passed ? 'ĐẠT' : 'TRƯỢT';
+            const statusText = passed ? 'ĐÚNG' : 'SAI';
 
             resultsHTML += `
                 <div class="test-case fade-in">
@@ -299,7 +299,7 @@ def print(*args, sep=' ', end='\\n'):
 
         const summary = `
             <div class="test-case">
-                <h3>Kết quả: ${passedCount}/${testCases.length} trường hợp thử đã đạt</h3>
+                <h3>Kết quả: ${passedCount}/${testCases.length} trường hợp thử đúng</h3>
                 <p><strong>Thời gian thực thi:</strong> ${executionTime}ms</p>
             </div>
             <hr>
@@ -323,6 +323,11 @@ def print(*args, sep=' ', end='\\n'):
 
     runButton.addEventListener('click', runCode);
     mobileRunButton.addEventListener('click', runCode);
+    document.addEventListener('keydown', (event) => {
+        if (event.ctrlKey && event.key == 'Enter') {
+            runCode();
+        }
+    });
 
     loadProblems();
 
