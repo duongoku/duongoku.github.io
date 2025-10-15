@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!currentProblem) return;
 
         const startTime = performance.now();
-        const userCode = codeEditor.value;
+        const userCode = codeEditor.getValue();
         outputDiv.innerHTML = 'Đang chạy...';
         outputDiv.classList.add('loading');
 
