@@ -562,5 +562,205 @@
                 "expectedOutput": "invalid"
             }
         ]
+    },
+    {
+        "id": "W5A1",
+        "title": "W5A1: Max Of Two",
+        "description": "Viết hàm truyền vào hai số nguyên a, b và trả về số lớn hơn trong hai số.",
+        "initialCode": "def Max_Of_Two(a, b):\n    # Your code here\n    pass",
+        "testCases": [
+            {
+                "input": "5\n3",
+                "expectedOutput": "5"
+            },
+            {
+                "input": "-2\n7",
+                "expectedOutput": "7"
+            },
+            {
+                "input": "10\n10",
+                "expectedOutput": "10"
+            }
+        ]
+    },
+    {
+        "id": "W5A2",
+        "title": "W5A2: Swap Two Numbers",
+        "description": "Viết hàm hoán đổi hai số nguyên. Hàm trả về một tuple chứa hai số sau khi hoán đổi.",
+        "initialCode": "def swap(a, b):\n    # Your code here\n    pass",
+        "testCases": [
+            {
+                "input": "5\n7",
+                "expectedOutput": "7 5"
+            },
+            {
+                "input": "-3\n9",
+                "expectedOutput": "9 -3"
+            },
+            {
+                "input": "0\n0",
+                "expectedOutput": "0 0"
+            }
+        ]
+    },
+    {
+        "id": "W5A3",
+        "title": "W5A3: Check Prime Number",
+        "description": "Viết hàm kiểm tra một số có phải là số nguyên tố hay không.",
+        "initialCode": "def is_prime(n):\n    # Your code here\n    pass",
+        "testCases": [
+            {
+                "input": "7",
+                "expectedOutput": "true"
+            },
+            {
+                "input": "10",
+                "expectedOutput": "false"
+            },
+            {
+                "input": "1",
+                "expectedOutput": "false"
+            }
+        ]
+    },
+    {
+        "id": "W5A4",
+        "title": "W5A4: Perfect Number",
+        "description": "Viết hàm kiểm tra một số nguyên có phải là số hoàn hảo hay không.",
+        "initialCode": "def is_perfect(n):\n    # Your code here\n    pass",
+        "testCases": [
+            {
+                "input": "6",
+                "expectedOutput": "true"
+            },
+            {
+                "input": "28",
+                "expectedOutput": "true"
+            },
+            {
+                "input": "12",
+                "expectedOutput": "false"
+            }
+        ]
+    },
+    {
+        "id": "W5A5",
+        "title": "W5A5: Find First Position of k",
+        "description": "Viết hàm đưa vào một list số nguyên và số nguyên dương k. Trả về vị trí đầu tiên có giá trị k hoặc -1.",
+        "initialCode": "def find_first(lst, k):\n    # Your code here\n    pass",
+        "testCases": [
+            {
+                "input": "1 2 3 4 5\n3",
+                "expectedOutput": "2"
+            },
+            {
+                "input": "5 5 5 5\n5",
+                "expectedOutput": "0"
+            },
+            {
+                "input": "10 20 30\n25",
+                "expectedOutput": "-1"
+            }
+        ]
+    },
+    {
+        "id": "W5A6",
+        "title": "W5A6: Factorial",
+        "description": "Viết hàm tính giai thừa của số nguyên dương n.",
+        "initialCode": "def factorial(n):\n    # Your code here\n    pass",
+        "testCases": [
+            {
+                "input": "5",
+                "expectedOutput": "120"
+            },
+            {
+                "input": "1",
+                "expectedOutput": "1"
+            },
+            {
+                "input": "7",
+                "expectedOutput": "5040"
+            }
+        ]
+    },
+    {
+        "id": "W5A7",
+        "title": "W5A7: Simple Calculator",
+        "description": "Viết hàm mô phỏng máy tính bỏ túi cho các phép +, -, *, /. Kết quả làm tròn 2 chữ số thập phân.",
+        "initialCode": "def calculate(num1, num2, operat):\n    # Your code here\n    pass",
+        "testCases": [
+            {
+                "input": "5\n3\n+",
+                "expectedOutput": "8.00"
+            },
+            {
+                "input": "10\n4\n/",
+                "expectedOutput": "2.50"
+            },
+            {
+                "input": "7\n2\n*",
+                "expectedOutput": "14.00"
+            }
+        ]
+    },
+    {
+        "id": "W5A8",
+        "title": "W5A8: Hamming Distance",
+        "description": "Cho hai số nguyên x và y, viết hàm trả về khoảng cách Hamming giữa chúng.",
+        "initialCode": "def hamming_distance(x, y):\n    # Your code here\n    pass",
+        "testCases": [
+            {
+                "input": "1\n4",
+                "expectedOutput": "2"
+            },
+            {
+                "input": "7\n10",
+                "expectedOutput": "3"
+            },
+            {
+                "input": "0\n0",
+                "expectedOutput": "0"
+            }
+        ]
+    },
+    {
+        "id": "W5A9",
+        "title": "W5A9: Sum of Digits",
+        "description": "Viết hàm trả về tổng các chữ số của số nguyên dương n.",
+        "initialCode": "def sum_of_digits(n):\n    # Your code here\n    pass",
+        "testCases": [
+            {
+                "input": "1234",
+                "expectedOutput": "10"
+            },
+            {
+                "input": "9",
+                "expectedOutput": "9"
+            },
+            {
+                "input": "505",
+                "expectedOutput": "10"
+            }
+        ]
+    },
+    {
+        "id": "W5A10",
+        "title": "W5A10: Isomorphic Words",
+        "description": "Viết hàm trả về true nếu hai từ a và b là đẳng cấu, ngược lại false.",
+        "initialCode": "def is_isomorphic(a, b):\n    # Your code here\n    pass",
+        "testCases": [
+            {
+                "input": "abca\nzbxz",
+                "expectedOutput": "true"
+            },
+            {
+                "input": "foo\nbar",
+                "expectedOutput": "false"
+            },
+            {
+                "input": "paper\ntitle",
+                "expectedOutput": "true"
+            }
+        ]
     }
 ]
