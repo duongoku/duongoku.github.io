@@ -42,7 +42,7 @@ fetch("./data/champions.json")
 });
 
 function initTable_Items() {
-	var input, filter, table, tr, td, i, txtValue;
+	let input; let filter; let table; let tr; let td; let i; let txtValue;
 	document.getElementById("name_header").innerHTML = "Items";
 	document.getElementById("prop_header").innerHTML = "Popular Champions";
 	input = document.getElementById("myInput");
@@ -58,11 +58,11 @@ function initTable_Items() {
 		}
 	}
 	for(const item_id in items) {
-		var row = document.createElement("tr");
-		var name = document.createElement("td");
-		var units = document.createElement("td");
-		var img = document.createElement("img");
-		var url = "./assets/items/" + (item_id.length == 1 ? "0" : "") + item_id + ".png";
+		const row = document.createElement("tr");
+		const name = document.createElement("td");
+		let units = document.createElement("td");
+		const img = document.createElement("img");
+		const url = `./assets/items/${  item_id.length == 1 ? "0" : ""  }${item_id  }.png`;
 		img.src = url;
 		img.style.padding = "0px 10px 0px 0px";
 		img.style.verticalAlign = "middle";
@@ -76,14 +76,14 @@ function initTable_Items() {
 }
 
 function get_units(units) {
-	var rt = document.createElement("td");
+	const rt = document.createElement("td");
 	rt.style.textAlign = "left";
 	for(const unit in units) {
 		if(units[unit] >= 30) {
-			var img = document.createElement("img");
+			const img = document.createElement("img");
 			img.style.verticalAlign = "top";
 			img.style.padding = "0px 0px 0px 10px";
-			img.src = ("./assets/champions/" + unit + ".png");
+			img.src = (`./assets/champions/${  unit  }.png`);
 			img.title = unit;
 			rt.appendChild(img);
 		}
@@ -92,7 +92,7 @@ function get_units(units) {
 }
 
 function initTable_Champions() {
-	var input, filter, table, tr, td, i, txtValue;
+	let input; let filter; let table; let tr; let td; let i; let txtValue;
 	document.getElementById("name_header").innerHTML = "Champions";
 	document.getElementById("prop_header").innerHTML = "Popular Items";
 	input = document.getElementById("myInput");
@@ -108,16 +108,16 @@ function initTable_Champions() {
 		}
 	}
 	for(const champion_id in champions) {
-		var row = document.createElement("tr");
-		var name = document.createElement("td");
-		var equips = document.createElement("td");
-		var img = document.createElement("img");
-		var url = "./assets/champions/" + (champion_id.length == 1 ? "0" : "") + champion_id + ".png";
+		const row = document.createElement("tr");
+		const name = document.createElement("td");
+		let equips = document.createElement("td");
+		const img = document.createElement("img");
+		const url = `./assets/champions/${  champion_id.length == 1 ? "0" : ""  }${champion_id  }.png`;
 		img.src = url;
 		img.style.padding = "0px 10px 0px 0px";
 		img.style.verticalAlign = "middle";
 		name.appendChild(img);
-		name.appendChild(document.createTextNode(champions[champion_id].name + " $" + champions[champion_id].cost.toString()));
+		name.appendChild(document.createTextNode(`${champions[champion_id].name  } $${  champions[champion_id].cost.toString()}`));
 		equips = get_equips(champions[champion_id].top_items);
 		row.appendChild(name);
 		row.appendChild(equips);
@@ -126,21 +126,21 @@ function initTable_Champions() {
 }
 
 function get_equips(equips) {
-	var rt = document.createElement("td");
-	var tmp = 0;
+	const rt = document.createElement("td");
+	const tmp = 0;
 	rt.style.textAlign = "left";
 	for(const equip in equips) {
-		var img = document.createElement("img");
+		const img = document.createElement("img");
 		img.style.verticalAlign = "top";
 		img.style.padding = "0px 0px 0px 10px";
-		img.src = ("./assets/items/" + (equips[equip].length==1 ? "0" : "") + equips[equip] + ".png");
+		img.src = (`./assets/items/${  equips[equip].length==1 ? "0" : ""  }${equips[equip]  }.png`);
 		rt.appendChild(img);
 	}
 	return rt;
 }
 
 function myFunction() {
-	var input, filter, table, tr, td, i, txtValue;
+	let input; let filter; let table; let tr; let td; let i; let txtValue;
 	input = document.getElementById("myInput");
 	filter = input.value.toUpperCase();
 	table = document.getElementById("myTable");
