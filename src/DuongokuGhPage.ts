@@ -123,6 +123,7 @@ export class DuongokuGhPage extends LitElement {
           old course work.
         </p>
         <nav aria-label="Site sections">
+          <a href="/profile/">/profile</a>
           <a href="/archive/">/archive</a>
         </nav>
       </main>
