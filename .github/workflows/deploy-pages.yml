@@ -32,16 +32,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
-
-      - name: Prepare Pages artifact
-        run: |
-          npx vite build
-          mkdir -p _site/archive _site/assets
-          cp -R archive/. _site/archive/
-          cp -R assets/. _site/assets/
-          touch _site/.nojekyll
+      - name: Build Pages artifact
+        run: npm run pages:build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
