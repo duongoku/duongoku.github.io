@@ -10,4 +10,6 @@ if [[ -d assets ]]; then
   cp -R assets/. _site/assets/
 fi
 
+node scripts/generate-profile.mjs
+
 touch _site/.nojekyll
