@@ -1,5 +1,4 @@
 import { html, css, LitElement } from 'lit';
-import { property } from 'lit/decorators.js';
 import { posthog } from 'posthog-js';
 
 // PostHog is initialised using window.__POSTHOG_KEY__ and window.__POSTHOG_HOST__
@@ -16,64 +15,79 @@ export class DuongokuGhPage extends LitElement {
   static styles = css`
     :host {
       display: block;
-      position: relative;
-      min-height: 250px;
-      padding: 25px;
-      color: var(--duongoku-gh-page-text-color, #000);
+      min-height: 100vh;
+      color: var(--duongoku-gh-page-text-color, #151515);
+      background: #f8f7f3;
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        sans-serif;
     }
 
-    canvas {
-      position: absolute;
-      inset: 0 auto auto 0;
-      z-index: 0;
-      pointer-events: none;
+    main {
+      box-sizing: border-box;
+      width: min(100%, 780px);
+      min-height: 100vh;
+      padding: clamp(48px, 10vw, 96px) clamp(20px, 6vw, 56px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 32px;
     }
 
-    .content {
-      position: relative;
-      z-index: 1;
+    .identity {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    h1,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 11vw, 7rem);
+      line-height: 0.95;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .alias {
+      color: #5e5b52;
+      font-size: clamp(1.05rem, 3vw, 1.4rem);
+      line-height: 1.45;
+    }
+
+    .intro {
+      max-width: 34rem;
+      color: #2a2926;
+      font-size: clamp(1.1rem, 3vw, 1.45rem);
+      line-height: 1.6;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     a {
-      display: block;
+      color: #151515;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 5px;
+    }
+
+    a:hover {
+      color: #9a3412;
     }
   `;
-
-  @property({ type: String }) header = 'Hey there';
-
-  @property({ type: Number }) counter = 5;
-
-  private readonly spriteUrl = new URL(
-    '../../assets/mimikyu.png',
-    import.meta.url,
-  ).href;
-
-  private readonly sprite = new Image();
-
-  private animationFrameId = 0;
-
-  private animationTimeoutId = 0;
-
-  private currentLoopIndex = 0;
-
-  private currentDirectionIndex = 0;
-
-  private currentPosition: [number, number] = [200, 0];
-
-  private readonly directions = [2, 0, 1, 3];
-
-  private readonly positionChange: [number, number][] = [
-    [0, 1],
-    [-1, 0],
-    [1, 0],
-    [0, -1],
-  ];
-
-  private readonly spriteSpeed = 4;
-
-  private readonly spriteWidth = 64;
-
-  private readonly spriteHeight = 64;
 
   connectedCallback() {
     super.connectedCallback();
@@ -89,7 +103,6 @@ export class DuongokuGhPage extends LitElement {
       if (posthog.__loaded) {
         posthog.capture('component_connected', {
           component: 'duongoku-gh-page',
-          header: this.header,
         });
       }
     } catch (err) {
@@ -97,136 +110,22 @@ export class DuongokuGhPage extends LitElement {
     }
   }
 
-  firstUpdated() {
-    this.sprite.src = this.spriteUrl;
-    this.sprite.onload = () => {
-      this.animationFrameId = window.requestAnimationFrame(() =>
-        this.gameLoop(),
-      );
-    };
-    document.addEventListener('mousemove', this.handleMouseMove);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    document.removeEventListener('mousemove', this.handleMouseMove);
-    window.cancelAnimationFrame(this.animationFrameId);
-    window.clearTimeout(this.animationTimeoutId);
-  }
-
-  __increment() {
-    this.counter += 1;
-  }
-
-  private get canvas() {
-    return this.renderRoot.querySelector('canvas');
-  }
-
-  private get context() {
-    return this.canvas?.getContext('2d');
-  }
-
-  private drawFrame(
-    frameX: number,
-    frameY: number,
-    canvasX: number,
-    canvasY: number,
-  ) {
-    this.context?.drawImage(
-      this.sprite,
-      frameX * this.spriteWidth,
-      frameY * this.spriteHeight,
-      this.spriteWidth,
-      this.spriteHeight,
-      canvasX,
-      canvasY,
-      this.spriteWidth,
-      this.spriteHeight,
-    );
-  }
-
-  private gameLoop() {
-    const { canvas } = this;
-    const { context } = this;
-    if (!canvas || !context) {
-      return;
-    }
-
-    context.clearRect(0, 0, canvas.width, canvas.height);
-
-    this.currentLoopIndex = (this.currentLoopIndex + 1) % 4;
-    if (Math.random() * 8 < 1) {
-      this.currentDirectionIndex = Math.floor(Math.random() * 4);
-    }
-
-    const direction = this.directions[this.currentDirectionIndex];
-    this.currentPosition[0] +=
-      this.positionChange[direction][0] * this.spriteSpeed;
-    this.currentPosition[1] +=
-      this.positionChange[direction][1] * this.spriteSpeed;
-
-    if (this.currentPosition[0] >= canvas.width - this.spriteWidth) {
-      this.currentPosition[0] = 0;
-    } else if (this.currentPosition[0] < 0) {
-      this.currentPosition[0] = canvas.width - this.spriteWidth;
-    }
-
-    if (this.currentPosition[1] >= canvas.height - this.spriteHeight) {
-      this.currentPosition[1] = 0;
-    } else if (this.currentPosition[1] < 0) {
-      this.currentPosition[1] = canvas.height - this.spriteHeight;
-    }
-
-    this.drawFrame(
-      this.currentLoopIndex,
-      direction,
-      this.currentPosition[0],
-      this.currentPosition[1],
-    );
-    this.animationTimeoutId = window.setTimeout(() => {
-      this.animationFrameId = window.requestAnimationFrame(() =>
-        this.gameLoop(),
-      );
-    }, 1000 / 60);
-  }
-
-  private readonly handleMouseMove = (event: MouseEvent) => {
-    const { canvas } = this;
-    if (!canvas) {
-      return;
-    }
-
-    const bounds = canvas.getBoundingClientRect();
-    const centerX = this.currentPosition[0] + this.spriteWidth / 2;
-    const centerY = this.currentPosition[1] + this.spriteHeight / 2;
-    const mouseX = event.clientX - bounds.left;
-    const mouseY = event.clientY - bounds.top;
-    const distance = Math.sqrt(
-      (mouseX - centerX) * (mouseX - centerX) +
-        (mouseY - centerY) * (mouseY - centerY),
-    );
-    const minDistance = this.spriteWidth / 2;
-    if (distance > 0 && distance < minDistance) {
-      this.currentPosition[0] +=
-        (minDistance / distance - 1) * (centerX - mouseX);
-      this.currentPosition[1] +=
-        (minDistance / distance - 1) * (centerY - mouseY);
-    }
-  };
-
   render() {
-    document.title = 'Homepage';
+    document.title = 'Dương / duongoku';
     return html`
-      <canvas width="500" height="250"></canvas>
-      <div class="content">
-        <h1>Welcome to my page</h1>
-        <h3>
-          My name is <i>Dương</i> and <i>duongoku</i> is my alias on the
-          internet
-        </h3>
-        <div>Directory listing:</div>
-        <a href="./archive/">/archive</a>
-      </div>
+      <main>
+        <section class="identity" aria-labelledby="page-title">
+          <h1 id="page-title">Dương</h1>
+          <p class="alias">duongoku on the internet</p>
+        </section>
+        <p class="intro">
+          Personal homepage and archive for projects, notes, experiments, and
+          old course work.
+        </p>
+        <nav aria-label="Site sections">
+          <a href="/archive/">/archive</a>
+        </nav>
+      </main>
     `;
   }
 }

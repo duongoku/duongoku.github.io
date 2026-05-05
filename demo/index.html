@@ -16,13 +16,8 @@
     import { html, render } from 'lit';
     import '../dist/src/duongoku-gh-page.js';
 
-    const header = 'Hello owc World!';
     render(
-      html`
-        <duongoku-gh-page .header=${header}>
-          some light-dom
-        </duongoku-gh-page>
-      `,
+      html`<duongoku-gh-page></duongoku-gh-page>`,
       document.querySelector('#demo')
     );
   </script>
