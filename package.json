@@ -15,6 +15,7 @@
     "analyze": "cem analyze --litelement",
     "start": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"web-dev-server\"",
     "build": "tsc && npm run analyze -- --exclude dist",
+    "pages:build": "npm run build && bash scripts/prepare-pages.sh",
     "prepublish": "tsc && npm run analyze -- --exclude dist",
     "lint": "eslint --ext .ts,.html src demo index.html --ignore-path .gitignore && prettier \"src/**/*.ts\" --check --ignore-path .gitignore",
     "format": "eslint --ext .ts,.html src demo index.html --fix --ignore-path .gitignore && prettier \"src/**/*.ts\" --write --ignore-path .gitignore",
