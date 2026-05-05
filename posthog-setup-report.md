@@ -1,11 +1,11 @@
 <wizard-report>
 # PostHog post-wizard report
 
-The wizard has completed a deep integration of PostHog analytics into the `duongoku-gh-page` Lit web component project.
+PostHog analytics integration for the `duongoku-gh-page` Lit web component.
 
 ## Summary of changes
 
-- **`src/DuongokuGhPage.ts`** — Added a `connectedCallback` lifecycle hook that initialises `posthog-js` (already a project dependency) on first mount using `window.__POSTHOG_KEY__` and `window.__POSTHOG_HOST__` globals provided by the consuming application. Exception autocapture is enabled via `startExceptionAutocapture()`. A `component_connected` event is captured on each mount, along with the current `header` property value. All PostHog calls are wrapped in a try/catch that reports errors via `captureException`.
+- **`src/DuongokuGhPage.ts`** — Uses a `connectedCallback` lifecycle hook that initialises `posthog-js` on first mount using `window.__POSTHOG_KEY__` and `window.__POSTHOG_HOST__` globals provided by the consuming application. Exception autocapture is enabled via `startExceptionAutocapture()`. A `component_connected` event is captured on each mount with component identity only. All PostHog calls are wrapped in a try/catch that reports errors via `captureException`.
 
 - **`.env`** — Created with `POSTHOG_API_KEY` and `POSTHOG_HOST` (gitignored). These document the environment variable names that the consuming application should use when setting the window globals.
 
@@ -15,11 +15,11 @@ The wizard has completed a deep integration of PostHog analytics into the `duong
 
 | Event name | Description | File |
 |---|---|---|
-| `component_connected` | Fired when the DuongokuGhPage web component is connected to the DOM. Includes `component` and `header` properties. | `src/DuongokuGhPage.ts` |
+| `component_connected` | Fired when the DuongokuGhPage web component is connected to the DOM. Includes the `component` property. | `src/DuongokuGhPage.ts` |
 
 ## Next steps
 
-We've built some insights and a dashboard for you to keep an eye on user behavior, based on the events we just instrumented:
+Dashboard and insight links from the setup:
 
 - **Dashboard — Analytics basics**: https://us.posthog.com/project/46619/dashboard/1545006
 - **Component connections over time** (daily line chart): https://us.posthog.com/project/46619/insights/ByQG23f6
@@ -38,9 +38,5 @@ In the HTML page that loads this component, set the window globals before the co
   window.__POSTHOG_HOST__ = process.env.POSTHOG_HOST;     // your PostHog host (see .env)
 </script>
 ```
-
-### Agent skill
-
-We've left an agent skill folder in your project. You can use this context for further agent development when using Claude Code. This will help ensure the model provides the most up-to-date approaches for integrating PostHog.
 
 </wizard-report>
