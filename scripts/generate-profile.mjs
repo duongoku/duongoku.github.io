@@ -68,7 +68,11 @@ function parseCv(tex) {
         html:
           section.key === 'technical skills'
             ? renderSkills(section.content)
-            : renderSectionEntries(section.content),
+            : section.key === 'education'
+              ? renderEducation(section.content)
+              : section.key === 'research experience'
+                ? renderResearchExperience(section.content)
+                : renderSectionEntries(section.content),
       })),
   };
 }
@@ -185,18 +189,170 @@ function parseHeading(headingTex) {
 }
 
 function renderSectionEntries(sectionTex) {
-  const normalized = normalizeSectionLatex(sectionTex);
-  const lines = normalized
-    .split('\n')
-    .map(cleanEntryLine)
-    .filter(entry => entry.text);
-
-  const entries = mergeContinuationLines(lines).map(renderInline);
+  const entries = mergeContinuationLines(parseEntryLines(sectionTex)).map(
+    renderInline,
+  );
   if (entries.length === 0) {
     throw new Error('Parsed empty CV section');
   }
 
   return `<ul>${entries.map(entry => `<li>${entry}</li>`).join('')}</ul>`;
+}
+
+function renderEducation(sectionTex) {
+  const lines = parseEntryLines(sectionTex);
+  const school = { name: '', location: '', degrees: [] };
+  let currentDegree = null;
+
+  for (const line of lines) {
+    const text = line.text;
+    const pair = splitPair(text);
+    const isDegree = /(?:M\.Sc\.|B\.Sc\.)/.test(text);
+
+    if (!line.forced && pair && !isDegree) {
+      school.name = pair.left;
+      school.location = pair.right;
+      continue;
+    }
+
+    if (!line.forced && pair && isDegree) {
+      currentDegree = {
+        name: pair.left,
+        date: pair.right,
+        details: [],
+      };
+      school.degrees.push(currentDegree);
+      continue;
+    }
+
+    if (line.forced && currentDegree) {
+      currentDegree.details.push(text);
+    }
+  }
+
+  if (!school.name || school.degrees.length === 0) {
+    return renderSectionEntries(sectionTex);
+  }
+
+  return `<div class="cv-stack"><article class="cv-entry"><div class="entry-head"><h3>${renderInline(
+    school.name,
+  )}</h3><p>${renderInline(school.location)}</p></div><div class="degree-list">${school.degrees
+    .map(
+      degree =>
+        `<div class="degree"><div class="subrow"><p>${renderInline(
+          degree.name,
+        )}</p><p>${renderInline(degree.date)}</p></div><ul>${degree.details
+          .map(detail => `<li>${renderInline(detail)}</li>`)
+          .join('')}</ul></div>`,
+    )
+    .join('')}</div></article></div>`;
+}
+
+function renderResearchExperience(sectionTex) {
+  const lines = parseEntryLines(sectionTex);
+  const groups = [];
+  let currentGroup = null;
+  let currentProject = null;
+  let seenRole = false;
+
+  for (const line of lines) {
+    const text = line.text;
+    const pair = splitPair(text);
+
+    if (!line.forced && pair && isResearchOrgLine(pair.left)) {
+      currentGroup = {
+        name: pair.left,
+        location: pair.right,
+        meta: '',
+        roles: [],
+        projects: [],
+      };
+      groups.push(currentGroup);
+      currentProject = null;
+      seenRole = false;
+      continue;
+    }
+
+    if (!currentGroup) {
+      continue;
+    }
+
+    if (!line.forced && pair) {
+      currentGroup.roles.push({
+        title: pair.left,
+        date: pair.right,
+      });
+      seenRole = true;
+      continue;
+    }
+
+    if (!line.forced && !seenRole && !currentGroup.meta) {
+      currentGroup.meta = text;
+      continue;
+    }
+
+    if (!line.forced && text.startsWith('Supervisor:') && currentProject) {
+      currentProject.supervisor = text;
+      continue;
+    }
+
+    if (!line.forced) {
+      currentProject = createProject(text);
+      currentGroup.projects.push(currentProject);
+      continue;
+    }
+
+    if (!currentProject) {
+      currentProject = createProject('');
+      currentGroup.projects.push(currentProject);
+    }
+    currentProject.bullets.push(text);
+  }
+
+  if (groups.length === 0) {
+    return renderSectionEntries(sectionTex);
+  }
+
+  return `<div class="cv-stack">${groups
+    .map(
+      group =>
+        `<article class="cv-entry"><div class="entry-head"><h3>${renderInline(
+          group.name,
+        )}</h3><p>${renderInline(group.location)}</p></div>${
+          group.meta
+            ? `<p class="entry-meta">${renderInline(group.meta)}</p>`
+            : ''
+        }<div class="role-list">${group.roles
+          .map(
+            role =>
+              `<div class="subrow role"><p>${renderInline(
+                role.title,
+              )}</p><p>${renderInline(role.date)}</p></div>`,
+          )
+          .join('')}</div><ul class="project-list">${group.projects
+          .map(
+            project =>
+              `<li>${project.title ? `<p>${renderInline(project.title)}</p>` : ''}${
+                project.supervisor
+                  ? `<p class="entry-meta">${renderInline(project.supervisor)}</p>`
+                  : ''
+              }<ul>${project.bullets
+                .map(bullet => `<li>${renderInline(bullet)}</li>`)
+                .join('')}</ul></li>`,
+          )
+          .join('')}</ul></article>`,
+    )
+    .join('')}</div>`;
+}
+
+function createProject(text) {
+  const [title, supervisor] = text.split(/\s+Supervisor:\s+/, 2);
+
+  return {
+    title: title.trim(),
+    supervisor: supervisor ? `Supervisor: ${supervisor.trim()}` : '',
+    bullets: [],
+  };
 }
 
 function renderSkills(sectionTex) {
@@ -236,6 +392,63 @@ function cleanSkillValue(value) {
     .replace(/\\vspace\s*\{[^{}]*\}/g, '')
     .replace(/[{}]/g, '')
     .trim();
+}
+
+function parseEntryLines(sectionTex) {
+  const lines = normalizeSectionLatex(sectionTex)
+    .split('\n')
+    .map(cleanEntryLine)
+    .filter(entry => entry.text);
+
+  return mergeWrappedEntryLines(lines);
+}
+
+function mergeWrappedEntryLines(lines) {
+  const merged = [];
+
+  for (const line of lines) {
+    const previous = merged[merged.length - 1];
+    if (previous && shouldAppendContinuation(previous, line)) {
+      previous.text = `${previous.text} ${line.text}`;
+    } else {
+      merged.push({ ...line });
+    }
+  }
+
+  return merged;
+}
+
+function shouldAppendContinuation(previous, line) {
+  if (line.forced || !previous.forced) {
+    return false;
+  }
+
+  if (line.text.startsWith('Supervisor:') || line.text.startsWith('Project ')) {
+    return false;
+  }
+
+  const pair = splitPair(line.text);
+  return !pair;
+}
+
+function splitPair(text) {
+  const separator = ' - ';
+  const index = text.indexOf(separator);
+
+  if (index === -1) {
+    return null;
+  }
+
+  return {
+    left: text.slice(0, index).trim(),
+    right: text.slice(index + separator.length).trim(),
+  };
+}
+
+function isResearchOrgLine(text) {
+  return /(?:University|Institute|Hospital|Company|Corporation)/.test(
+    normalizeInlineText(text),
+  );
 }
 
 function normalizeSectionLatex(sectionTex) {
@@ -681,6 +894,7 @@ function renderPage(profile) {
         font-size: clamp(2.8rem, 7vw, 5rem);
         line-height: 1;
         letter-spacing: 0;
+        overflow-wrap: anywhere;
       }
 
       header {
@@ -718,9 +932,89 @@ function renderPage(profile) {
         letter-spacing: 0;
       }
 
+      h3 {
+        margin: 0;
+        font-size: 1.08rem;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+
       header > *,
       section > * {
         min-width: 0;
+      }
+
+      .cv-stack,
+      .cv-entry,
+      .degree-list,
+      .role-list {
+        display: grid;
+      }
+
+      .cv-stack {
+        gap: 30px;
+      }
+
+      .cv-entry {
+        gap: 8px;
+      }
+
+      .entry-head,
+      .subrow {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) max-content;
+        gap: 16px;
+        align-items: baseline;
+      }
+
+      .entry-head p,
+      .subrow p,
+      .entry-meta,
+      .project-list p {
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      .entry-head > p,
+      .subrow > p:last-child {
+        color: #4c4942;
+        text-align: right;
+      }
+
+      .degree-list {
+        gap: 18px;
+        padding-left: 24px;
+      }
+
+      .degree,
+      .project-list > li {
+        display: grid;
+        gap: 6px;
+      }
+
+      .role-list {
+        gap: 4px;
+      }
+
+      .role {
+        padding-left: 24px;
+      }
+
+      .entry-meta {
+        color: #4c4942;
+      }
+
+      .project-list {
+        display: grid;
+        gap: 14px;
+        margin: 4px 0 0;
+        padding-left: 24px;
+      }
+
+      .project-list > li > ul,
+      .degree ul {
+        margin: 0;
+        padding-left: 22px;
       }
 
       ul {
@@ -732,6 +1026,12 @@ function renderPage(profile) {
 
       li {
         line-height: 1.55;
+        overflow-wrap: anywhere;
+      }
+
+      p,
+      dd,
+      dt {
         overflow-wrap: anywhere;
       }
 
@@ -774,9 +1074,31 @@ function renderPage(profile) {
           gap: 20px;
         }
 
+        h1 {
+          max-width: 9ch;
+          font-size: clamp(2.45rem, 12vw, 3rem);
+        }
+
         dl div {
           grid-template-columns: 1fr;
           gap: 2px;
+        }
+
+        .entry-head,
+        .subrow {
+          grid-template-columns: 1fr;
+          gap: 2px;
+        }
+
+        .entry-head > p,
+        .subrow > p:last-child {
+          text-align: left;
+        }
+
+        .degree-list,
+        .role,
+        .project-list {
+          padding-left: 16px;
         }
       }
     </style>
