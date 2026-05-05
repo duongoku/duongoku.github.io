@@ -15,7 +15,7 @@
 	<script language="javascript">
 		function ViewPatchNotes( patchNumber )
 		{
-			document.location = "http://www.dota2.com/patches/" + patchNumber;
+			document.location = `http://www.dota2.com/patches/${  patchNumber}`;
 		}
 	</script>
 </head>
@@ -65,17 +65,17 @@
 	</div>
 <script language="javascript">
 
-	function MM_preloadImages() { //v3.0
-	  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
-		var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+	function MM_preloadImages() { // v3.0
+	  const d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+		let i; let j=d.MM_p.length; const a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
 		if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
 	}
 
 	function PreloadHeaderImages()
 	{
 		//  Preload header rollover images
-		//MM_preloadImages(
-		//);
+		// MM_preloadImages(
+		// );
 	}
 
 			if ( document.addEventListener ) {
@@ -106,20 +106,20 @@
 			$(target).find('.dn_arrow').attr( "src", "http://cdn.dota2.com/apps/dota2/images/nav/arrow_over.png" );
 
 			// Show the sub-menu
-			var subItemList = $(target).find('.menuSubItemList');
+			const subItemList = $(target).find('.menuSubItemList');
 			if ( subItemList.length ) {
-				var itemTop = $(target).position().top + $(target).outerHeight() + 24;
-				var itemLeft = $(target).position().left;
+				const itemTop = $(target).position().top + $(target).outerHeight() + 24;
+				const itemLeft = $(target).position().left;
 				subItemList
 					.css({
-						"top": itemTop + 'px',
+						"top": `${itemTop  }px`,
 						"left": itemLeft
 					})
 					.fadeIn( 'fast' );
 			}
 		}
 
-		$(document).ready( function () {
+		$(document).ready( () => {
 			// Deal with the nav bars
 			$('.navItem').each( function() {
 				$(this).hover( function () {
@@ -146,15 +146,15 @@
 			});
 
 			// Deal with header drop-downs
-			var strMenus = '#languageSelector';
+			const strMenus = '#languageSelector';
 			
 			$(strMenus).each( function() {
 				$(this).hover( function () {
-					//show its submenu
+					// show its submenu
 					$( this ).find( 'div' ).fadeIn( 'fast' );
 				},
 				function () {
-					//hide its submenu
+					// hide its submenu
 					$( this ).find( 'div' ).hide();
 				}
 				);
