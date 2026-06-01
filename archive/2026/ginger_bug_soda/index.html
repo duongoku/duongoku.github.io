@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ginger Bug Recipe Calculator</title>
+    <link rel="stylesheet" href="./../../archive.css" />
+    <style>
+      :root {
+        --paper: #fffdf7;
+        --line: rgba(21, 21, 21, 0.14);
+        --muted: #686257;
+        --accent: #9a3412;
+        --accent-soft: #f1d5c7;
+        --good: #166534;
+        --warn: #9a3412;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+      }
+
+      main {
+        justify-content: flex-start;
+      }
+
+      h2 {
+        margin: 0;
+        color: #151515;
+        font-size: clamp(1.7rem, 4vw, 2.4rem);
+        line-height: 1;
+        letter-spacing: -0.02em;
+      }
+
+      h4 {
+        margin: 0;
+        color: #151515;
+        font-size: 1rem;
+        line-height: 1.2;
+      }
+
+      small {
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        border: 2px solid #151515;
+        border-radius: 999px;
+        padding: 11px 16px;
+        background: #151515;
+        color: #f8f7f3;
+        font-weight: 800;
+        cursor: pointer;
+        transition:
+          transform 160ms ease,
+          background 160ms ease,
+          color 160ms ease;
+      }
+
+      button:hover,
+      button:focus-visible {
+        background: var(--accent);
+        color: #fff;
+        transform: translateY(-1px);
+      }
+
+      button.secondary {
+        background: transparent;
+        color: #151515;
+      }
+
+      button.secondary:hover,
+      button.secondary:focus-visible {
+        background: var(--accent-soft);
+        color: #151515;
+      }
+
+      label {
+        display: grid;
+        gap: 8px;
+        color: #2a2926;
+        font-size: 0.95rem;
+        font-weight: 800;
+      }
+
+      input {
+        width: 100%;
+        border: 2px solid #151515;
+        border-radius: 14px;
+        padding: 12px 14px;
+        background: #fffdf7;
+        color: #151515;
+        font-weight: 700;
+      }
+
+      input:focus {
+        outline: 4px solid var(--accent-soft);
+      }
+
+      .header-note {
+        max-width: 42rem;
+      }
+
+      .controls,
+      .results,
+      .reference-card,
+      .safety-card {
+        width: 100%;
+        max-width: 52rem;
+        border: 2px solid #151515;
+        border-radius: 28px;
+        background: var(--paper);
+        box-shadow: 10px 10px 0 #151515;
+      }
+
+      .controls {
+        display: grid;
+        gap: 20px;
+        padding: clamp(18px, 4vw, 28px);
+      }
+
+      .input-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .results {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+        overflow: hidden;
+      }
+
+      .result-panel {
+        padding: clamp(18px, 4vw, 28px);
+        border-top: 1px solid var(--line);
+      }
+
+      .result-panel:first-child {
+        border-top: 0;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 16px;
+      }
+
+      .metric {
+        min-height: 112px;
+        display: grid;
+        align-content: space-between;
+        gap: 12px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 16px;
+        background: #f8f7f3;
+      }
+
+      .metric strong {
+        color: #151515;
+        font-size: clamp(1.7rem, 4vw, 2.5rem);
+        line-height: 1;
+        letter-spacing: -0.04em;
+      }
+
+      .metric span {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 800;
+        line-height: 1.25;
+      }
+
+      .notice {
+        display: grid;
+        gap: 6px;
+        margin-top: 16px;
+        border-left: 5px solid var(--accent);
+        padding: 12px 14px;
+        background: #fbecdf;
+        color: #2a2926;
+        font-size: 0.98rem;
+        line-height: 1.45;
+      }
+
+      .okay {
+        border-left-color: var(--good);
+        background: #eaf7ee;
+      }
+
+      .reference-grid {
+        width: 100%;
+        max-width: 52rem;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .reference-card,
+      .safety-card {
+        padding: clamp(18px, 4vw, 26px);
+        box-shadow: 7px 7px 0 #151515;
+      }
+
+      .reference-card {
+        display: grid;
+        gap: 14px;
+      }
+
+      .safety-card {
+        max-width: 52rem;
+        background: #fff5ed;
+      }
+
+      details {
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+      }
+
+      summary {
+        color: #151515;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .recipe-table {
+        width: 100%;
+        margin-top: 12px;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+        line-height: 1.35;
+      }
+
+      .recipe-table th,
+      .recipe-table td {
+        border-bottom: 1px solid var(--line);
+        padding: 10px 0;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .recipe-table th:last-child,
+      .recipe-table td:last-child {
+        text-align: right;
+        padding-left: 14px;
+      }
+
+      .recipe-table th {
+        color: var(--muted);
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .compact-list {
+        display: grid;
+        gap: 8px;
+        margin: 12px 0 0;
+        padding-left: 18px;
+        color: #2a2926;
+        line-height: 1.45;
+      }
+
+      .footer-note {
+        max-width: 52rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 820px) {
+        .input-grid,
+        .result-grid,
+        .reference-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        main {
+          padding-top: 36px;
+        }
+
+        .input-grid,
+        .result-grid,
+        .reference-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .controls,
+        .results,
+        .reference-card,
+        .safety-card {
+          border-radius: 22px;
+          box-shadow: 6px 6px 0 #151515;
+        }
+
+        button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back-link" href="#calculator">Skip to calculator</a>
+
+      <h1>Ginger bug calculator</h1>
+      <h3 class="header-note">
+        Scale a naturally carbonated soda batch from an active ginger bug.
+        Defaults match two 1-liter pressure-safe bottles.
+      </h3>
+      <p>
+        Use strained liquid bug only. The working dose is 50 g bug per 1 liter
+        of bottle volume, with about 50 mL headspace per 1-liter bottle.
+      </p>
+
+      <section
+        class="controls"
+        id="calculator"
+        aria-labelledby="calculator-title"
+      >
+        <h2 id="calculator-title">Batch inputs</h2>
+        <div class="input-grid">
+          <label>
+            Bottles
+            <input
+              id="bottleCount"
+              type="number"
+              min="1"
+              max="48"
+              step="1"
+              value="1"
+              inputmode="numeric"
+            />
+          </label>
+          <label>
+            Bottle size, mL
+            <input
+              id="bottleMl"
+              type="number"
+              min="100"
+              max="5000"
+              step="50"
+              value="1000"
+              inputmode="decimal"
+            />
+          </label>
+          <label>
+            Headspace per bottle, mL
+            <input
+              id="headspaceMl"
+              type="number"
+              min="10"
+              max="500"
+              step="5"
+              value="50"
+              inputmode="decimal"
+            />
+          </label>
+          <label>
+            Bug dose, g/L
+            <input
+              id="bugRate"
+              type="number"
+              min="10"
+              max="100"
+              step="1"
+              value="50"
+              inputmode="decimal"
+            />
+          </label>
+        </div>
+        <div class="button-row">
+          <button type="button" id="copyButton">Copy batch amounts</button>
+          <button type="button" class="secondary" id="resetButton">
+            Reset defaults
+          </button>
+          <small id="copyStatus" aria-live="polite"
+            >Assumes 1 g ≈ 1 mL for water-based soda base.</small
+          >
+        </div>
+      </section>
+
+      <section
+        class="results"
+        aria-label="Calculated batch results"
+        aria-live="polite"
+      >
+        <div class="result-panel">
+          <h2>Your bottle fill</h2>
+          <div class="result-grid">
+            <div class="metric">
+              <span>Bug per bottle</span>
+              <strong id="bugPerBottle">50 g</strong>
+            </div>
+            <div class="metric">
+              <span>Soda base per bottle</span>
+              <strong id="basePerBottle">900 g</strong>
+            </div>
+            <div class="metric">
+              <span>Total fill per bottle</span>
+              <strong id="fillPerBottle">950 g</strong>
+            </div>
+          </div>
+          <div class="notice okay" id="fillNotice">
+            Cap and ferment at room temperature for 24–48 hours, checking at
+            least every 24 hours. Refrigerate once carbonated.
+          </div>
+        </div>
+
+        <div class="result-panel">
+          <h2>Total batch</h2>
+          <div class="result-grid">
+            <div class="metric">
+              <span>Total strained bug</span>
+              <strong id="bugTotal">100 g</strong>
+            </div>
+            <div class="metric">
+              <span>Total soda base</span>
+              <strong id="baseTotal">1,800 g</strong>
+            </div>
+            <div class="metric">
+              <span>Total bottle fill</span>
+              <strong id="fillTotal">1,900 g</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-panel">
+          <h2>Top up the mother jar</h2>
+          <div class="result-grid">
+            <div class="metric">
+              <span>Add water</span>
+              <strong id="topWater">100 g</strong>
+            </div>
+            <div class="metric">
+              <span>Add sugar</span>
+              <strong id="topSugar">10 g</strong>
+            </div>
+            <div class="metric">
+              <span>Add fresh ginger</span>
+              <strong id="topGinger">10 g</strong>
+            </div>
+          </div>
+          <div class="notice" id="topNotice">
+            After removing liquid bug, replace the removed liquid with water,
+            then feed with sugar and fresh unpeeled ginger. Leave covered 12–24
+            hours until active again.
+          </div>
+        </div>
+
+        <div class="result-panel">
+          <h2>Wake refrigerated bug</h2>
+          <small
+            >Scaled with a 15% buffer for bugs refrigerated several weeks. Leave
+            covered at room temperature until bubbly, usually a few hours to 24
+            hours.</small
+          >
+          <div class="result-grid">
+            <div class="metric">
+              <span>Fridge bug liquid</span>
+              <strong id="wakeBug">19 g</strong>
+            </div>
+            <div class="metric">
+              <span>Water</span>
+              <strong id="wakeWater">96 g</strong>
+            </div>
+            <div class="metric">
+              <span>Sugar + ginger</span>
+              <strong id="wakeFeed">38 g each</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="reference-grid" aria-label="Recipe reference">
+        <article class="reference-card">
+          <h2>Starter from scratch</h2>
+          <small
+            >Use a 1-liter jar, cloth cover, room temperature, and
+            non-chlorinated water.</small
+          >
+          <details open>
+            <summary>Daily feed schedule</summary>
+            <table class="recipe-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Add this</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Day 0</td>
+                  <td>300 g water + 10 g unpeeled ginger + 10 g sugar</td>
+                </tr>
+                <tr>
+                  <td>Day 1</td>
+                  <td>10 g ginger + 10 g sugar</td>
+                </tr>
+                <tr>
+                  <td>Day 2</td>
+                  <td>10 g ginger + 10 g sugar</td>
+                </tr>
+                <tr>
+                  <td>Day 3</td>
+                  <td>10 g ginger + 10 g sugar, unless already very bubbly</td>
+                </tr>
+                <tr>
+                  <td>Day 4–7</td>
+                  <td>
+                    Repeat every 24 hours if needed until bubbly, yeasty, and
+                    lightly fizzy
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+
+        <article class="reference-card">
+          <h2>Fridge maintenance</h2>
+          <small
+            >Once active and recently fed, store with a solid lid in the
+            refrigerator.</small
+          >
+          <details open>
+            <summary>Weekly feed</summary>
+            <table class="recipe-table">
+              <thead>
+                <tr>
+                  <th>Action</th>
+                  <th>Grams</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Remove, discard, or use liquid bug</td>
+                  <td>50 g</td>
+                </tr>
+                <tr>
+                  <td>Add non-chlorinated water</td>
+                  <td>50 g</td>
+                </tr>
+                <tr>
+                  <td>Add sugar</td>
+                  <td>10 g</td>
+                </tr>
+                <tr>
+                  <td>Add fresh chopped ginger</td>
+                  <td>10 g</td>
+                </tr>
+              </tbody>
+            </table>
+          </details>
+        </article>
+      </section>
+
+      <section class="safety-card" aria-label="Bottle safety">
+        <h2>Glass bottle safety</h2>
+        <ul class="compact-list">
+          <li>Use only pressure-rated round glass bottles.</li>
+          <li>Leave 1–2 inches, or about 25–50 mm, of headspace.</li>
+          <li>Avoid very sugary juice or fruit purée in sealed bottles.</li>
+          <li>
+            Check carbonation at least every 24 hours and refrigerate as soon as
+            carbonation is adequate.
+          </li>
+          <li>Chill at least 10 hours, or overnight, before opening.</li>
+        </ul>
+      </section>
+
+      <p class="footer-note">
+        Naturally carbonated drinks build pressure from yeast, sugar, warmth,
+        and time in a sealed bottle. When in doubt, use more headspace, ferment
+        cooler, and refrigerate earlier.
+      </p>
+    </main>
+
+    <script>
+      const defaults = {
+        bottleCount: 1,
+        bottleMl: 1000,
+        headspaceMl: 50,
+        bugRate: 50,
+      };
+
+      const fields = Object.fromEntries(
+        Object.keys(defaults).map(id => [id, document.getElementById(id)]),
+      );
+
+      const outputs = {
+        bugPerBottle: document.getElementById('bugPerBottle'),
+        basePerBottle: document.getElementById('basePerBottle'),
+        fillPerBottle: document.getElementById('fillPerBottle'),
+        bugTotal: document.getElementById('bugTotal'),
+        baseTotal: document.getElementById('baseTotal'),
+        fillTotal: document.getElementById('fillTotal'),
+        topWater: document.getElementById('topWater'),
+        topSugar: document.getElementById('topSugar'),
+        topGinger: document.getElementById('topGinger'),
+        wakeBug: document.getElementById('wakeBug'),
+        wakeWater: document.getElementById('wakeWater'),
+        wakeFeed: document.getElementById('wakeFeed'),
+        fillNotice: document.getElementById('fillNotice'),
+        topNotice: document.getElementById('topNotice'),
+        copyStatus: document.getElementById('copyStatus'),
+      };
+
+      function numberValue(id) {
+        const value = Number(fields[id].value);
+        return Number.isFinite(value) ? value : defaults[id];
+      }
+
+      function formatGram(value) {
+        const rounded =
+          value >= 100 ? Math.round(value) : Math.round(value * 10) / 10;
+        return `${rounded.toLocaleString(undefined, { maximumFractionDigits: 1 })} g`;
+      }
+
+      function getBatch() {
+        const bottleCount = Math.max(1, Math.round(numberValue('bottleCount')));
+        const bottleMl = Math.max(100, numberValue('bottleMl'));
+        const headspaceMl = Math.max(0, numberValue('headspaceMl'));
+        const bugRate = Math.max(1, numberValue('bugRate'));
+        const bugPerBottle = bugRate * (bottleMl / 1000);
+        const fillPerBottle = Math.max(0, bottleMl - headspaceMl);
+        const basePerBottle = Math.max(0, fillPerBottle - bugPerBottle);
+        const bugTotal = bugPerBottle * bottleCount;
+        const baseTotal = basePerBottle * bottleCount;
+        const fillTotal = fillPerBottle * bottleCount;
+        const topWater = bugTotal;
+        const topSugar = bugTotal * 0.1;
+        const topGinger = bugTotal * 0.1;
+        const wakeLiquidTarget = bugTotal * 1.15;
+        const wakeScale = wakeLiquidTarget / 90;
+        const wakeBug = 15 * wakeScale;
+        const wakeWater = 75 * wakeScale;
+        const wakeSugar = 30 * wakeScale;
+        const headspacePercent =
+          bottleMl > 0 ? (headspaceMl / bottleMl) * 100 : 0;
+
+        return {
+          bottleCount,
+          bottleMl,
+          headspaceMl,
+          bugRate,
+          bugPerBottle,
+          fillPerBottle,
+          basePerBottle,
+          bugTotal,
+          baseTotal,
+          fillTotal,
+          topWater,
+          topSugar,
+          topGinger,
+          wakeBug,
+          wakeWater,
+          wakeSugar,
+          headspacePercent,
+        };
+      }
+
+      function update() {
+        const batch = getBatch();
+
+        outputs.bugPerBottle.textContent = formatGram(batch.bugPerBottle);
+        outputs.basePerBottle.textContent = formatGram(batch.basePerBottle);
+        outputs.fillPerBottle.textContent = formatGram(batch.fillPerBottle);
+        outputs.bugTotal.textContent = formatGram(batch.bugTotal);
+        outputs.baseTotal.textContent = formatGram(batch.baseTotal);
+        outputs.fillTotal.textContent = formatGram(batch.fillTotal);
+        outputs.topWater.textContent = formatGram(batch.topWater);
+        outputs.topSugar.textContent = formatGram(batch.topSugar);
+        outputs.topGinger.textContent = formatGram(batch.topGinger);
+        outputs.wakeBug.textContent = formatGram(batch.wakeBug);
+        outputs.wakeWater.textContent = formatGram(batch.wakeWater);
+        outputs.wakeFeed.textContent = `${formatGram(batch.wakeSugar)} each`;
+
+        let headspaceMessage;
+
+        if (batch.headspacePercent < 4) {
+          headspaceMessage =
+            'Headspace is below 4% of bottle volume. For safer carbonation, increase headspace before sealing.';
+        } else if (batch.headspacePercent > 12) {
+          headspaceMessage =
+            'Headspace is generous. Carbonation may build more slowly, but this is safer than overfilling.';
+        } else {
+          headspaceMessage =
+            'Cap and ferment at room temperature for 24-48 hours, checking at least every 24 hours. Refrigerate once carbonated.';
+        }
+
+        outputs.fillNotice.textContent = headspaceMessage;
+        outputs.fillNotice.classList.toggle(
+          'okay',
+          batch.headspacePercent >= 4 && batch.headspacePercent <= 12,
+        );
+
+        outputs.topNotice.textContent = `After removing ${formatGram(batch.bugTotal)} liquid bug, add back ${formatGram(batch.topWater)} water, ${formatGram(batch.topSugar)} sugar, and ${formatGram(batch.topGinger)} fresh unpeeled ginger.`;
+      }
+
+      function copyBatch() {
+        const batch = getBatch();
+        const text = [
+          'Ginger bug soda batch',
+          `Bottles: ${batch.bottleCount} × ${batch.bottleMl} mL`,
+          `Headspace: ${batch.headspaceMl} mL per bottle`,
+          `Bug dose: ${batch.bugRate} g/L`,
+          '',
+          'Per bottle:',
+          `- Strained liquid ginger bug: ${formatGram(batch.bugPerBottle)}`,
+          `- Cooled sweetened soda base: ${formatGram(batch.basePerBottle)}`,
+          `- Total fill: ${formatGram(batch.fillPerBottle)}`,
+          '',
+          'Total batch:',
+          `- Strained liquid ginger bug: ${formatGram(batch.bugTotal)}`,
+          `- Cooled sweetened soda base: ${formatGram(batch.baseTotal)}`,
+          `- Total fill: ${formatGram(batch.fillTotal)}`,
+          '',
+          'Top up mother jar:',
+          `- Water: ${formatGram(batch.topWater)}`,
+          `- Sugar: ${formatGram(batch.topSugar)}`,
+          `- Fresh ginger: ${formatGram(batch.topGinger)}`,
+        ].join('\n');
+
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            outputs.copyStatus.textContent = 'Batch amounts copied.';
+          })
+          .catch(() => {
+            outputs.copyStatus.textContent =
+              'Copy failed. Select the results manually.';
+          });
+      }
+
+      function resetDefaults() {
+        Object.entries(defaults).forEach(([id, value]) => {
+          fields[id].value = value;
+        });
+        outputs.copyStatus.textContent = 'Defaults restored.';
+        update();
+      }
+
+      Object.values(fields).forEach(input =>
+        input.addEventListener('input', update),
+      );
+      document
+        .getElementById('copyButton')
+        .addEventListener('click', copyBatch);
+      document
+        .getElementById('resetButton')
+        .addEventListener('click', resetDefaults);
+
+      update();
+    </script>
+  </body>
+</html>
