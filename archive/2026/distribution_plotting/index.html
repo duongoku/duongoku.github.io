@@ -1,0 +1,1345 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Score Distribution Visualizer</title>
+    <link rel="stylesheet" href="./../../archive.css" />
+    <style>
+      :root {
+        --paper: #fffdf7;
+        --line: rgba(21, 21, 21, 0.14);
+        --muted: #686257;
+        --accent: #9a3412;
+        --accent-soft: #f1d5c7;
+        --good: #166534;
+        --warn: #9a3412;
+        --ink: #151515;
+        --panel: #f8f7f3;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+      }
+
+      main {
+        justify-content: flex-start;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--panel);
+        color: var(--ink);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+      }
+
+      main {
+        display: grid;
+        gap: 24px;
+        width: min(100%, 72rem);
+        padding: clamp(28px, 5vw, 64px) clamp(16px, 5vw, 32px) 64px;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 52rem;
+        color: var(--ink);
+        font-size: clamp(2.8rem, 9vw, 5.8rem);
+        line-height: 0.9;
+        letter-spacing: -0.07em;
+      }
+
+      h3 {
+        margin: 0;
+        color: #2a2926;
+        font-size: clamp(1.2rem, 3vw, 1.75rem);
+        line-height: 1.15;
+        letter-spacing: -0.025em;
+      }
+
+      p {
+        margin: 0;
+        max-width: 52rem;
+        color: #2a2926;
+        line-height: 1.55;
+      }
+
+      .back-link {
+        width: fit-content;
+        color: var(--ink);
+        font-weight: 900;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 4px;
+      }
+
+      h2 {
+        margin: 0;
+        color: var(--ink);
+        font-size: clamp(1.7rem, 4vw, 2.4rem);
+        line-height: 1;
+        letter-spacing: -0.02em;
+      }
+
+      h4 {
+        margin: 0;
+        color: var(--ink);
+        font-size: 1rem;
+        line-height: 1.2;
+      }
+
+      small {
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        border: 2px solid var(--ink);
+        border-radius: 999px;
+        padding: 11px 16px;
+        background: var(--ink);
+        color: #f8f7f3;
+        font-weight: 800;
+        cursor: pointer;
+        transition:
+          transform 160ms ease,
+          background 160ms ease,
+          color 160ms ease;
+      }
+
+      button:hover,
+      button:focus-visible {
+        background: var(--accent);
+        color: #fff;
+        transform: translateY(-1px);
+      }
+
+      button.secondary {
+        background: transparent;
+        color: var(--ink);
+      }
+
+      button.secondary:hover,
+      button.secondary:focus-visible {
+        background: var(--accent-soft);
+        color: var(--ink);
+      }
+
+      label {
+        display: grid;
+        gap: 8px;
+        color: #2a2926;
+        font-size: 0.95rem;
+        font-weight: 800;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        border: 2px solid var(--ink);
+        border-radius: 14px;
+        padding: 12px 14px;
+        background: #fffdf7;
+        color: var(--ink);
+        font-weight: 700;
+      }
+
+      textarea {
+        min-height: 210px;
+        resize: vertical;
+        line-height: 1.45;
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          'Liberation Mono', 'Courier New', monospace;
+        font-size: 0.92rem;
+      }
+
+      input:focus,
+      textarea:focus {
+        outline: 4px solid var(--accent-soft);
+      }
+
+      .header-note {
+        max-width: 48rem;
+      }
+
+      .controls,
+      .results,
+      .reference-card,
+      .safety-card {
+        width: 100%;
+        max-width: 62rem;
+        border: 2px solid var(--ink);
+        border-radius: 28px;
+        background: var(--paper);
+        box-shadow: 10px 10px 0 var(--ink);
+      }
+
+      .controls {
+        display: grid;
+        gap: 20px;
+        padding: clamp(18px, 4vw, 28px);
+      }
+
+      .input-grid {
+        display: grid;
+        grid-template-columns: 2fr repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .results {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+        overflow: hidden;
+      }
+
+      .result-panel {
+        padding: clamp(18px, 4vw, 28px);
+        border-top: 1px solid var(--line);
+      }
+
+      .result-panel:first-child {
+        border-top: 0;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 16px;
+      }
+
+      .metric {
+        min-height: 112px;
+        display: grid;
+        align-content: space-between;
+        gap: 12px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 16px;
+        background: var(--panel);
+      }
+
+      .metric strong {
+        color: var(--ink);
+        font-size: clamp(1.55rem, 4vw, 2.35rem);
+        line-height: 1;
+        letter-spacing: -0.04em;
+      }
+
+      .metric span {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 800;
+        line-height: 1.25;
+      }
+
+      .notice {
+        display: grid;
+        gap: 6px;
+        margin-top: 16px;
+        border-left: 5px solid var(--accent);
+        padding: 12px 14px;
+        background: #fbecdf;
+        color: #2a2926;
+        font-size: 0.98rem;
+        line-height: 1.45;
+      }
+
+      .okay {
+        border-left-color: var(--good);
+        background: #eaf7ee;
+      }
+
+      .chart-frame {
+        margin-top: 16px;
+        border: 2px solid var(--ink);
+        border-radius: 20px;
+        background: #fffdf7;
+        overflow: hidden;
+      }
+
+      #chartSvg {
+        display: block;
+        width: 100%;
+        height: auto;
+        min-height: 320px;
+      }
+
+      .table-wrap {
+        margin-top: 16px;
+        overflow-x: auto;
+      }
+
+      .frequency-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+        line-height: 1.35;
+      }
+
+      .frequency-table th,
+      .frequency-table td {
+        border-bottom: 1px solid var(--line);
+        padding: 10px 0;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .frequency-table th:not(:first-child),
+      .frequency-table td:not(:first-child) {
+        text-align: right;
+        padding-left: 18px;
+      }
+
+      .frequency-table th {
+        color: var(--muted);
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .reference-grid {
+        width: 100%;
+        max-width: 62rem;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .reference-card,
+      .safety-card {
+        padding: clamp(18px, 4vw, 26px);
+        box-shadow: 7px 7px 0 var(--ink);
+      }
+
+      .reference-card {
+        display: grid;
+        gap: 14px;
+      }
+
+      .safety-card {
+        max-width: 62rem;
+        background: #fff5ed;
+      }
+
+      details {
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+      }
+
+      summary {
+        color: var(--ink);
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .compact-list {
+        display: grid;
+        gap: 8px;
+        margin: 12px 0 0;
+        padding-left: 18px;
+        color: #2a2926;
+        line-height: 1.45;
+      }
+
+      .footer-note {
+        max-width: 62rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 880px) {
+        .input-grid,
+        .result-grid,
+        .reference-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        main {
+          padding-top: 36px;
+        }
+
+        .input-grid,
+        .result-grid,
+        .reference-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .controls,
+        .results,
+        .reference-card,
+        .safety-card {
+          border-radius: 22px;
+          box-shadow: 6px 6px 0 var(--ink);
+        }
+
+        button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back-link" href="#visualizer">Skip to visualizer</a>
+
+      <h1>Score distribution visualizer</h1>
+      <h3 class="header-note">
+        Paste a sample set, then generate a clean distribution image with a
+        histogram, smooth density curve, mean line, and median line.
+      </h3>
+      <p>
+        Built for class score distributions, but usable for ratings, survey
+        scores, measurements, or any numeric sample. Zero is treated as a valid
+        value.
+      </p>
+
+      <section class="controls" id="visualizer" aria-labelledby="input-title">
+        <h2 id="input-title">Sample input</h2>
+        <label>
+          Scores
+          <textarea id="sampleInput" spellcheck="false"></textarea>
+        </label>
+
+        <div class="input-grid">
+          <label>
+            Chart title
+            <input
+              id="chartTitleInput"
+              type="text"
+              value="Class score distribution"
+            />
+          </label>
+          <label>
+            Minimum axis
+            <input
+              id="axisMin"
+              type="number"
+              step="0.5"
+              value="0"
+              inputmode="decimal"
+            />
+          </label>
+          <label>
+            Maximum axis
+            <input
+              id="axisMax"
+              type="number"
+              step="0.5"
+              value="10"
+              inputmode="decimal"
+            />
+          </label>
+          <label>
+            Bin width
+            <input
+              id="binWidth"
+              type="number"
+              min="0.05"
+              step="0.05"
+              value="0.5"
+              inputmode="decimal"
+            />
+          </label>
+        </div>
+
+        <div class="button-row">
+          <button type="button" id="plotButton">Plot distribution</button>
+          <button type="button" class="secondary" id="downloadButton">
+            Download PNG
+          </button>
+          <button type="button" class="secondary" id="copyButton">
+            Copy summary
+          </button>
+          <button type="button" class="secondary" id="resetButton">
+            Reset sample
+          </button>
+          <small id="status" aria-live="polite"
+            >Paste numbers separated by lines, spaces, commas, or
+            semicolons.</small
+          >
+        </div>
+      </section>
+
+      <section class="results" aria-live="polite">
+        <div class="result-panel">
+          <h2 id="distribution-title">Distribution image</h2>
+          <div class="chart-frame">
+            <svg
+              id="chartSvg"
+              viewBox="0 0 920 520"
+              role="img"
+              aria-labelledby="svgTitle svgDesc"
+              xmlns="http://www.w3.org/2000/svg"
+            ></svg>
+          </div>
+          <div class="notice okay" id="chartNote">
+            The histogram shows count per score band. The smooth line is an
+            estimated density curve scaled to the histogram counts.
+          </div>
+        </div>
+
+        <div class="result-panel">
+          <h2>Summary statistics</h2>
+          <div class="result-grid">
+            <div class="metric">
+              <span>Sample size</span>
+              <strong id="countMetric">0</strong>
+            </div>
+            <div class="metric">
+              <span>Mean</span>
+              <strong id="meanMetric">—</strong>
+            </div>
+            <div class="metric">
+              <span>Median</span>
+              <strong id="medianMetric">—</strong>
+            </div>
+            <div class="metric">
+              <span>Std. dev.</span>
+              <strong id="stdMetric">—</strong>
+            </div>
+            <div class="metric">
+              <span>Minimum</span>
+              <strong id="minMetric">—</strong>
+            </div>
+            <div class="metric">
+              <span>Maximum</span>
+              <strong id="maxMetric">—</strong>
+            </div>
+            <div class="metric">
+              <span>Q1 / Q3</span>
+              <strong id="quartileMetric">—</strong>
+            </div>
+            <div class="metric">
+              <span>Zeros</span>
+              <strong id="zeroMetric">—</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-panel">
+          <h2>Frequency table</h2>
+          <div class="table-wrap">
+            <table class="frequency-table">
+              <thead>
+                <tr>
+                  <th>Score band</th>
+                  <th>Count</th>
+                  <th>Percent</th>
+                  <th>Cumulative</th>
+                </tr>
+              </thead>
+              <tbody id="frequencyBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="reference-grid" aria-label="Usage guide">
+        <article class="reference-card">
+          <h2>How to use it</h2>
+          <small
+            >Paste the raw sample values exactly as exported from a spreadsheet
+            or grade book.</small
+          >
+          <details open>
+            <summary>Input rules</summary>
+            <ul class="compact-list">
+              <li>Accepts line breaks, spaces, commas, and semicolons.</li>
+              <li>Ignores blank entries and reports invalid tokens.</li>
+              <li>Uses every valid number for summary statistics.</li>
+              <li>Plots values inside the selected axis range.</li>
+            </ul>
+          </details>
+        </article>
+
+        <article class="reference-card">
+          <h2>Reading the chart</h2>
+          <small
+            >The chart combines exact bin counts with a smoothed distribution
+            shape.</small
+          >
+          <details open>
+            <summary>Visual marks</summary>
+            <ul class="compact-list">
+              <li>Bars show how many samples fall in each score band.</li>
+              <li>The curve shows the overall distribution shape.</li>
+              <li>The solid vertical line marks the mean.</li>
+              <li>The dashed vertical line marks the median.</li>
+            </ul>
+          </details>
+        </article>
+      </section>
+
+      <section class="safety-card" aria-label="Interpretation note">
+        <h2>Interpretation note</h2>
+        <ul class="compact-list">
+          <li>
+            For class scores, use the same axis range for every section before
+            comparing plots.
+          </li>
+          <li>
+            Very small samples can make the smooth curve look more precise than
+            the data really is.
+          </li>
+          <li>
+            Zeros are included because they often represent meaningful class
+            outcomes.
+          </li>
+        </ul>
+      </section>
+
+      <p class="footer-note">
+        This page is static and runs entirely in the browser. No values are
+        uploaded anywhere.
+      </p>
+    </main>
+
+    <script>
+      const defaultSample = `0, 1, 2, 3, 4, 5, 5, 5, 4, 3, 6, 7, 10`;
+
+      const els = {
+        sampleInput: document.getElementById('sampleInput'),
+        chartTitleInput: document.getElementById('chartTitleInput'),
+        axisMin: document.getElementById('axisMin'),
+        axisMax: document.getElementById('axisMax'),
+        binWidth: document.getElementById('binWidth'),
+        status: document.getElementById('status'),
+        chartSvg: document.getElementById('chartSvg'),
+        chartNote: document.getElementById('chartNote'),
+        countMetric: document.getElementById('countMetric'),
+        meanMetric: document.getElementById('meanMetric'),
+        medianMetric: document.getElementById('medianMetric'),
+        stdMetric: document.getElementById('stdMetric'),
+        minMetric: document.getElementById('minMetric'),
+        maxMetric: document.getElementById('maxMetric'),
+        quartileMetric: document.getElementById('quartileMetric'),
+        zeroMetric: document.getElementById('zeroMetric'),
+        frequencyBody: document.getElementById('frequencyBody'),
+      };
+
+      els.sampleInput.value = defaultSample;
+
+      function parseNumbers(text) {
+        const tokens = text.split(/[\s,;]+/).filter(Boolean);
+        const values = [];
+        const invalid = [];
+
+        tokens.forEach(token => {
+          const normalized = token.trim();
+          const value = Number(normalized);
+
+          if (Number.isFinite(value)) {
+            values.push(value);
+          } else {
+            invalid.push(normalized);
+          }
+        });
+
+        return { values, invalid };
+      }
+
+      function round(value, digits = 2) {
+        if (!Number.isFinite(value)) return '—';
+        return value.toLocaleString(undefined, {
+          maximumFractionDigits: digits,
+          minimumFractionDigits: Number.isInteger(value)
+            ? 0
+            : Math.min(2, digits),
+        });
+      }
+
+      function mean(values) {
+        return values.reduce((sum, value) => sum + value, 0) / values.length;
+      }
+
+      function quantile(sorted, q) {
+        if (!sorted.length) return NaN;
+        const index = (sorted.length - 1) * q;
+        const lower = Math.floor(index);
+        const upper = Math.ceil(index);
+        const weight = index - lower;
+        return sorted[lower] * (1 - weight) + sorted[upper] * weight;
+      }
+
+      function stdDev(values, avg) {
+        if (values.length < 2) return 0;
+        const variance =
+          values.reduce((sum, value) => sum + (value - avg) ** 2, 0) /
+          (values.length - 1);
+        return Math.sqrt(variance);
+      }
+
+      function getSettings(values) {
+        let axisMin = Number(els.axisMin.value);
+        let axisMax = Number(els.axisMax.value);
+        let binWidth = Number(els.binWidth.value);
+
+        if (!Number.isFinite(axisMin))
+          axisMin = Math.floor(Math.min(...values));
+        if (!Number.isFinite(axisMax)) axisMax = Math.ceil(Math.max(...values));
+        if (!Number.isFinite(binWidth) || binWidth <= 0) binWidth = 1;
+        if (axisMax <= axisMin) axisMax = axisMin + Math.abs(binWidth || 1);
+
+        const maxBins = 80;
+        const rawBinCount = Math.ceil((axisMax - axisMin) / binWidth);
+        if (rawBinCount > maxBins) {
+          binWidth = (axisMax - axisMin) / maxBins;
+        }
+
+        return { axisMin, axisMax, binWidth };
+      }
+
+      function buildBins(values, axisMin, axisMax, binWidth) {
+        const binCount = Math.max(1, Math.ceil((axisMax - axisMin) / binWidth));
+        const bins = Array.from({ length: binCount }, (_, index) => {
+          const start = axisMin + index * binWidth;
+          const end = index === binCount - 1 ? axisMax : start + binWidth;
+          return { start, end, count: 0 };
+        });
+
+        let outside = 0;
+        values.forEach(value => {
+          if (value < axisMin || value > axisMax) {
+            outside += 1;
+            return;
+          }
+
+          const index = Math.min(
+            bins.length - 1,
+            Math.floor((value - axisMin) / binWidth),
+          );
+          bins[index].count += 1;
+        });
+
+        return { bins, outside };
+      }
+
+      function getNiceStep(span, targetTicks) {
+        const rough = span / targetTicks;
+        const power = 10 ** Math.floor(Math.log10(rough || 1));
+        const normalized = rough / power;
+
+        if (normalized <= 1) return power;
+        if (normalized <= 2) return 2 * power;
+        if (normalized <= 5) return 5 * power;
+        return 10 * power;
+      }
+
+      function createSvgElement(
+        name,
+        attrs = {},
+        parent = els.chartSvg,
+        text = '',
+      ) {
+        const node = document.createElementNS(
+          'http://www.w3.org/2000/svg',
+          name,
+        );
+
+        Object.entries(attrs).forEach(([key, value]) => {
+          if (value !== undefined && value !== null)
+            node.setAttribute(key, value);
+        });
+
+        if (text) node.textContent = text;
+        parent.appendChild(node);
+        return node;
+      }
+
+      function getDensityPoints(
+        values,
+        stats,
+        axisMin,
+        axisMax,
+        binWidth,
+        xScale,
+        yScale,
+      ) {
+        if (values.length < 2 || stats.std === 0) return '';
+
+        const n = values.length;
+        const bandwidth = Math.max(0.12, 1.06 * stats.std * n ** -0.2);
+        const inv = 1 / (n * bandwidth * Math.sqrt(2 * Math.PI));
+        const pointCount = 160;
+        const points = [];
+
+        for (let i = 0; i <= pointCount; i += 1) {
+          const xValue = axisMin + ((axisMax - axisMin) * i) / pointCount;
+          const density =
+            values.reduce((sum, value) => {
+              const z = (xValue - value) / bandwidth;
+              return sum + Math.exp(-0.5 * z * z);
+            }, 0) * inv;
+          const scaledCount = density * n * binWidth;
+          points.push(
+            `${xScale(xValue).toFixed(2)},${yScale(scaledCount).toFixed(2)}`,
+          );
+        }
+
+        return `M ${points.join(' L ')}`;
+      }
+
+      function renderChart(values, stats, bins, settings) {
+        const svg = els.chartSvg;
+        svg.replaceChildren();
+
+        const width = 920;
+        const height = 520;
+        const margin = { top: 70, right: 42, bottom: 76, left: 72 };
+        const plotWidth = width - margin.left - margin.right;
+        const plotHeight = height - margin.top - margin.bottom;
+        const title = els.chartTitleInput.value.trim() || 'Score distribution';
+        const maxBarCount = Math.max(...bins.map(bin => bin.count), 1);
+        const yMax = Math.max(1, Math.ceil(maxBarCount * 1.15));
+        const axisSpan = settings.axisMax - settings.axisMin;
+        const xScale = value =>
+          margin.left + ((value - settings.axisMin) / axisSpan) * plotWidth;
+        const yScale = value =>
+          margin.top + plotHeight - (value / yMax) * plotHeight;
+
+        createSvgElement('title', { id: 'svgTitle' }, svg, title);
+        createSvgElement(
+          'desc',
+          { id: 'svgDesc' },
+          svg,
+          `Histogram and density curve for ${values.length} numeric values.`,
+        );
+        createSvgElement('rect', {
+          x: 0,
+          y: 0,
+          width,
+          height,
+          fill: '#fffdf7',
+        });
+        createSvgElement(
+          'text',
+          {
+            x: margin.left,
+            y: 38,
+            fill: '#151515',
+            'font-size': 26,
+            'font-weight': 900,
+            'font-family': 'system-ui, -apple-system, Segoe UI, sans-serif',
+          },
+          svg,
+          title,
+        );
+        createSvgElement(
+          'text',
+          {
+            x: margin.left,
+            y: 60,
+            fill: '#686257',
+            'font-size': 13,
+            'font-weight': 700,
+            'font-family': 'system-ui, -apple-system, Segoe UI, sans-serif',
+          },
+          svg,
+          `n = ${values.length} · mean = ${round(stats.mean)} · median = ${round(stats.median)}`,
+        );
+
+        const yStep = getNiceStep(yMax, 5);
+        for (let y = 0; y <= yMax + 0.0001; y += yStep) {
+          const yPos = yScale(y);
+          createSvgElement('line', {
+            x1: margin.left,
+            y1: yPos,
+            x2: margin.left + plotWidth,
+            y2: yPos,
+            stroke: 'rgba(21,21,21,0.12)',
+            'stroke-width': 1,
+          });
+          createSvgElement(
+            'text',
+            {
+              x: margin.left - 14,
+              y: yPos + 4,
+              'text-anchor': 'end',
+              fill: '#686257',
+              'font-size': 12,
+              'font-weight': 700,
+              'font-family': 'system-ui, -apple-system, Segoe UI, sans-serif',
+            },
+            svg,
+            round(y, 0),
+          );
+        }
+
+        const xStep = getNiceStep(axisSpan, 8);
+        const firstTick = Math.ceil(settings.axisMin / xStep) * xStep;
+        for (let x = firstTick; x <= settings.axisMax + 0.0001; x += xStep) {
+          const xPos = xScale(x);
+          createSvgElement('line', {
+            x1: xPos,
+            y1: margin.top,
+            x2: xPos,
+            y2: margin.top + plotHeight,
+            stroke: 'rgba(21,21,21,0.08)',
+            'stroke-width': 1,
+          });
+          createSvgElement(
+            'text',
+            {
+              x: xPos,
+              y: margin.top + plotHeight + 28,
+              'text-anchor': 'middle',
+              fill: '#686257',
+              'font-size': 12,
+              'font-weight': 700,
+              'font-family': 'system-ui, -apple-system, Segoe UI, sans-serif',
+            },
+            svg,
+            round(x, 2),
+          );
+        }
+
+        createSvgElement('line', {
+          x1: margin.left,
+          y1: margin.top + plotHeight,
+          x2: margin.left + plotWidth,
+          y2: margin.top + plotHeight,
+          stroke: '#151515',
+          'stroke-width': 2,
+        });
+        createSvgElement('line', {
+          x1: margin.left,
+          y1: margin.top,
+          x2: margin.left,
+          y2: margin.top + plotHeight,
+          stroke: '#151515',
+          'stroke-width': 2,
+        });
+
+        bins.forEach(bin => {
+          const x = xScale(bin.start) + 2;
+          const barWidth = Math.max(1, xScale(bin.end) - xScale(bin.start) - 4);
+          const y = yScale(bin.count);
+          const barHeight = margin.top + plotHeight - y;
+
+          createSvgElement('rect', {
+            x,
+            y,
+            width: barWidth,
+            height: barHeight,
+            rx: 5,
+            fill: '#f1d5c7',
+            stroke: '#151515',
+            'stroke-width': 1.2,
+          });
+
+          if (bin.count > 0 && barWidth > 26) {
+            createSvgElement(
+              'text',
+              {
+                x: x + barWidth / 2,
+                y: y - 7,
+                'text-anchor': 'middle',
+                fill: '#151515',
+                'font-size': 12,
+                'font-weight': 900,
+                'font-family': 'system-ui, -apple-system, Segoe UI, sans-serif',
+              },
+              svg,
+              String(bin.count),
+            );
+          }
+        });
+
+        const densityPath = getDensityPoints(
+          values,
+          stats,
+          settings.axisMin,
+          settings.axisMax,
+          settings.binWidth,
+          xScale,
+          yScale,
+        );
+        if (densityPath) {
+          createSvgElement('path', {
+            d: densityPath,
+            fill: 'none',
+            stroke: '#9a3412',
+            'stroke-width': 4,
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round',
+          });
+        }
+
+        const meanX = xScale(stats.mean);
+        const medianX = xScale(stats.median);
+        if (stats.mean >= settings.axisMin && stats.mean <= settings.axisMax) {
+          createSvgElement('line', {
+            x1: meanX,
+            y1: margin.top,
+            x2: meanX,
+            y2: margin.top + plotHeight,
+            stroke: '#151515',
+            'stroke-width': 3,
+          });
+          createSvgElement(
+            'text',
+            {
+              x: meanX + 8,
+              y: margin.top + 18,
+              fill: '#151515',
+              'font-size': 12,
+              'font-weight': 900,
+              'font-family': 'system-ui, -apple-system, Segoe UI, sans-serif',
+            },
+            svg,
+            `Mean ${round(stats.mean)}`,
+          );
+        }
+
+        if (
+          stats.median >= settings.axisMin &&
+          stats.median <= settings.axisMax
+        ) {
+          createSvgElement('line', {
+            x1: medianX,
+            y1: margin.top,
+            x2: medianX,
+            y2: margin.top + plotHeight,
+            stroke: '#166534',
+            'stroke-width': 3,
+            'stroke-dasharray': '8 7',
+          });
+          createSvgElement(
+            'text',
+            {
+              x: medianX + 8,
+              y: margin.top + 38,
+              fill: '#166534',
+              'font-size': 12,
+              'font-weight': 900,
+              'font-family': 'system-ui, -apple-system, Segoe UI, sans-serif',
+            },
+            svg,
+            `Median ${round(stats.median)}`,
+          );
+        }
+
+        values.forEach(value => {
+          if (value < settings.axisMin || value > settings.axisMax) return;
+          const x = xScale(value);
+          createSvgElement('line', {
+            x1: x,
+            y1: margin.top + plotHeight + 2,
+            x2: x,
+            y2: margin.top + plotHeight + 10,
+            stroke: '#151515',
+            'stroke-width': 1,
+            opacity: 0.35,
+          });
+        });
+
+        createSvgElement(
+          'text',
+          {
+            x: margin.left + plotWidth / 2,
+            y: height - 24,
+            'text-anchor': 'middle',
+            fill: '#151515',
+            'font-size': 14,
+            'font-weight': 900,
+            'font-family': 'system-ui, -apple-system, Segoe UI, sans-serif',
+          },
+          svg,
+          'Score',
+        );
+        createSvgElement(
+          'text',
+          {
+            x: 24,
+            y: margin.top + plotHeight / 2,
+            transform: `rotate(-90 24 ${margin.top + plotHeight / 2})`,
+            'text-anchor': 'middle',
+            fill: '#151515',
+            'font-size': 14,
+            'font-weight': 900,
+            'font-family': 'system-ui, -apple-system, Segoe UI, sans-serif',
+          },
+          svg,
+          'Count',
+        );
+      }
+
+      function renderMetrics(values, stats) {
+        const zeroCount = values.filter(value => value === 0).length;
+        const zeroPercent = values.length
+          ? (zeroCount / values.length) * 100
+          : 0;
+
+        els.countMetric.textContent = values.length.toLocaleString();
+        els.meanMetric.textContent = round(stats.mean);
+        els.medianMetric.textContent = round(stats.median);
+        els.stdMetric.textContent = round(stats.std);
+        els.minMetric.textContent = round(stats.min);
+        els.maxMetric.textContent = round(stats.max);
+        els.quartileMetric.textContent = `${round(stats.q1)} / ${round(stats.q3)}`;
+        els.zeroMetric.textContent = `${zeroCount} (${round(zeroPercent, 1)}%)`;
+      }
+
+      function renderFrequencyTable(bins, total) {
+        els.frequencyBody.replaceChildren();
+        let cumulative = 0;
+
+        bins.forEach((bin, index) => {
+          cumulative += bin.count;
+          const row = document.createElement('tr');
+          const label =
+            index === bins.length - 1
+              ? `${round(bin.start)}-${round(bin.end)}`
+              : `${round(bin.start)}-<${round(bin.end)}`;
+          const percent = total ? (bin.count / total) * 100 : 0;
+          const cumulativePercent = total ? (cumulative / total) * 100 : 0;
+
+          [
+            label,
+            bin.count,
+            `${round(percent, 1)}%`,
+            `${round(cumulativePercent, 1)}%`,
+          ].forEach(value => {
+            const cell = document.createElement('td');
+            cell.textContent = value;
+            row.appendChild(cell);
+          });
+
+          els.frequencyBody.appendChild(row);
+        });
+      }
+
+      function emptyState(message) {
+        els.chartSvg.replaceChildren();
+        createSvgElement('rect', {
+          x: 0,
+          y: 0,
+          width: 920,
+          height: 520,
+          fill: '#fffdf7',
+        });
+        createSvgElement(
+          'text',
+          {
+            x: 460,
+            y: 260,
+            'text-anchor': 'middle',
+            fill: '#686257',
+            'font-size': 22,
+            'font-weight': 900,
+            'font-family': 'system-ui, -apple-system, Segoe UI, sans-serif',
+          },
+          els.chartSvg,
+          message,
+        );
+        [
+          'countMetric',
+          'meanMetric',
+          'medianMetric',
+          'stdMetric',
+          'minMetric',
+          'maxMetric',
+          'quartileMetric',
+          'zeroMetric',
+        ].forEach(id => {
+          els[id].textContent = id === 'countMetric' ? '0' : '—';
+        });
+        els.frequencyBody.replaceChildren();
+      }
+
+      function getStats(values) {
+        const sorted = [...values].sort((a, b) => a - b);
+        const avg = mean(values);
+        return {
+          sorted,
+          mean: avg,
+          median: quantile(sorted, 0.5),
+          q1: quantile(sorted, 0.25),
+          q3: quantile(sorted, 0.75),
+          min: sorted[0],
+          max: sorted[sorted.length - 1],
+          std: stdDev(values, avg),
+        };
+      }
+
+      function update() {
+        const { values, invalid } = parseNumbers(els.sampleInput.value);
+
+        if (!values.length) {
+          emptyState(
+            'Paste at least one numeric value to plot a distribution.',
+          );
+          els.status.textContent = 'No valid numbers found.';
+          els.chartNote.textContent =
+            'The chart will update after valid numeric values are entered.';
+          els.chartNote.classList.remove('okay');
+          return;
+        }
+
+        const settings = getSettings(values);
+        const stats = getStats(values);
+        const { bins, outside } = buildBins(
+          values,
+          settings.axisMin,
+          settings.axisMax,
+          settings.binWidth,
+        );
+        const invalidText = invalid.length
+          ? ` Ignored ${invalid.length} invalid token${invalid.length === 1 ? '' : 's'}.`
+          : '';
+        const outsideText = outside
+          ? ` ${outside} value${outside === 1 ? '' : 's'} outside the axis range are included in stats but not bars.`
+          : '';
+
+        renderChart(values, stats, bins, settings);
+        renderMetrics(values, stats);
+        renderFrequencyTable(bins, values.length);
+
+        els.status.textContent = `Plotted ${values.length} value${values.length === 1 ? '' : 's'}.${invalidText}`;
+        els.chartNote.textContent = `Bin width: ${round(settings.binWidth, 3)}. Axis range: ${round(settings.axisMin)} to ${round(settings.axisMax)}.${outsideText}`;
+        els.chartNote.classList.toggle('okay', outside === 0);
+      }
+
+      function copySummary() {
+        const { values } = parseNumbers(els.sampleInput.value);
+        if (!values.length) return;
+        const settings = getSettings(values);
+        const stats = getStats(values);
+        const zeroCount = values.filter(value => value === 0).length;
+        const text = [
+          els.chartTitleInput.value.trim() || 'Score distribution',
+          `Sample size: ${values.length}`,
+          `Mean: ${round(stats.mean)}`,
+          `Median: ${round(stats.median)}`,
+          `Std. dev.: ${round(stats.std)}`,
+          `Minimum: ${round(stats.min)}`,
+          `Maximum: ${round(stats.max)}`,
+          `Q1: ${round(stats.q1)}`,
+          `Q3: ${round(stats.q3)}`,
+          `Zeros: ${zeroCount}`,
+          `Axis: ${round(settings.axisMin)} to ${round(settings.axisMax)}`,
+          `Bin width: ${round(settings.binWidth, 3)}`,
+        ].join('\n');
+
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            els.status.textContent = 'Summary copied.';
+          })
+          .catch(() => {
+            els.status.textContent =
+              'Copy failed. Select the summary manually.';
+          });
+      }
+
+      function downloadPng() {
+        update();
+        const svg = els.chartSvg.cloneNode(true);
+        svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        const data = new XMLSerializer().serializeToString(svg);
+        const blob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const image = new Image();
+
+        image.onload = () => {
+          const canvas = document.createElement('canvas');
+          const scale = 2;
+          canvas.width = 920 * scale;
+          canvas.height = 520 * scale;
+          const context = canvas.getContext('2d');
+          context.fillStyle = '#fffdf7';
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          URL.revokeObjectURL(url);
+
+          const link = document.createElement('a');
+          const safeTitle = (
+            els.chartTitleInput.value.trim() || 'score-distribution'
+          )
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '');
+          link.download = `${safeTitle || 'score-distribution'}.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+          els.status.textContent = 'PNG downloaded.';
+        };
+
+        image.onerror = () => {
+          URL.revokeObjectURL(url);
+          els.status.textContent = 'PNG export failed in this browser.';
+        };
+
+        image.src = url;
+      }
+
+      function resetSample() {
+        els.sampleInput.value = defaultSample;
+        els.chartTitleInput.value = 'Class score distribution';
+        els.axisMin.value = '0';
+        els.axisMax.value = '10';
+        els.binWidth.value = '0.5';
+        els.status.textContent = 'Default sample restored.';
+        update();
+      }
+
+      document.getElementById('plotButton').addEventListener('click', update);
+      document
+        .getElementById('copyButton')
+        .addEventListener('click', copySummary);
+      document
+        .getElementById('downloadButton')
+        .addEventListener('click', downloadPng);
+      document
+        .getElementById('resetButton')
+        .addEventListener('click', resetSample);
+      [
+        els.sampleInput,
+        els.chartTitleInput,
+        els.axisMin,
+        els.axisMax,
+        els.binWidth,
+      ].forEach(input => {
+        input.addEventListener('input', update);
+      });
+
+      update();
+    </script>
+  </body>
+</html>
