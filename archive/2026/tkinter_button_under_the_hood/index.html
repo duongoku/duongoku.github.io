@@ -1,0 +1,1893 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nút Tkinter hoạt động thế nào bên trong</title>
+    <link rel="stylesheet" href="./../../archive.css" />
+    <style>
+      :root {
+        --paper: #fffdf7;
+        --line: rgba(21, 21, 21, 0.14);
+        --muted: #686257;
+        --accent: #9a3412;
+        --accent-soft: #f1d5c7;
+        --good: #166534;
+        --good-soft: #eaf7ee;
+        --warn: #9a3412;
+        --ink: #151515;
+        --panel: #f8f7f3;
+        --low: #1d4ed8;
+        --low-soft: #e2e9fb;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        margin: 0;
+        min-height: 100vh;
+        background: var(--panel);
+        color: var(--ink);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+      }
+
+      main {
+        display: grid;
+        gap: 24px;
+        justify-content: stretch;
+        width: min(100%, 78rem);
+        padding: clamp(28px, 5vw, 64px) clamp(16px, 5vw, 32px) 64px;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 22ch;
+        color: var(--ink);
+        font-size: clamp(2.6rem, 8vw, 5.4rem);
+        line-height: 0.9;
+        letter-spacing: -0.06em;
+      }
+
+      h2 {
+        margin: 0;
+        color: var(--ink);
+        font-size: clamp(1.4rem, 3.2vw, 2rem);
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+      }
+
+      h3 {
+        margin: 0;
+        color: #2a2926;
+        font-size: clamp(1.15rem, 3vw, 1.6rem);
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+      }
+
+      h4 {
+        margin: 0;
+        color: var(--ink);
+        font-size: 0.95rem;
+        line-height: 1.2;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+      }
+
+      p {
+        margin: 0;
+        max-width: 60rem;
+        color: #2a2926;
+        line-height: 1.55;
+      }
+
+      small {
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .back-link {
+        width: fit-content;
+        color: var(--ink);
+        font-weight: 900;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 4px;
+      }
+
+      button {
+        font: inherit;
+        border: 2px solid var(--ink);
+        border-radius: 999px;
+        padding: 10px 15px;
+        background: var(--ink);
+        color: #f8f7f3;
+        font-weight: 800;
+        cursor: pointer;
+        transition:
+          transform 140ms ease,
+          background 140ms ease,
+          color 140ms ease;
+      }
+
+      button:hover,
+      button:focus-visible {
+        background: var(--accent);
+        color: #fff;
+        transform: translateY(-1px);
+      }
+
+      button.secondary {
+        background: transparent;
+        color: var(--ink);
+      }
+
+      button.secondary:hover,
+      button.secondary:focus-visible {
+        background: var(--accent-soft);
+        color: var(--ink);
+      }
+
+      button.secondary[aria-pressed='true'] {
+        background: var(--ink);
+        color: #f8f7f3;
+      }
+
+      button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .header-note {
+        max-width: 52rem;
+      }
+
+      /* ---- Card shell (matches sibling archive pages) ---- */
+      .card {
+        width: 100%;
+        border: 2px solid var(--ink);
+        border-radius: 24px;
+        background: var(--paper);
+        box-shadow: 8px 8px 0 var(--ink);
+        padding: clamp(16px, 3vw, 24px);
+        display: grid;
+        gap: 16px;
+        align-content: start;
+      }
+
+      /* ---- Controls bar ---- */
+      .controls {
+        gap: 18px;
+      }
+
+      .scenario-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+        color: #2a2926;
+        font-size: 0.9rem;
+        font-weight: 800;
+      }
+
+      select {
+        font: inherit;
+        width: 100%;
+        max-width: 30rem;
+        border: 2px solid var(--ink);
+        border-radius: 14px;
+        padding: 11px 13px;
+        background: #fffdf7;
+        color: var(--ink);
+        font-weight: 700;
+      }
+
+      select:focus {
+        outline: 4px solid var(--accent-soft);
+      }
+
+      .toggle {
+        display: inline-flex;
+        gap: 9px;
+        align-items: center;
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: #2a2926;
+        cursor: pointer;
+      }
+
+      .toggle input {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--accent);
+        cursor: pointer;
+      }
+
+      .status-line {
+        min-height: 1.2em;
+      }
+
+      /* ---- Panels grid ---- */
+      .panels {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      /* ---- Panel 1: code ---- */
+      .code-block {
+        margin: 0;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #1e1c19;
+        color: #f4efe6;
+        padding: 14px 6px;
+        overflow-x: auto;
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          'Liberation Mono', 'Courier New', monospace;
+        font-size: 0.86rem;
+        line-height: 1.6;
+      }
+
+      .code-line {
+        display: block;
+        padding: 1px 16px;
+        white-space: pre;
+        border-left: 3px solid transparent;
+      }
+
+      .code-line.active {
+        background: rgba(154, 52, 18, 0.32);
+        border-left-color: #f1a06f;
+      }
+
+      .tok-kw {
+        color: #f0a6c0;
+      }
+      .tok-fn {
+        color: #8fd0ff;
+      }
+      .tok-str {
+        color: #b6e08a;
+      }
+      .tok-cmt {
+        color: #8a8577;
+      }
+
+      /* ---- Panel 2: fake Tk window ---- */
+      .stage {
+        position: relative;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background:
+          repeating-linear-gradient(
+            135deg,
+            #efece3 0 14px,
+            #eae6db 14px 28px
+          );
+        padding: 22px;
+        min-height: 260px;
+        display: grid;
+        place-items: center;
+      }
+
+      .tk-window {
+        width: min(320px, 100%);
+        border: 1px solid #7d7a72;
+        border-radius: 8px;
+        background: #d9d9d9;
+        box-shadow: 0 10px 24px rgba(21, 21, 21, 0.25);
+        overflow: hidden;
+      }
+
+      .tk-titlebar {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 10px;
+        background: linear-gradient(#f0f0f0, #cfcfcf);
+        border-bottom: 1px solid #9a978f;
+      }
+
+      .tk-dot {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        border: 1px solid rgba(0, 0, 0, 0.25);
+      }
+      .tk-dot.r {
+        background: #ff5f57;
+      }
+      .tk-dot.y {
+        background: #febc2e;
+      }
+      .tk-dot.g {
+        background: #28c840;
+      }
+
+      .tk-title {
+        margin-left: 4px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #3a3a3a;
+      }
+
+      .tk-body {
+        display: grid;
+        place-items: center;
+        gap: 12px;
+        padding: 40px 16px;
+        background: #d9d9d9;
+      }
+
+      .tk-status {
+        min-height: 1.1em;
+        font-size: 0.82rem;
+        color: #333;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      /* classic Tk button look */
+      .tkbtn {
+        font-family:
+          ui-sans-serif, system-ui, 'Segoe UI', Tahoma, sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #101010;
+        background: #d9d9d9;
+        border: 2px solid;
+        border-color: #f4f4f4 #8f8f8f #8f8f8f #f4f4f4;
+        border-radius: 3px;
+        padding: 6px 18px;
+        min-width: 92px;
+        cursor: pointer;
+        user-select: none;
+        touch-action: none;
+        transition:
+          background 90ms ease,
+          border-color 90ms ease,
+          transform 90ms ease;
+      }
+
+      .tkbtn.raised {
+        border-color: #f4f4f4 #8f8f8f #8f8f8f #f4f4f4;
+        transform: translate(0, 0);
+      }
+
+      .tkbtn.sunken {
+        background: #cfcfcf;
+        border-color: #8f8f8f #f4f4f4 #f4f4f4 #8f8f8f;
+        transform: translate(1px, 1px);
+      }
+
+      .tkbtn.active {
+        background: #e6e6e6;
+      }
+
+      .tkbtn.focused {
+        outline: 2px dotted #333;
+        outline-offset: 3px;
+      }
+
+      .tkbtn.disabled {
+        color: #9a9a9a;
+        background: #d4d4d4;
+        cursor: not-allowed;
+        border-color: #d4d4d4 #b8b8b8 #b8b8b8 #d4d4d4;
+      }
+
+      .ghost-pointer {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        margin: -3px 0 0 -3px;
+        pointer-events: none;
+        opacity: 0;
+        transition:
+          left 520ms ease,
+          top 520ms ease,
+          opacity 200ms ease;
+        z-index: 4;
+      }
+
+      .ghost-pointer.show {
+        opacity: 1;
+      }
+
+      .ghost-pointer svg {
+        display: block;
+        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
+      }
+
+      /* ---- Panel 3: timeline ---- */
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--muted);
+      }
+
+      .swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+        border: 1px solid var(--ink);
+      }
+      .swatch.low {
+        background: var(--low-soft);
+      }
+      .swatch.stage {
+        background: var(--panel);
+      }
+      .swatch.high {
+        background: var(--good-soft);
+      }
+
+      .timeline {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 7px;
+        max-height: 340px;
+        overflow-y: auto;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px;
+        background: var(--panel);
+      }
+
+      .timeline:empty::after {
+        content: 'Tương tác với widget button hoặc chạy một scenario để hiển thị timeline.';
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .evt {
+        display: flex;
+        gap: 10px;
+        align-items: baseline;
+        border-radius: 10px;
+        padding: 7px 10px;
+        font-size: 0.86rem;
+        line-height: 1.3;
+        border: 1px solid transparent;
+        animation: pop 220ms ease;
+      }
+
+      @keyframes pop {
+        from {
+          opacity: 0;
+          transform: translateY(-4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .evt .tag {
+        flex: none;
+        font-size: 0.66rem;
+        font-weight: 900;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding: 2px 7px;
+        border-radius: 999px;
+        border: 1px solid var(--ink);
+      }
+
+      .evt .label {
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          'Liberation Mono', 'Courier New', monospace;
+        font-weight: 600;
+        color: #2a2926;
+      }
+
+      .evt.low {
+        background: var(--low-soft);
+        border-color: rgba(29, 78, 216, 0.4);
+      }
+      .evt.low .tag {
+        background: var(--low);
+        color: #fff;
+        border-color: var(--low);
+      }
+
+      .evt.stage {
+        background: var(--paper);
+        border-color: var(--line);
+      }
+      .evt.stage .tag {
+        background: transparent;
+        color: var(--muted);
+        border-color: var(--muted);
+      }
+
+      .evt.high {
+        background: var(--good-soft);
+        border-color: rgba(22, 101, 52, 0.5);
+      }
+      .evt.high .tag {
+        background: var(--good);
+        color: #fff;
+        border-color: var(--good);
+      }
+      .evt.high .label {
+        color: var(--good);
+        font-weight: 800;
+      }
+
+      /* ---- Panel 4: state + explanation ---- */
+      .state-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+
+      .state-table th,
+      .state-table td {
+        border-bottom: 1px solid var(--line);
+        padding: 8px 0;
+        text-align: left;
+        vertical-align: middle;
+      }
+
+      .state-table th {
+        color: var(--muted);
+        font-size: 0.75rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-weight: 900;
+      }
+
+      .state-table td:last-child {
+        text-align: right;
+      }
+
+      .var-name {
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          'Liberation Mono', 'Courier New', monospace;
+        font-weight: 700;
+        color: var(--ink);
+      }
+
+      .pill {
+        display: inline-block;
+        min-width: 44px;
+        text-align: center;
+        padding: 3px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--ink);
+        font-weight: 800;
+        font-size: 0.8rem;
+        background: var(--panel);
+      }
+      .pill.on {
+        background: var(--good-soft);
+        border-color: var(--good);
+        color: var(--good);
+      }
+      .pill.off {
+        background: #fff;
+        color: var(--muted);
+      }
+      .pill.warn {
+        background: #fbecdf;
+        border-color: var(--warn);
+        color: var(--warn);
+      }
+      .pill.flash {
+        animation: flash 500ms ease;
+      }
+
+      @keyframes flash {
+        0% {
+          transform: scale(1);
+        }
+        40% {
+          transform: scale(1.14);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .explain {
+        border-left: 5px solid var(--accent);
+        padding: 12px 14px;
+        background: #fbecdf;
+        border-radius: 0 12px 12px 0;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #2a2926;
+        min-height: 3.2em;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .result-cell {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px 14px;
+        background: var(--panel);
+        display: grid;
+        gap: 6px;
+      }
+
+      .result-cell span {
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .result-cell strong {
+        font-size: 1.4rem;
+        line-height: 1;
+        letter-spacing: -0.02em;
+      }
+
+      .result-cell.yes strong {
+        color: var(--good);
+      }
+      .result-cell.no strong {
+        color: var(--warn);
+      }
+
+      .result-why {
+        grid-column: 1 / -1;
+        border-left: 5px solid var(--muted);
+        padding: 10px 14px;
+        background: #fff;
+        border-radius: 0 12px 12px 0;
+        font-size: 0.92rem;
+        line-height: 1.45;
+      }
+
+      /* ---- Teaching points ---- */
+      .teach-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px 24px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .teach-grid li {
+        position: relative;
+        padding-left: 22px;
+        line-height: 1.5;
+        color: #2a2926;
+      }
+
+      .teach-grid li::before {
+        content: '›';
+        position: absolute;
+        left: 4px;
+        top: -1px;
+        color: var(--accent);
+        font-weight: 900;
+      }
+
+      .teach-grid code {
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          'Liberation Mono', 'Courier New', monospace;
+        font-size: 0.85em;
+        background: var(--accent-soft);
+        padding: 1px 5px;
+        border-radius: 5px;
+      }
+
+      .footer-note {
+        max-width: 60rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 900px) {
+        .panels {
+          grid-template-columns: 1fr;
+        }
+        .teach-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        main {
+          padding-top: 36px;
+        }
+        .card {
+          border-radius: 20px;
+          box-shadow: 6px 6px 0 var(--ink);
+        }
+        .scenario-row button,
+        .scenario-row select {
+          width: 100%;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .evt,
+        .pill.flash,
+        .ghost-pointer,
+        .tkbtn {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back-link" href="./../">/2026</a>
+
+      <h1>Điều gì thực sự xảy ra khi bạn click một widget button Tkinter</h1>
+      <h3 class="header-note">
+        Hướng dẫn tương tác về con đường từ một cú click chuột thật đến callback
+        Python của bạn, trong Tkinter của Python (lớp bao quanh Tcl/Tk).
+      </h3>
+      <p class="header-note">
+        Tự nhấn thử widget button mô phỏng, đi qua từng stage bên trong một bước
+        một lúc, hoặc chạy một scenario. Hãy để ý cách một lần press chỉ làm nút
+        lõm vào, còn command chỉ chạy khi release rơi vào bên trong sau một lần
+        press hợp lệ.
+      </p>
+
+      <!-- CONTROLS -->
+      <section class="card controls" aria-labelledby="controls-title">
+        <h2 id="controls-title">Bảng điều khiển</h2>
+        <div class="scenario-row">
+          <label class="field" for="scenarioSelect">
+            Scenario
+            <select id="scenarioSelect" aria-label="Chọn một scenario">
+              <option value="success">Click thành công</option>
+              <option value="releaseOutside">
+                Press, rồi release bên ngoài
+              </option>
+              <option value="dragBack">
+                Press, kéo ra ngoài, kéo về, release bên trong
+              </option>
+              <option value="disabled">Widget button bị disabled</option>
+              <option value="space">Kích hoạt bằng phím Space</option>
+            </select>
+          </label>
+          <button type="button" id="runButton">Chạy scenario</button>
+          <button type="button" class="secondary" id="stepButton">
+            Bước nội bộ tiếp theo
+          </button>
+          <button type="button" class="secondary" id="resetButton">
+            Đặt lại
+          </button>
+          <label class="toggle">
+            <input type="checkbox" id="disabledToggle" />
+            Disable widget button
+          </label>
+        </div>
+        <small class="status-line" id="statusLine" aria-live="polite">
+          Mẹo: thử press vào nút, kéo chuột ra khỏi nó, rồi release — command sẽ
+          không chạy.
+        </small>
+      </section>
+
+      <!-- FOUR PANELS -->
+      <div class="panels">
+        <!-- Panel 1: Python code -->
+        <section class="card" aria-labelledby="code-title">
+          <h2 id="code-title">1. Code Python</h2>
+          <small
+            >Dòng được tô sáng cho biết mô phỏng đang chạm tới phần nào ngay lúc
+            này.</small
+          >
+          <pre class="code-block" id="codeBlock" aria-label="Ví dụ Tkinter"></pre>
+        </section>
+
+        <!-- Panel 2: Simulated Tk window -->
+        <section class="card" aria-labelledby="window-title">
+          <h2 id="window-title">2. Cửa sổ Tk mô phỏng</h2>
+          <small
+            >Chuột và bàn phím thật hoạt động ở đây: hover, press, kéo vào/ra,
+            release, hoặc đưa focus vào nó rồi nhấn Space.</small
+          >
+          <div class="stage">
+            <div class="ghost-pointer" id="ghostPointer" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 20 20">
+                <path
+                  d="M2 2 L2 15 L6 11 L9 17 L11 16 L8 10 L14 10 Z"
+                  fill="#151515"
+                  stroke="#fff"
+                  stroke-width="1"
+                />
+              </svg>
+            </div>
+            <div class="tk-window">
+              <div class="tk-titlebar">
+                <span class="tk-dot r"></span>
+                <span class="tk-dot y"></span>
+                <span class="tk-dot g"></span>
+                <span class="tk-title">tk</span>
+              </div>
+              <div class="tk-body">
+                <button
+                  type="button"
+                  class="tkbtn raised"
+                  id="tkButton"
+                  aria-label="Nhấn tôi (widget button Tkinter mô phỏng)"
+                >
+                  Nhấn tôi
+                </button>
+                <div class="tk-status" id="tkStatus">Sẵn sàng</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 3: Event queue and timeline -->
+        <section class="card" aria-labelledby="timeline-title">
+          <h2 id="timeline-title">3. Event queue &amp; timeline</h2>
+          <div class="legend">
+            <span><i class="swatch low"></i>Tk event cấp thấp</span>
+            <span><i class="swatch stage"></i>Stage trong pipeline</span>
+            <span><i class="swatch high"></i>command callback cấp cao</span>
+          </div>
+          <ul class="timeline" id="timeline" aria-live="polite"></ul>
+          <small>
+            Pipeline: hành động người dùng → OS event → Tk event queue → binding
+            matcher → Button class binding → invoke → Tcl command → _tkinter
+            bridge → Python callback.
+          </small>
+        </section>
+
+        <!-- Panel 4: State table + explanation -->
+        <section class="card" aria-labelledby="state-title">
+          <h2 id="state-title">4. State &amp; giải thích</h2>
+          <table class="state-table">
+            <thead>
+              <tr>
+                <th>Biến</th>
+                <th>Giá trị</th>
+              </tr>
+            </thead>
+            <tbody id="stateBody"></tbody>
+          </table>
+          <div class="explain" id="explain">
+            Chưa có gì xảy ra. Hãy press vào nút, đi qua từng bước, hoặc chạy một
+            scenario.
+          </div>
+          <div class="result-grid">
+            <div class="result-cell no" id="resClicked">
+              <span>Đã click?</span>
+              <strong>Chưa</strong>
+            </div>
+            <div class="result-cell no" id="resCommand">
+              <span>Command đã gọi?</span>
+              <strong>Chưa</strong>
+            </div>
+            <div class="result-why" id="resWhy">
+              Vì sao: chưa có tương tác nào.
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Teaching points -->
+      <section class="card" aria-labelledby="teach-title">
+        <h2 id="teach-title">Ý chính</h2>
+        <ul class="teach-grid">
+          <li>Tkinter là lớp bao của Python quanh bộ công cụ GUI Tcl/Tk.</li>
+          <li>
+            Một <code>Button</code> lưu callback <code>command</code> của bạn bằng
+            cách đăng ký Python callable đó thành một Tcl command thông qua Tkinter.
+          </li>
+          <li>
+            <code>root.mainloop()</code> chạy event loop của GUI, lấy các event ra
+            khỏi queue của Tk và điều phối chúng.
+          </li>
+          <li>Một widget button chưa được coi là đã "click" chỉ vì chuột nhấn xuống.</li>
+          <li>Một cú click bình thường = press bên trong <em>và</em> release bên trong.</li>
+          <li>Press bên trong rồi release bên ngoài sẽ hủy command.</li>
+          <li>
+            <code>command=...</code> là một callback cấp cao, mang nghĩa "kích hoạt
+            nút này" — nó không nhận đối tượng event nào.
+          </li>
+          <li>
+            <code>.bind("&lt;ButtonPress-1&gt;", ...)</code> là một event binding
+            cấp thấp hơn, có nhận một đối tượng event.
+          </li>
+          <li>
+            <em>class binding</em> của Tk cung cấp hành vi mặc định cho button, nên
+            bạn không phải tự bind press/release cho một button thông thường.
+          </li>
+          <li>
+            Một <code>command</code> chạy lâu sẽ chặn event loop — toàn bộ GUI đơ
+            cho đến khi nó trả về.
+          </li>
+        </ul>
+      </section>
+
+      <p class="footer-note">
+        Trang này là một mô hình giảng dạy tĩnh. Tk thật có nhiều chi tiết tinh
+        tế hơn (grab, <code>&lt;Enter&gt;</code>/<code>&lt;Leave&gt;</code> khi
+        đang giữ nút, khác biệt giữa các nền tảng), nhưng quy tắc press-bên-trong
+        / release-bên-trong và sự phân biệt giữa command và event thì được mô tả
+        trung thực.
+      </p>
+    </main>
+
+    <script>
+      'use strict';
+
+      // ---- Source code shown in panel 1 ----
+      const codeLines = [
+        [['kw', 'import'], ['t', ' tkinter '], ['kw', 'as'], ['t', ' tk']],
+        [],
+        [['kw', 'def'], ['fn', ' handle_click'], ['t', '():']],
+        [['t', '    label['], ['str', '"text"'], ['t', '] = '], ['str', '"Clicked!"']],
+        [],
+        [['t', 'root = tk.'], ['fn', 'Tk'], ['t', '()']],
+        [
+          ['t', 'button = tk.'],
+          ['fn', 'Button'],
+          ['t', '(root, text='],
+          ['str', '"Click me"'],
+          ['t', ', command=handle_click)'],
+        ],
+        [['t', 'button.'], ['fn', 'pack'], ['t', '()']],
+        [['t', 'root.'], ['fn', 'mainloop'], ['t', '()']],
+      ];
+      const LINE_CALLBACK = [2, 3];
+      const LINE_REGISTER = 6;
+      const LINE_LOOP = 8;
+
+      const els = {
+        codeBlock: document.getElementById('codeBlock'),
+        timeline: document.getElementById('timeline'),
+        stateBody: document.getElementById('stateBody'),
+        explain: document.getElementById('explain'),
+        tkButton: document.getElementById('tkButton'),
+        tkStatus: document.getElementById('tkStatus'),
+        ghost: document.getElementById('ghostPointer'),
+        statusLine: document.getElementById('statusLine'),
+        scenarioSelect: document.getElementById('scenarioSelect'),
+        runButton: document.getElementById('runButton'),
+        stepButton: document.getElementById('stepButton'),
+        resetButton: document.getElementById('resetButton'),
+        disabledToggle: document.getElementById('disabledToggle'),
+        resClicked: document.getElementById('resClicked'),
+        resCommand: document.getElementById('resCommand'),
+        resWhy: document.getElementById('resWhy'),
+      };
+
+      // ---- State model ----
+      const STATE_VARS = [
+        ['pointerInside', 'Con trỏ nằm trên nút'],
+        ['mouseDown', 'Đang giữ nút chuột'],
+        ['armed', 'Đã armed (press đang hiệu lực bên trong)'],
+        ['focused', 'Focus bàn phím'],
+        ['disabled', 'Đã disabled'],
+        ['visualRelief', 'Relief hiển thị'],
+        ['commandInvoked', 'Command đã được invoke'],
+      ];
+
+      function freshState(disabled) {
+        return {
+          pointerInside: false,
+          mouseDown: false,
+          armed: false,
+          focused: false,
+          disabled: !!disabled,
+          visualRelief: 'raised', // 'raised' | 'sunken'
+          commandInvoked: false,
+        };
+      }
+
+      let state = freshState(false);
+      let result = { clicked: false, command: false, why: 'Chưa có tương tác nào.' };
+      let activeLines = [];
+
+      // interaction / animation guards
+      let isRunning = false; // scenario animation in progress
+      let manualPressActive = false;
+      let spaceHeld = false;
+      let scenarioTimer = null;
+
+      // step mode
+      let stepIndex = 0;
+      let stepModeActive = false;
+
+      const stepDelay = 950;
+
+      // ---- Rendering ----
+      function buildStateTable() {
+        els.stateBody.replaceChildren();
+        STATE_VARS.forEach(([key, label]) => {
+          const tr = document.createElement('tr');
+          const nameTd = document.createElement('td');
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'var-name';
+          nameSpan.textContent = key;
+          const desc = document.createElement('div');
+          desc.innerHTML =
+            '<small style="font-family:inherit">' + label + '</small>';
+          nameTd.appendChild(nameSpan);
+          nameTd.appendChild(desc);
+
+          const valTd = document.createElement('td');
+          const pill = document.createElement('span');
+          pill.className = 'pill';
+          pill.id = 'pill-' + key;
+          valTd.appendChild(pill);
+
+          tr.appendChild(nameTd);
+          tr.appendChild(valTd);
+          els.stateBody.appendChild(tr);
+        });
+      }
+
+      function renderCode() {
+        els.codeBlock.replaceChildren();
+        codeLines.forEach((line, index) => {
+          const span = document.createElement('span');
+          span.className =
+            'code-line' + (activeLines.includes(index) ? ' active' : '');
+          if (line.length === 0) {
+            span.textContent = ' ';
+          } else {
+            line.forEach(([type, text]) => {
+              if (type === 't') {
+                span.appendChild(document.createTextNode(text));
+              } else {
+                const t = document.createElement('span');
+                t.className =
+                  type === 'kw'
+                    ? 'tok-kw'
+                    : type === 'fn'
+                      ? 'tok-fn'
+                      : type === 'str'
+                        ? 'tok-str'
+                        : 'tok-cmt';
+                t.textContent = text;
+                span.appendChild(t);
+              }
+            });
+          }
+          els.codeBlock.appendChild(span);
+        });
+      }
+
+      function pillFor(key) {
+        const value = state[key];
+        if (key === 'visualRelief') {
+          return {
+            text: value,
+            cls: value === 'sunken' ? 'warn' : 'off',
+          };
+        }
+        return {
+          text: value ? 'true' : 'false',
+          cls: value ? 'on' : 'off',
+        };
+      }
+
+      function renderState(flashKeys) {
+        STATE_VARS.forEach(([key]) => {
+          const pill = document.getElementById('pill-' + key);
+          if (!pill) return;
+          const info = pillFor(key);
+          if (pill.textContent !== info.text) {
+            pill.textContent = info.text;
+          }
+          pill.className = 'pill ' + info.cls;
+          if (flashKeys && flashKeys.includes(key)) {
+            // restart flash animation
+            pill.classList.remove('flash');
+            void pill.offsetWidth;
+            pill.classList.add('flash');
+          }
+        });
+      }
+
+      function renderButton() {
+        const b = els.tkButton;
+        b.classList.toggle('sunken', state.visualRelief === 'sunken');
+        b.classList.toggle('raised', state.visualRelief !== 'sunken');
+        b.classList.toggle('disabled', state.disabled);
+        b.classList.toggle('focused', state.focused);
+        b.classList.toggle('active', state.pointerInside && !state.disabled);
+
+        let status = 'Sẵn sàng';
+        if (state.disabled) status = 'Disabled';
+        else if (state.commandInvoked && !state.mouseDown && !state.armed)
+          status = 'handle_click() đã chạy ✓';
+        else if (state.armed) status = 'Armed (đang giữ)';
+        else if (state.pointerInside) status = 'Đang hover';
+        els.tkStatus.textContent = status;
+      }
+
+      function renderResult(flash) {
+        setResultCell(els.resClicked, result.clicked, flash);
+        setResultCell(els.resCommand, result.command, flash);
+        els.resWhy.textContent = 'Vì sao: ' + result.why;
+      }
+
+      function setResultCell(cell, value, flash) {
+        cell.classList.toggle('yes', value);
+        cell.classList.toggle('no', !value);
+        const strong = cell.querySelector('strong');
+        strong.textContent = value ? 'Có' : 'Chưa';
+        if (flash) {
+          strong.classList.remove('pill');
+          cell.style.transition = 'transform 300ms ease';
+          cell.style.transform = 'scale(1.03)';
+          setTimeout(() => {
+            cell.style.transform = 'scale(1)';
+          }, 260);
+        }
+      }
+
+      function render(flashKeys) {
+        renderCode();
+        renderState(flashKeys);
+        renderButton();
+      }
+
+      function explain(text) {
+        els.explain.textContent = text;
+      }
+
+      function setStatus(text) {
+        els.statusLine.textContent = text;
+      }
+
+      // ---- Timeline ----
+      function logEvent(label, tier) {
+        const li = document.createElement('li');
+        li.className = 'evt ' + tier;
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.textContent =
+          tier === 'low' ? 'event' : tier === 'high' ? 'callback' : 'stage';
+        const lab = document.createElement('span');
+        lab.className = 'label';
+        lab.textContent = label;
+        li.appendChild(tag);
+        li.appendChild(lab);
+        els.timeline.appendChild(li);
+        els.timeline.scrollTop = els.timeline.scrollHeight;
+      }
+
+      function clearTimeline() {
+        els.timeline.replaceChildren();
+      }
+
+      // ---- Command invoke (shared) ----
+      function invokeCommand(reason) {
+        logEvent('button invoke → Tcl command → _tkinter bridge', 'stage');
+        logEvent('command → handle_click()', 'high');
+        state.commandInvoked = true;
+        state.armed = false;
+        activeLines = LINE_CALLBACK.slice();
+        result = { clicked: true, command: true, why: reason };
+        explain(
+          'Release hợp lệ bên trong sau một lần press bên trong. Tk gọi invoke, ' +
+            'thứ chạy Tcl command đã đăng ký cho command=, băng qua _tkinter ' +
+            'bridge, và cuối cùng chạy hàm Python handle_click() của bạn.',
+        );
+        render(['commandInvoked', 'armed']);
+        renderResult(true);
+      }
+
+      function setNoResult(why, note) {
+        result = { clicked: false, command: false, why: why };
+        renderResult(false);
+        if (note) explain(note);
+      }
+
+      // ---- Reset ----
+      function resetAll(opts) {
+        opts = opts || {};
+        if (scenarioTimer) {
+          clearTimeout(scenarioTimer);
+          scenarioTimer = null;
+        }
+        isRunning = false;
+        manualPressActive = false;
+        spaceHeld = false;
+        stepModeActive = false;
+        stepIndex = 0;
+        const keepDisabled =
+          opts.disabled !== undefined ? opts.disabled : els.disabledToggle.checked;
+        state = freshState(keepDisabled);
+        result = { clicked: false, command: false, why: 'Chưa có tương tác nào.' };
+        activeLines = [LINE_LOOP];
+        clearTimeline();
+        explain(
+          'Sẵn sàng. mainloop() đang chạy và chờ event. Hãy press vào nút, đi ' +
+            'qua từng bước, hoặc chạy một scenario.',
+        );
+        render();
+        renderResult(false);
+        setControlsDisabled(false);
+        hideGhost();
+      }
+
+      function setControlsDisabled(disabled) {
+        els.runButton.disabled = disabled;
+        els.scenarioSelect.disabled = disabled;
+        els.disabledToggle.disabled = disabled;
+        // step button stays usable except during scenario animation
+        els.stepButton.disabled = disabled;
+      }
+
+      // ---- Ghost pointer ----
+      function moveGhost(where) {
+        const g = els.ghost;
+        g.classList.add('show');
+        if (where === 'inside') {
+          g.style.left = '50%';
+          g.style.top = '52%';
+        } else if (where === 'edge') {
+          g.style.left = '68%';
+          g.style.top = '52%';
+        } else if (where === 'outside') {
+          g.style.left = '90%';
+          g.style.top = '18%';
+        }
+      }
+      function hideGhost() {
+        els.ghost.classList.remove('show');
+      }
+
+      // ======================================================
+      //  INTERNAL STEP MODE (12 canonical steps of a click)
+      // ======================================================
+      const internalSteps = [
+        {
+          code: [LINE_LOOP],
+          logs: [['Hành động người dùng: nhấn nút chuột xuống', 'stage']],
+          apply: { pointerInside: true, mouseDown: true, focused: true },
+          ghost: 'inside',
+          note:
+            'Bước 1 — Bạn nhấn nút chuột thật trong khi con trỏ đang nằm trên ' +
+            'nút. Phía Python chưa có gì xảy ra cả.',
+        },
+        {
+          logs: [['OS event: <ButtonPress-1> được tạo', 'stage']],
+          note:
+            'Bước 2 — OS / hệ thống cửa sổ biến cú nhấn phần cứng thành một ' +
+            'ButtonPress event gửi tới cửa sổ Tk.',
+        },
+        {
+          logs: [
+            ['Tk event queue ← <ButtonPress-1>', 'stage'],
+            ['<ButtonPress-1>', 'low'],
+          ],
+          note:
+            'Bước 3 — Tk đặt event vào event queue nội bộ của nó. mainloop() sẽ ' +
+            'lấy nó ra.',
+        },
+        {
+          logs: [['Tk binding matcher → Button widget', 'stage']],
+          note:
+            'Bước 4 — mainloop() lấy event ra khỏi queue và binding matcher quyết ' +
+            'định widget nào và binding nào được áp dụng.',
+        },
+        {
+          logs: [['Button class binding: <ButtonPress-1> → relief=sunken', 'stage']],
+          apply: { armed: true, visualRelief: 'sunken' },
+          note:
+            'Bước 5 — Button class binding mặc định làm nút lõm vào: relief thành ' +
+            'sunken và nút được armed. Command VẪN CHƯA chạy.',
+        },
+        {
+          logs: [['Hành động người dùng: thả nút chuột', 'stage']],
+          apply: { mouseDown: false },
+          note: 'Bước 6 — Bạn thả nút chuột trong khi vẫn ở trên nút.',
+        },
+        {
+          logs: [
+            ['OS event: <ButtonRelease-1> được tạo', 'stage'],
+            ['<ButtonRelease-1>', 'low'],
+          ],
+          note:
+            'Bước 7 — OS tạo một ButtonRelease event, được Tk đưa vào queue và ' +
+            'điều phối như trước.',
+        },
+        {
+          logs: [['Button class binding: release bên trong nút? → có', 'stage']],
+          apply: { visualRelief: 'raised' },
+          note:
+            'Bước 8 — Class binding cho <ButtonRelease-1> kiểm tra xem con trỏ có ' +
+            'còn ở bên trong không. Có, nên đây được coi là một cú click thật.',
+        },
+        {
+          logs: [['button invoke (kích hoạt cấp cao)', 'stage']],
+          note:
+            'Bước 9 — Vì release là hợp lệ, Tk gọi invoke của nút, tức hành động ' +
+            'cấp cao "kích hoạt nút này".',
+        },
+        {
+          code: [LINE_REGISTER],
+          logs: [['Tcl command → _tkinter bridge', 'stage']],
+          note:
+            'Bước 10 — invoke chạy Tcl command mà Tkinter đã đăng ký cho command=. ' +
+            'Nó băng qua _tkinter bridge bằng C để quay lại Python.',
+        },
+        {
+          code: LINE_CALLBACK.slice(),
+          logs: [['command → handle_click()', 'high']],
+          apply: { commandInvoked: true, armed: false },
+          note:
+            'Bước 11 — Hàm Python handle_click() của bạn cuối cùng cũng chạy. ĐÂY ' +
+            'chính là khoảnh khắc cú click thực sự làm điều gì đó.',
+          flash: ['commandInvoked'],
+        },
+        {
+          code: LINE_CALLBACK.slice(),
+          logs: [['handle_click() trả về; điều khiển quay lại mainloop()', 'stage']],
+          note:
+            'Bước 12 — Callback trả về, điều khiển quay lại mainloop(), và ' +
+            'app/GUI phản ánh thay đổi.',
+          result: {
+            clicked: true,
+            command: true,
+            why:
+              'Press bên trong rồi release bên trong = một cú click hợp lệ, nên invoke đã chạy handle_click().',
+          },
+        },
+      ];
+
+      function applyStep(step) {
+        if (step.code) activeLines = step.code.slice();
+        if (step.logs) step.logs.forEach(([label, tier]) => logEvent(label, tier));
+        if (step.apply) Object.assign(state, step.apply);
+        if (step.ghost) moveGhost(step.ghost);
+        if (step.note) explain(step.note);
+        render(step.flash);
+        if (step.result) {
+          result = step.result;
+          renderResult(true);
+        }
+      }
+
+      function doNextStep() {
+        if (isRunning) return;
+        if (!stepModeActive) {
+          // begin step mode fresh
+          resetAll();
+          stepModeActive = true;
+          stepIndex = 0;
+          setStatus(
+            'Chế độ bước nội bộ: đi qua một cú click thành công, mỗi lần một stage.',
+          );
+        }
+        if (stepIndex >= internalSteps.length) {
+          setStatus('Đã tới cuối 12 bước nội bộ. Đặt lại để bắt đầu lại.');
+          return;
+        }
+        applyStep(internalSteps[stepIndex]);
+        stepIndex += 1;
+        els.stepButton.textContent =
+          stepIndex >= internalSteps.length
+            ? 'Xong (12/12)'
+            : 'Bước nội bộ tiếp theo (' + stepIndex + '/12)';
+      }
+
+      // ======================================================
+      //  SCENARIOS (animated)
+      // ======================================================
+      const scenarios = {
+        success: [
+          {
+            code: [LINE_LOOP],
+            logs: [['<Enter>', 'low']],
+            apply: { pointerInside: true, focused: true },
+            ghost: 'inside',
+            note: 'Con trỏ di chuyển lên trên nút; Tk phát ra <Enter>.',
+          },
+          {
+            logs: [
+              ['<ButtonPress-1>', 'low'],
+              ['Button class binding: relief=sunken', 'stage'],
+            ],
+            apply: { mouseDown: true, armed: true, visualRelief: 'sunken' },
+            note:
+              'Press bên trong: nút lõm xuống (sunken) và được armed. Command VẪN CHƯA chạy.',
+            flash: ['armed', 'visualRelief'],
+          },
+          {
+            logs: [
+              ['<ButtonRelease-1>', 'low'],
+              ['Class binding: release bên trong? → có', 'stage'],
+            ],
+            apply: { mouseDown: false, visualRelief: 'raised' },
+            note: 'Release bên trong sau một lần press hợp lệ: đây là một cú click thật.',
+          },
+          {
+            code: LINE_CALLBACK.slice(),
+            logs: [
+              ['button invoke → Tcl command → _tkinter bridge', 'stage'],
+              ['command → handle_click()', 'high'],
+            ],
+            apply: { commandInvoked: true, armed: false },
+            note: 'invoke chạy Python callback handle_click() đã được đăng ký.',
+            flash: ['commandInvoked'],
+            result: {
+              clicked: true,
+              command: true,
+              why: 'Release đã xảy ra bên trong sau một lần press bên trong.',
+            },
+          },
+        ],
+        releaseOutside: [
+          {
+            code: [LINE_LOOP],
+            logs: [['<Enter>', 'low']],
+            apply: { pointerInside: true, focused: true },
+            ghost: 'inside',
+            note: 'Con trỏ nằm trên nút.',
+          },
+          {
+            logs: [
+              ['<ButtonPress-1>', 'low'],
+              ['Button class binding: relief=sunken', 'stage'],
+            ],
+            apply: { mouseDown: true, armed: true, visualRelief: 'sunken' },
+            note: 'Press bên trong: sunken + armed.',
+            flash: ['armed'],
+          },
+          {
+            logs: [
+              ['<B1-Motion> (đang kéo)', 'low'],
+              ['<Leave>', 'low'],
+              ['Class binding: disarm, relief=raised', 'stage'],
+            ],
+            apply: { pointerInside: false, armed: false, visualRelief: 'raised' },
+            ghost: 'outside',
+            note:
+              'Kéo ra ngoài trong khi đang giữ: nút bị disarm và nhô trở lại, ' +
+              'nhưng Tk vẫn giữ grab.',
+            flash: ['pointerInside', 'armed'],
+          },
+          {
+            logs: [
+              ['<ButtonRelease-1>', 'low'],
+              ['Class binding: release bên trong? → không', 'stage'],
+            ],
+            apply: { mouseDown: false },
+            note: 'Release BÊN NGOÀI nút, nên invoke bị bỏ qua. handle_click() KHÔNG được gọi.',
+            result: {
+              clicked: false,
+              command: false,
+              why: 'Release đã xảy ra bên ngoài nút, nên Tk đã hủy việc kích hoạt.',
+            },
+          },
+        ],
+        dragBack: [
+          {
+            code: [LINE_LOOP],
+            logs: [['<Enter>', 'low']],
+            apply: { pointerInside: true, focused: true },
+            ghost: 'inside',
+            note: 'Con trỏ nằm trên nút.',
+          },
+          {
+            logs: [
+              ['<ButtonPress-1>', 'low'],
+              ['Button class binding: relief=sunken', 'stage'],
+            ],
+            apply: { mouseDown: true, armed: true, visualRelief: 'sunken' },
+            note: 'Press bên trong: sunken + armed.',
+          },
+          {
+            logs: [
+              ['<B1-Motion>', 'low'],
+              ['<Leave>', 'low'],
+              ['Class binding: disarm, relief=raised', 'stage'],
+            ],
+            apply: { pointerInside: false, armed: false, visualRelief: 'raised' },
+            ghost: 'outside',
+            note: 'Kéo ra ngoài: bị disarm, nút nhô lên. Vẫn đang giữ chuột.',
+            flash: ['armed'],
+          },
+          {
+            logs: [
+              ['<B1-Motion>', 'low'],
+              ['<Enter>', 'low'],
+              ['Class binding: re-arm, relief=sunken', 'stage'],
+            ],
+            apply: { pointerInside: true, armed: true, visualRelief: 'sunken' },
+            ghost: 'inside',
+            note: 'Kéo trở lại bên trong: nút được arm lại và lõm xuống lần nữa.',
+            flash: ['pointerInside', 'armed'],
+          },
+          {
+            code: LINE_CALLBACK.slice(),
+            logs: [
+              ['<ButtonRelease-1>', 'low'],
+              ['Class binding: release bên trong? → có', 'stage'],
+              ['button invoke → Tcl command → _tkinter bridge', 'stage'],
+              ['command → handle_click()', 'high'],
+            ],
+            apply: {
+              mouseDown: false,
+              visualRelief: 'raised',
+              commandInvoked: true,
+              armed: false,
+            },
+            note:
+              'Bạn kết thúc bằng một release bên trong sau khi quay vào lại, nên vẫn tính là một cú click hợp lệ.',
+            flash: ['commandInvoked'],
+            result: {
+              clicked: true,
+              command: true,
+              why: 'Kết thúc bằng một release bên trong sau khi quay vào lại, nên đây là một cú click hợp lệ.',
+            },
+          },
+        ],
+        disabled: [
+          {
+            code: [LINE_LOOP],
+            logs: [['<Enter>', 'low']],
+            apply: { pointerInside: true },
+            ghost: 'inside',
+            note: 'Con trỏ nằm trên một widget button đã bị disabled.',
+          },
+          {
+            logs: [
+              ['<ButtonPress-1>', 'low'],
+              ['Class binding không hoạt động (state=disabled)', 'stage'],
+            ],
+            apply: { mouseDown: true },
+            note:
+              'Event vẫn đến được Tk, nhưng class binding của một button đã ' +
+              'disabled không làm gì cả — không đổi relief, không arm.',
+          },
+          {
+            logs: [
+              ['<ButtonRelease-1>', 'low'],
+              ['Class binding không hoạt động (state=disabled)', 'stage'],
+            ],
+            apply: { mouseDown: false },
+            note: 'Không có gì xảy ra trên một button đã disabled. handle_click() không bao giờ được gọi.',
+            result: {
+              clicked: false,
+              command: false,
+              why: 'Button đã bị disabled, nên class binding của nó không hoạt động và invoke không bao giờ chạy.',
+            },
+          },
+        ],
+        space: [
+          {
+            code: [LINE_LOOP],
+            logs: [['<FocusIn>', 'low']],
+            apply: { focused: true },
+            note: 'Tab đưa focus bàn phím tới nút (chú ý vòng focus).',
+            flash: ['focused'],
+          },
+          {
+            logs: [
+              ['<KeyPress-space>', 'low'],
+              ['Class binding: <space> → relief=sunken', 'stage'],
+            ],
+            apply: { armed: true, visualRelief: 'sunken' },
+            note: 'Nhấn Space trên một nút đang có focus làm nó lõm vào — không cần chuột.',
+            flash: ['armed'],
+          },
+          {
+            code: LINE_CALLBACK.slice(),
+            logs: [
+              ['<KeyRelease-space>', 'low'],
+              ['button invoke → Tcl command → _tkinter bridge', 'stage'],
+              ['command → handle_click()', 'high'],
+            ],
+            apply: { visualRelief: 'raised', commandInvoked: true, armed: false },
+            note: 'Thả Space sẽ invoke nút: cùng con đường như một cú click chuột.',
+            flash: ['commandInvoked'],
+            result: {
+              clicked: true,
+              command: true,
+              why: 'Space trên một nút đang có focus kích hoạt cùng con đường invoke như một cú click chuột.',
+            },
+          },
+        ],
+      };
+
+      function runScenario() {
+        const name = els.scenarioSelect.value;
+        const steps = scenarios[name];
+        if (!steps) return;
+        const wantDisabled = name === 'disabled';
+        if (wantDisabled) els.disabledToggle.checked = true;
+        else els.disabledToggle.checked = false;
+        resetAll({ disabled: wantDisabled });
+        isRunning = true;
+        setControlsDisabled(true);
+        setStatus('Đang chạy scenario: ' + currentScenarioLabel() + ' …');
+
+        let i = 0;
+        function next() {
+          if (i >= steps.length) {
+            isRunning = false;
+            setControlsDisabled(false);
+            hideGhost();
+            setStatus('Scenario đã xong: ' + currentScenarioLabel() + '.');
+            return;
+          }
+          applyStep(steps[i]);
+          i += 1;
+          scenarioTimer = setTimeout(next, stepDelay);
+        }
+        next();
+      }
+
+      function currentScenarioLabel() {
+        const opt = els.scenarioSelect.options[els.scenarioSelect.selectedIndex];
+        return opt ? opt.textContent.trim() : '';
+      }
+
+      // ======================================================
+      //  REAL POINTER + KEYBOARD INTERACTION on the button
+      // ======================================================
+      function isInsideButton(clientX, clientY) {
+        const r = els.tkButton.getBoundingClientRect();
+        return (
+          clientX >= r.left &&
+          clientX <= r.right &&
+          clientY >= r.top &&
+          clientY <= r.top + r.height
+        );
+      }
+
+      function endStepModeForManual() {
+        // once the user interacts by hand, drop the step-mode counter label
+        if (stepModeActive) {
+          stepModeActive = false;
+          els.stepButton.textContent = 'Bước nội bộ tiếp theo';
+        }
+      }
+
+      els.tkButton.addEventListener('pointerenter', () => {
+        if (isRunning) return;
+        endStepModeForManual();
+        state.pointerInside = true;
+        logEvent('<Enter>', 'low');
+        if (!state.disabled && state.mouseDown) {
+          state.armed = true;
+          state.visualRelief = 'sunken';
+          explain('Con trỏ vào lại khi đang giữ: nút được arm lại.');
+        } else {
+          explain('Con trỏ đã vào nút. Tk phát ra một event <Enter>.');
+        }
+        render();
+      });
+
+      els.tkButton.addEventListener('pointerleave', () => {
+        if (isRunning) return;
+        // pointermove during a press handles the drag-out; this covers plain leave
+        if (manualPressActive) return;
+        state.pointerInside = false;
+        logEvent('<Leave>', 'low');
+        explain('Con trỏ đã rời nút. Tk phát ra một event <Leave>.');
+        render();
+      });
+
+      els.tkButton.addEventListener('pointerdown', e => {
+        if (isRunning) return;
+        if (e.button !== 0 && e.pointerType === 'mouse') return;
+        endStepModeForManual();
+        try {
+          els.tkButton.setPointerCapture(e.pointerId);
+        } catch (err) {
+          /* ignore */
+        }
+        manualPressActive = true;
+        state.mouseDown = true;
+        state.pointerInside = true;
+        state.commandInvoked = false;
+        logEvent('<ButtonPress-1>', 'low');
+        if (!state.disabled) {
+          state.armed = true;
+          state.visualRelief = 'sunken';
+          activeLines = [LINE_LOOP];
+          explain(
+            'Chuột nhấn xuống bên trong: relief là sunken và nút được armed — ' +
+              'nhưng command VẪN CHƯA chạy. Release bên trong để chạy nó, hoặc kéo ra ngoài để hủy.',
+          );
+          setNoResult('Đã ghi nhận press; đang chờ release.');
+        } else {
+          logEvent('Class binding không hoạt động (state=disabled)', 'stage');
+          explain('Nút đã bị disabled, nên class binding bỏ qua cú press.');
+          setNoResult('Widget button đã bị disabled.');
+        }
+        render(['mouseDown', 'armed']);
+      });
+
+      els.tkButton.addEventListener('pointermove', e => {
+        if (isRunning || !manualPressActive) return;
+        const inside = isInsideButton(e.clientX, e.clientY);
+        if (inside === state.pointerInside) return;
+        state.pointerInside = inside;
+        logEvent(inside ? '<Enter>' : '<Leave>', 'low');
+        if (!state.disabled) {
+          state.armed = inside;
+          state.visualRelief = inside ? 'sunken' : 'raised';
+        }
+        explain(
+          inside
+            ? 'Kéo trở lại bên trong khi đang giữ: nút được arm lại.'
+            : 'Kéo ra ngoài khi đang giữ: nút bị disarm nhưng Tk vẫn giữ grab. Release lúc này thì không có gì xảy ra.',
+        );
+        render(['pointerInside', 'armed']);
+      });
+
+      function finishManualPress(e) {
+        if (isRunning || !manualPressActive) return;
+        manualPressActive = false;
+        try {
+          els.tkButton.releasePointerCapture(e.pointerId);
+        } catch (err) {
+          /* ignore */
+        }
+        const validPress = state.armed && state.pointerInside && !state.disabled;
+        state.mouseDown = false;
+        state.visualRelief = 'raised';
+        logEvent('<ButtonRelease-1>', 'low');
+        if (state.disabled) {
+          logEvent('Class binding không hoạt động (state=disabled)', 'stage');
+          setNoResult(
+            'Nút đã bị disabled, nên class binding của nó không bao giờ invoke nó.',
+            'Widget button đã disabled: release không làm gì cả.',
+          );
+        } else if (validPress) {
+          logEvent('Class binding: release bên trong? → có', 'stage');
+          invokeCommand('Bạn đã release bên trong sau một lần press hợp lệ bên trong.');
+        } else {
+          logEvent('Class binding: release bên trong? → không', 'stage');
+          state.armed = false;
+          setNoResult(
+            'Bạn đã release bên ngoài nút, nên Tk đã hủy việc kích hoạt.',
+            'Release bên ngoài: cú press không kết thúc bên trong, nên command bị hủy.',
+          );
+        }
+        render();
+      }
+
+      els.tkButton.addEventListener('pointerup', finishManualPress);
+      els.tkButton.addEventListener('pointercancel', e => {
+        if (!manualPressActive) return;
+        manualPressActive = false;
+        state.mouseDown = false;
+        state.armed = false;
+        state.visualRelief = 'raised';
+        render();
+      });
+
+      els.tkButton.addEventListener('focus', () => {
+        if (isRunning) return;
+        state.focused = true;
+        logEvent('<FocusIn>', 'low');
+        render(['focused']);
+      });
+      els.tkButton.addEventListener('blur', () => {
+        if (isRunning) return;
+        state.focused = false;
+        logEvent('<FocusOut>', 'low');
+        render();
+      });
+
+      els.tkButton.addEventListener('keydown', e => {
+        if (e.code !== 'Space' && e.key !== ' ') return;
+        e.preventDefault();
+        if (isRunning) return;
+        endStepModeForManual();
+        if (state.disabled) {
+          explain('Nút đã disabled sẽ bỏ qua Space.');
+          return;
+        }
+        if (spaceHeld) return;
+        spaceHeld = true;
+        state.commandInvoked = false;
+        logEvent('<KeyPress-space>', 'low');
+        state.armed = true;
+        state.visualRelief = 'sunken';
+        explain('Nhấn Space trên nút đang có focus: relief sunken và armed.');
+        setNoResult('Đang giữ Space; thả Space để invoke.');
+        render(['armed']);
+      });
+
+      els.tkButton.addEventListener('keyup', e => {
+        if (e.code !== 'Space' && e.key !== ' ') return;
+        e.preventDefault();
+        if (isRunning) return;
+        if (!spaceHeld) return;
+        spaceHeld = false;
+        logEvent('<KeyRelease-space>', 'low');
+        state.visualRelief = 'raised';
+        if (!state.disabled) {
+          invokeCommand('Space trên một nút đang có focus chạy cùng con đường invoke như một cú click.');
+        }
+        render();
+      });
+
+      // prevent the browser's synthetic click from doing anything unexpected
+      els.tkButton.addEventListener('click', e => e.preventDefault());
+      els.tkButton.addEventListener('contextmenu', e => e.preventDefault());
+
+      // ---- Disabled toggle ----
+      els.disabledToggle.addEventListener('change', () => {
+        if (isRunning) return;
+        state.disabled = els.disabledToggle.checked;
+        if (state.disabled) {
+          state.armed = false;
+          state.visualRelief = 'raised';
+          manualPressActive = false;
+          explain('Nút được đặt state="disabled". Class binding của nó giờ không hoạt động.');
+        } else {
+          explain('Nút được bật lại (state="normal"). Class binding hoạt động trở lại.');
+        }
+        render();
+      });
+
+      // ---- Wire controls ----
+      els.runButton.addEventListener('click', runScenario);
+      els.stepButton.addEventListener('click', doNextStep);
+      els.resetButton.addEventListener('click', () => {
+        resetAll();
+        els.stepButton.textContent = 'Bước nội bộ tiếp theo';
+        setStatus('Đã đặt lại. mainloop() đang rảnh, chờ event.');
+      });
+
+      // ---- Init ----
+      buildStateTable();
+      resetAll({ disabled: false });
+      setStatus(
+        'Mẹo: thử press vào nút, kéo chuột ra khỏi nó, rồi release — command sẽ không chạy.',
+      );
+    </script>
+  </body>
+</html>
