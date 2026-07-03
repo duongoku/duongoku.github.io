@@ -3,40 +3,42 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Nút Tkinter hoạt động thế nào bên trong</title>
-    <link rel="stylesheet" href="./../../archive.css" />
+    <title>Điều gì xảy ra bên trong khi click một nút Tkinter</title>
     <style>
       :root {
-        --paper: #fffdf7;
-        --line: rgba(21, 21, 21, 0.14);
-        --muted: #686257;
-        --accent: #9a3412;
-        --accent-soft: #f1d5c7;
-        --good: #166534;
-        --good-soft: #eaf7ee;
-        --warn: #9a3412;
-        --ink: #151515;
-        --panel: #f8f7f3;
-        --low: #1d4ed8;
-        --low-soft: #e2e9fb;
+        color-scheme: light;
+        --bg: #f6f8fb;
+        --panel: #ffffff;
+        --panel-soft: #eef3f8;
+        --ink: #17202a;
+        --muted: #5b6673;
+        --line: #cbd5e1;
+        --line-strong: #94a3b8;
+        --code: #111827;
+        --press: #0072b2;
+        --release: #d55e00;
+        --command: #0f766e;
+        --warn: #b45309;
+        --cancel: #b42318;
+        --cancel-soft: #ffe7e4;
+        --press-soft: color-mix(in srgb, var(--press) 14%, #ffffff);
+        --release-soft: color-mix(in srgb, var(--release) 16%, #ffffff);
+        --command-soft: color-mix(in srgb, var(--command) 14%, #ffffff);
+        --shadow: rgba(15, 23, 42, 0.14);
+        /* Hệ số nhân thời lượng: JS đặt = 1 / tốc độ. */
+        --speed-dur: 1;
       }
 
-      html {
-        scroll-behavior: smooth;
-      }
-
-      *,
-      *::before,
-      *::after {
+      * {
         box-sizing: border-box;
       }
 
       body {
-        display: flex;
-        justify-content: center;
         margin: 0;
         min-height: 100vh;
-        background: var(--panel);
+        background:
+          linear-gradient(90deg, rgba(0, 114, 178, 0.08), transparent 38%),
+          linear-gradient(180deg, #ffffff, var(--bg));
         color: var(--ink);
         font-family:
           Inter,
@@ -49,1845 +51,2144 @@
       }
 
       main {
+        width: min(100%, 1280px);
+        margin: 0 auto;
+        padding: clamp(14px, 3vw, 34px);
         display: grid;
-        gap: 24px;
-        justify-content: stretch;
-        width: min(100%, 78rem);
-        padding: clamp(28px, 5vw, 64px) clamp(16px, 5vw, 32px) 64px;
-      }
-
-      h1 {
-        margin: 0;
-        max-width: 22ch;
-        color: var(--ink);
-        font-size: clamp(2.6rem, 8vw, 5.4rem);
-        line-height: 0.9;
-        letter-spacing: -0.06em;
-      }
-
-      h2 {
-        margin: 0;
-        color: var(--ink);
-        font-size: clamp(1.4rem, 3.2vw, 2rem);
-        line-height: 1.05;
-        letter-spacing: -0.02em;
-      }
-
-      h3 {
-        margin: 0;
-        color: #2a2926;
-        font-size: clamp(1.15rem, 3vw, 1.6rem);
-        line-height: 1.2;
-        letter-spacing: -0.02em;
-      }
-
-      h4 {
-        margin: 0;
-        color: var(--ink);
-        font-size: 0.95rem;
-        line-height: 1.2;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--muted);
-      }
-
-      p {
-        margin: 0;
-        max-width: 60rem;
-        color: #2a2926;
-        line-height: 1.55;
-      }
-
-      small {
-        color: var(--muted);
-        line-height: 1.45;
-      }
-
-      .back-link {
-        width: fit-content;
-        color: var(--ink);
-        font-weight: 900;
-        text-decoration-thickness: 2px;
-        text-underline-offset: 4px;
-      }
-
-      button {
-        font: inherit;
-        border: 2px solid var(--ink);
-        border-radius: 999px;
-        padding: 10px 15px;
-        background: var(--ink);
-        color: #f8f7f3;
-        font-weight: 800;
-        cursor: pointer;
-        transition:
-          transform 140ms ease,
-          background 140ms ease,
-          color 140ms ease;
-      }
-
-      button:hover,
-      button:focus-visible {
-        background: var(--accent);
-        color: #fff;
-        transform: translateY(-1px);
-      }
-
-      button.secondary {
-        background: transparent;
-        color: var(--ink);
-      }
-
-      button.secondary:hover,
-      button.secondary:focus-visible {
-        background: var(--accent-soft);
-        color: var(--ink);
-      }
-
-      button.secondary[aria-pressed='true'] {
-        background: var(--ink);
-        color: #f8f7f3;
-      }
-
-      button:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        transform: none;
-      }
-
-      .header-note {
-        max-width: 52rem;
-      }
-
-      /* ---- Card shell (matches sibling archive pages) ---- */
-      .card {
-        width: 100%;
-        border: 2px solid var(--ink);
-        border-radius: 24px;
-        background: var(--paper);
-        box-shadow: 8px 8px 0 var(--ink);
-        padding: clamp(16px, 3vw, 24px);
-        display: grid;
-        gap: 16px;
-        align-content: start;
-      }
-
-      /* ---- Controls bar ---- */
-      .controls {
         gap: 18px;
       }
 
-      .scenario-row {
-        display: flex;
-        flex-wrap: wrap;
+      header.page-head {
+        display: grid;
         gap: 10px;
-        align-items: center;
       }
 
-      .field {
-        display: grid;
-        gap: 8px;
-        color: #2a2926;
-        font-size: 0.9rem;
+      a {
+        width: max-content;
+        color: #0f5f91;
         font-weight: 800;
+        text-underline-offset: 4px;
       }
 
-      select {
-        font: inherit;
-        width: 100%;
-        max-width: 30rem;
-        border: 2px solid var(--ink);
-        border-radius: 14px;
-        padding: 11px 13px;
-        background: #fffdf7;
-        color: var(--ink);
-        font-weight: 700;
-      }
-
-      select:focus {
-        outline: 4px solid var(--accent-soft);
-      }
-
-      .toggle {
-        display: inline-flex;
-        gap: 9px;
-        align-items: center;
-        font-size: 0.95rem;
-        font-weight: 800;
-        color: #2a2926;
-        cursor: pointer;
-      }
-
-      .toggle input {
-        width: 20px;
-        height: 20px;
-        accent-color: var(--accent);
-        cursor: pointer;
-      }
-
-      .status-line {
-        min-height: 1.2em;
-      }
-
-      /* ---- Panels grid ---- */
-      .panels {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 20px;
-      }
-
-      /* ---- Panel 1: code ---- */
-      .code-block {
+      h1,
+      h2,
+      h3,
+      p {
         margin: 0;
-        border-radius: 16px;
-        border: 1px solid var(--line);
-        background: #1e1c19;
-        color: #f4efe6;
-        padding: 14px 6px;
-        overflow-x: auto;
+      }
+
+      h1 {
+        max-width: 940px;
+        font-size: clamp(1.7rem, 4.6vw, 3.4rem);
+        line-height: 1.04;
+      }
+
+      .intro {
+        max-width: 900px;
+        color: var(--muted);
+        font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+        line-height: 1.55;
+      }
+
+      code {
         font-family:
-          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          'Liberation Mono', 'Courier New', monospace;
-        font-size: 0.86rem;
-        line-height: 1.6;
+          'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        font-size: 0.92em;
+        background: var(--panel-soft);
+        padding: 1px 5px;
+        border-radius: 6px;
       }
 
-      .code-line {
-        display: block;
-        padding: 1px 16px;
-        white-space: pre;
-        border-left: 3px solid transparent;
-      }
-
-      .code-line.active {
-        background: rgba(154, 52, 18, 0.32);
-        border-left-color: #f1a06f;
-      }
-
-      .tok-kw {
-        color: #f0a6c0;
-      }
-      .tok-fn {
-        color: #8fd0ff;
-      }
-      .tok-str {
-        color: #b6e08a;
-      }
-      .tok-cmt {
-        color: #8a8577;
-      }
-
-      /* ---- Panel 2: fake Tk window ---- */
-      .stage {
-        position: relative;
-        border-radius: 16px;
+      .panel {
+        background: var(--panel);
         border: 1px solid var(--line);
-        background:
-          repeating-linear-gradient(
-            135deg,
-            #efece3 0 14px,
-            #eae6db 14px 28px
-          );
-        padding: 22px;
-        min-height: 260px;
+        border-radius: 16px;
+        padding: clamp(12px, 2vw, 20px);
+        box-shadow: 0 10px 26px -22px var(--shadow);
+      }
+
+      .panel > h2 {
+        font-size: 1.05rem;
+        margin-bottom: 10px;
+      }
+
+      /* ============ Sân khấu 5 stage ============ */
+
+      .stage-row {
+        display: flex;
+        align-items: stretch;
+        gap: 0;
+      }
+
+      .stage {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background: var(--panel-soft);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 10px 10px 12px;
+      }
+
+      .stage-head {
+        display: grid;
+        gap: 2px;
+      }
+
+      .kicker {
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .stage-head h3 {
+        font-size: 0.95rem;
+        line-height: 1.2;
+      }
+
+      .stage-note {
+        margin-top: auto;
+        font-size: 0.72rem;
+        line-height: 1.45;
+        color: var(--muted);
+      }
+
+      .stage svg.inset {
+        display: block;
+        width: 100%;
+        height: auto;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+      }
+
+      .flow-pipe {
+        flex: 0 0 22px;
+        align-self: center;
+        position: relative;
+        height: 6px;
+        background: var(--line);
+        border-radius: 3px;
+      }
+
+      .flow-pipe::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -1px;
+        border: 6px solid transparent;
+        border-left-color: var(--line-strong);
+        transform: translateY(-50%);
+      }
+
+      /* ---- Stage 1: chuột + mạch điện ---- */
+
+      .lever {
+        transform: rotate(-32deg);
+        transform-origin: 100px 60px;
+        transform-box: view-box;
+        transition: transform 130ms ease;
+      }
+
+      .mouse-svg.is-closed .lever {
+        transform: rotate(0deg);
+      }
+
+      .press-flash {
+        opacity: 0;
+        transition: opacity 120ms ease;
+      }
+
+      .mouse-svg.is-closed .press-flash {
+        opacity: 0.3;
+      }
+
+      .led-body {
+        fill: #d8dee6;
+        transition: fill 160ms ease;
+      }
+
+      .mouse-svg.is-closed .led-body {
+        fill: #f4c430;
+      }
+
+      .led-glow {
+        opacity: 0;
+        transition: opacity 180ms ease;
+      }
+
+      .mouse-svg.is-closed .led-glow {
+        opacity: 0.55;
+      }
+
+      .current {
+        opacity: 0;
+        stroke-dasharray: 5 7;
+        transition: opacity 140ms ease;
+      }
+
+      .mouse-svg.is-closed .current {
+        opacity: 1;
+        animation: currentMarch calc(600ms * var(--speed-dur)) linear infinite;
+      }
+
+      @keyframes currentMarch {
+        to {
+          stroke-dashoffset: -12;
+        }
+      }
+
+      .spark {
+        opacity: 0;
+        transform-box: fill-box;
+        transform-origin: center;
+      }
+
+      .spark.is-spark {
+        animation: sparkPop 240ms ease-out;
+      }
+
+      @keyframes sparkPop {
+        0% {
+          opacity: 1;
+          transform: scale(0.4);
+        }
+        60% {
+          opacity: 1;
+          transform: scale(1.25);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1.4);
+        }
+      }
+
+      /* ---- Stage 2: cáp ---- */
+
+      .comet {
+        fill: none;
+        stroke: var(--press);
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-dasharray: 16 184;
+        stroke-dashoffset: 16;
+        opacity: 0;
+      }
+
+      .comet.is-press {
+        stroke: var(--press);
+      }
+
+      .comet.is-release {
+        stroke: var(--release);
+      }
+
+      .comet.is-travel {
+        opacity: 1;
+        animation: cometTravel calc(620ms * var(--speed-dur)) ease-in-out
+          forwards;
+      }
+
+      @keyframes cometTravel {
+        from {
+          stroke-dashoffset: 16;
+        }
+        to {
+          stroke-dashoffset: -100;
+        }
+      }
+
+      .port-screen {
+        fill: #dbe4ee;
+      }
+
+      .port-screen.is-arrive {
+        animation: portGlow calc(360ms * var(--speed-dur)) ease-out;
+      }
+
+      @keyframes portGlow {
+        0% {
+          fill: #dbe4ee;
+        }
+        35% {
+          fill: #9fd0ef;
+        }
+        100% {
+          fill: #dbe4ee;
+        }
+      }
+
+      /* ---- Stage 3: event queue ---- */
+
+      .queue-box {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px;
+      }
+
+      .queue-tube {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: flex-start;
+        gap: 4px;
+        min-height: 92px;
+        max-height: 92px;
+        overflow: hidden;
+        border: 2px dashed var(--line);
+        border-radius: 8px;
+        padding: 4px;
+        position: relative;
+      }
+
+      .queue-tube:empty::after {
+        content: 'queue trống';
+        position: absolute;
+        inset: 0;
         display: grid;
         place-items: center;
+        font-size: 0.68rem;
+        color: var(--line-strong);
       }
 
-      .tk-window {
-        width: min(320px, 100%);
-        border: 1px solid #7d7a72;
+      .q-chip {
+        flex: 0 0 auto;
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.66rem;
+        font-weight: 700;
+        text-align: center;
+        color: #fff;
+        border-radius: 6px;
+        padding: 3px 4px;
+        animation: chipIn calc(340ms * var(--speed-dur))
+          cubic-bezier(0.2, 1.4, 0.4, 1);
+      }
+
+      .q-chip.q-press {
+        background: var(--press);
+      }
+
+      .q-chip.q-release {
+        background: var(--release);
+      }
+
+      .q-chip.is-out {
+        animation: chipOut calc(260ms * var(--speed-dur)) ease-in forwards;
+      }
+
+      @keyframes chipIn {
+        0% {
+          opacity: 0;
+          transform: translateY(-28px);
+        }
+        70% {
+          opacity: 1;
+          transform: translateY(3px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes chipOut {
+        to {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+      }
+
+      .flag-cell {
+        display: grid;
+        gap: 4px;
+        align-content: start;
+        justify-items: center;
+        min-width: 74px;
+        background: var(--panel-soft);
+        border: 1px solid var(--line);
         border-radius: 8px;
-        background: #d9d9d9;
-        box-shadow: 0 10px 24px rgba(21, 21, 21, 0.25);
+        padding: 6px 6px;
+        perspective: 240px;
+      }
+
+      .flag-q {
+        font-size: 0.62rem;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .flag-value {
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: var(--cancel);
+      }
+
+      .flag-cell.is-true .flag-value {
+        color: var(--command);
+      }
+
+      .flag-value.is-flip {
+        animation: flagFlip calc(320ms * var(--speed-dur)) ease-out;
+      }
+
+      @keyframes flagFlip {
+        from {
+          transform: rotateX(90deg);
+        }
+        to {
+          transform: rotateX(0deg);
+        }
+      }
+
+      /* ---- Stage 4: mainloop ---- */
+
+      .rotor-arc {
+        stroke: var(--press);
+        transition: stroke 160ms ease;
+      }
+
+      .rotor-head {
+        fill: var(--press);
+        transition: fill 160ms ease;
+      }
+
+      .loop-svg.is-paused .rotor-arc {
+        stroke: var(--warn);
+      }
+
+      .loop-svg.is-paused .rotor-head {
+        fill: var(--warn);
+      }
+
+      .peek {
+        opacity: 0;
+      }
+
+      .peek.is-peek {
+        animation: peekFlash calc(300ms * var(--speed-dur)) ease-out;
+      }
+
+      @keyframes peekFlash {
+        0% {
+          opacity: 0;
+        }
+        30% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      .peek.is-peek-hold {
+        opacity: 1;
+      }
+
+      .dispatch-ray {
+        opacity: 0;
+      }
+
+      .dispatch-ray.is-dispatch {
+        animation: peekFlash calc(420ms * var(--speed-dur)) ease-out;
+      }
+
+      .loop-chip {
+        opacity: 0;
+        transition: opacity 140ms ease;
+      }
+
+      .loop-chip.is-shown {
+        opacity: 1;
+      }
+
+      .loop-badge {
+        display: none;
+        font-size: 0.68rem;
+        font-weight: 700;
+        line-height: 1.35;
+        color: var(--warn);
+        background: color-mix(in srgb, var(--warn) 12%, #ffffff);
+        border: 1px solid color-mix(in srgb, var(--warn) 40%, #ffffff);
+        border-radius: 8px;
+        padding: 5px 7px;
+      }
+
+      .loop-badge.is-shown {
+        display: block;
+      }
+
+      /* ---- Stage 5: cửa sổ Tk ---- */
+
+      .tk-window {
+        background: #e9edf2;
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
         overflow: hidden;
+        box-shadow: 0 6px 16px -12px var(--shadow);
       }
 
       .tk-titlebar {
         display: flex;
         align-items: center;
-        gap: 7px;
-        padding: 7px 10px;
-        background: linear-gradient(#f0f0f0, #cfcfcf);
-        border-bottom: 1px solid #9a978f;
+        gap: 5px;
+        background: linear-gradient(180deg, #dfe6ee, #cdd7e2);
+        border-bottom: 1px solid var(--line-strong);
+        padding: 4px 8px;
       }
 
       .tk-dot {
-        width: 11px;
-        height: 11px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
-        border: 1px solid rgba(0, 0, 0, 0.25);
-      }
-      .tk-dot.r {
-        background: #ff5f57;
-      }
-      .tk-dot.y {
-        background: #febc2e;
-      }
-      .tk-dot.g {
-        background: #28c840;
+        background: var(--line-strong);
       }
 
       .tk-title {
-        margin-left: 4px;
-        font-size: 0.78rem;
+        margin-left: auto;
+        font-size: 0.66rem;
         font-weight: 700;
-        color: #3a3a3a;
+        color: var(--muted);
       }
 
       .tk-body {
         display: grid;
-        place-items: center;
-        gap: 12px;
-        padding: 40px 16px;
-        background: #d9d9d9;
+        gap: 10px;
+        justify-items: center;
+        padding: 12px 10px 14px;
       }
 
-      .tk-status {
-        min-height: 1.1em;
-        font-size: 0.82rem;
-        color: #333;
-        font-weight: 700;
-        text-align: center;
-      }
-
-      /* classic Tk button look */
-      .tkbtn {
-        font-family:
-          ui-sans-serif, system-ui, 'Segoe UI', Tahoma, sans-serif;
-        font-size: 0.95rem;
+      .tk-label {
+        font-size: 0.8rem;
         font-weight: 600;
-        color: #101010;
-        background: #d9d9d9;
-        border: 2px solid;
-        border-color: #f4f4f4 #8f8f8f #8f8f8f #f4f4f4;
-        border-radius: 3px;
-        padding: 6px 18px;
-        min-width: 92px;
-        cursor: pointer;
-        user-select: none;
-        touch-action: none;
-        transition:
-          background 90ms ease,
-          border-color 90ms ease,
-          transform 90ms ease;
       }
 
-      .tkbtn.raised {
-        border-color: #f4f4f4 #8f8f8f #8f8f8f #f4f4f4;
-        transform: translate(0, 0);
+      .tk-label.is-swap {
+        animation: labelSwap calc(380ms * var(--speed-dur)) ease-out;
       }
 
-      .tkbtn.sunken {
-        background: #cfcfcf;
-        border-color: #8f8f8f #f4f4f4 #f4f4f4 #8f8f8f;
-        transform: translate(1px, 1px);
-      }
-
-      .tkbtn.active {
-        background: #e6e6e6;
-      }
-
-      .tkbtn.focused {
-        outline: 2px dotted #333;
-        outline-offset: 3px;
-      }
-
-      .tkbtn.disabled {
-        color: #9a9a9a;
-        background: #d4d4d4;
-        cursor: not-allowed;
-        border-color: #d4d4d4 #b8b8b8 #b8b8b8 #d4d4d4;
-      }
-
-      .ghost-pointer {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 20px;
-        height: 20px;
-        margin: -3px 0 0 -3px;
-        pointer-events: none;
-        opacity: 0;
-        transition:
-          left 520ms ease,
-          top 520ms ease,
-          opacity 200ms ease;
-        z-index: 4;
-      }
-
-      .ghost-pointer.show {
-        opacity: 1;
-      }
-
-      .ghost-pointer svg {
-        display: block;
-        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
-      }
-
-      /* ---- Panel 3: timeline ---- */
-      .legend {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        font-size: 0.78rem;
-        font-weight: 800;
-      }
-
-      .legend span {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        color: var(--muted);
-      }
-
-      .swatch {
-        width: 14px;
-        height: 14px;
-        border-radius: 4px;
-        border: 1px solid var(--ink);
-      }
-      .swatch.low {
-        background: var(--low-soft);
-      }
-      .swatch.stage {
-        background: var(--panel);
-      }
-      .swatch.high {
-        background: var(--good-soft);
-      }
-
-      .timeline {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: grid;
-        gap: 7px;
-        max-height: 340px;
-        overflow-y: auto;
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        padding: 12px;
-        background: var(--panel);
-      }
-
-      .timeline:empty::after {
-        content: 'Tương tác với widget button hoặc chạy một scenario để hiển thị timeline.';
-        color: var(--muted);
-        font-size: 0.9rem;
-      }
-
-      .evt {
-        display: flex;
-        gap: 10px;
-        align-items: baseline;
-        border-radius: 10px;
-        padding: 7px 10px;
-        font-size: 0.86rem;
-        line-height: 1.3;
-        border: 1px solid transparent;
-        animation: pop 220ms ease;
-      }
-
-      @keyframes pop {
-        from {
-          opacity: 0;
-          transform: translateY(-4px);
+      @keyframes labelSwap {
+        0% {
+          opacity: 0.15;
+          transform: translateY(-5px);
         }
-        to {
+        100% {
           opacity: 1;
           transform: translateY(0);
         }
       }
 
-      .evt .tag {
-        flex: none;
-        font-size: 0.66rem;
-        font-weight: 900;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        padding: 2px 7px;
-        border-radius: 999px;
-        border: 1px solid var(--ink);
-      }
-
-      .evt .label {
-        font-family:
-          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          'Liberation Mono', 'Courier New', monospace;
+      .tk-button {
+        font: inherit;
+        font-size: 0.85rem;
         font-weight: 600;
-        color: #2a2926;
-      }
-
-      .evt.low {
-        background: var(--low-soft);
-        border-color: rgba(29, 78, 216, 0.4);
-      }
-      .evt.low .tag {
-        background: var(--low);
-        color: #fff;
-        border-color: var(--low);
-      }
-
-      .evt.stage {
-        background: var(--paper);
-        border-color: var(--line);
-      }
-      .evt.stage .tag {
-        background: transparent;
-        color: var(--muted);
-        border-color: var(--muted);
-      }
-
-      .evt.high {
-        background: var(--good-soft);
-        border-color: rgba(22, 101, 52, 0.5);
-      }
-      .evt.high .tag {
-        background: var(--good);
-        color: #fff;
-        border-color: var(--good);
-      }
-      .evt.high .label {
-        color: var(--good);
-        font-weight: 800;
-      }
-
-      /* ---- Panel 4: state + explanation ---- */
-      .state-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.9rem;
-      }
-
-      .state-table th,
-      .state-table td {
-        border-bottom: 1px solid var(--line);
-        padding: 8px 0;
-        text-align: left;
-        vertical-align: middle;
-      }
-
-      .state-table th {
-        color: var(--muted);
-        font-size: 0.75rem;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        font-weight: 900;
-      }
-
-      .state-table td:last-child {
-        text-align: right;
-      }
-
-      .var-name {
-        font-family:
-          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          'Liberation Mono', 'Courier New', monospace;
-        font-weight: 700;
         color: var(--ink);
+        background: #e8edf3;
+        border: 2px solid;
+        border-color: #ffffff #94a3b8 #94a3b8 #ffffff;
+        border-radius: 3px;
+        padding: 6px 18px;
+        cursor: pointer;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
       }
 
-      .pill {
-        display: inline-block;
-        min-width: 44px;
-        text-align: center;
-        padding: 3px 10px;
-        border-radius: 999px;
-        border: 1px solid var(--ink);
-        font-weight: 800;
-        font-size: 0.8rem;
-        background: var(--panel);
+      .tk-button.is-pressed {
+        border-color: #94a3b8 #ffffff #ffffff #94a3b8;
+        background: #dde3ea;
+        transform: translate(1px, 1px);
       }
-      .pill.on {
-        background: var(--good-soft);
-        border-color: var(--good);
-        color: var(--good);
+
+      .tk-button.is-aimed {
+        outline: 2px dashed var(--press);
+        outline-offset: 3px;
       }
-      .pill.off {
-        background: #fff;
+
+      .gate-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .gate-wrap {
+        display: inline-grid;
+        justify-items: center;
+        gap: 1px;
+      }
+
+      .gate-wrap svg {
+        display: block;
+        width: 82px;
+        height: auto;
+      }
+
+      .gate-label {
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.64rem;
+        font-weight: 700;
         color: var(--muted);
       }
-      .pill.warn {
-        background: #fbecdf;
-        border-color: var(--warn);
-        color: var(--warn);
-      }
-      .pill.flash {
-        animation: flash 500ms ease;
+
+      .gate-bar {
+        stroke: var(--cancel);
+        transform: rotate(0deg);
+        transform-origin: 60px 22px;
+        transform-box: view-box;
+        transition:
+          transform calc(260ms * var(--speed-dur)) ease,
+          stroke 160ms ease;
       }
 
-      @keyframes flash {
+      .gate-svg.is-open .gate-bar {
+        stroke: var(--command);
+        transform: rotate(-90deg);
+      }
+
+      .gate-flow {
+        opacity: 0;
+        stroke-dasharray: 4 6;
+      }
+
+      .gate-svg.is-open .gate-flow {
+        opacity: 1;
+        animation: currentMarch calc(500ms * var(--speed-dur)) linear infinite;
+      }
+
+      .gate-x {
+        opacity: 0;
+        transition: opacity 120ms ease;
+      }
+
+      .gate-svg.is-refused .gate-x {
+        opacity: 1;
+      }
+
+      .gate-wrap.is-shake {
+        animation: gateShake calc(380ms * var(--speed-dur)) ease-in-out;
+      }
+
+      @keyframes gateShake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20%,
+        60% {
+          transform: translateX(-4px);
+        }
+        40%,
+        80% {
+          transform: translateX(4px);
+        }
+      }
+
+      .fn-chip {
+        font-size: 0.68rem;
+        font-weight: 700;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        padding: 3px 7px;
+      }
+
+      .fn-chip.is-run {
+        animation: fnRun calc(650ms * var(--speed-dur)) ease-out;
+      }
+
+      @keyframes fnRun {
+        0% {
+          background: var(--command-soft);
+          border-color: var(--command);
+          transform: scale(1.12);
+        }
+        100% {
+          background: var(--panel);
+          transform: scale(1);
+        }
+      }
+
+      .fn-chip.is-pop {
+        animation: countPop calc(420ms * var(--speed-dur))
+          cubic-bezier(0.2, 1.6, 0.4, 1);
+      }
+
+      @keyframes countPop {
         0% {
           transform: scale(1);
         }
-        40% {
-          transform: scale(1.14);
+        45% {
+          transform: scale(1.3);
+          border-color: var(--command);
+          background: var(--command-soft);
         }
         100% {
           transform: scale(1);
         }
       }
 
-      .explain {
-        border-left: 5px solid var(--accent);
-        padding: 12px 14px;
-        background: #fbecdf;
-        border-radius: 0 12px 12px 0;
-        font-size: 0.95rem;
-        line-height: 1.5;
-        color: #2a2926;
-        min-height: 3.2em;
-      }
+      /* ============ Thanh điều khiển ============ */
 
-      .result-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-      }
-
-      .result-cell {
+      .control-bar {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+        margin-top: 12px;
+        background: var(--panel-soft);
         border: 1px solid var(--line);
-        border-radius: 14px;
-        padding: 12px 14px;
-        background: var(--panel);
-        display: grid;
-        gap: 6px;
+        border-radius: 12px;
+        padding: 10px 12px;
       }
 
-      .result-cell span {
+      .control-bar label {
         font-size: 0.78rem;
-        font-weight: 900;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
+        font-weight: 700;
+      }
+
+      .control-bar input[type='range'] {
+        flex: 1 1 140px;
+        min-width: 110px;
+        accent-color: var(--press);
+      }
+
+      .speed-readout {
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.8rem;
+        font-weight: 800;
+        min-width: 3.6ch;
+      }
+
+      .speed-chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .chip {
+        font: inherit;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--ink);
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 3px 10px;
+        cursor: pointer;
+      }
+
+      .chip.is-active {
+        color: #fff;
+        background: var(--press);
+        border-color: var(--press);
+      }
+
+      .reset {
+        font: inherit;
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: var(--cancel);
+        background: var(--panel);
+        border: 1px solid var(--cancel);
+        border-radius: 10px;
+        padding: 5px 14px;
+        cursor: pointer;
+        margin-left: auto;
+      }
+
+      .reset:hover {
+        background: var(--cancel-soft);
+      }
+
+      /* ============ Code + transcript ============ */
+
+      .lesson-grid {
+        display: grid;
+        grid-template-columns: 1.25fr 1fr;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .lesson-grid > .panel {
+        min-width: 0;
+      }
+
+      pre {
+        margin: 0;
+        background: var(--code);
+        color: #e5e7eb;
+        border-radius: 12px;
+        padding: 14px 16px;
+        overflow-x: auto;
+        font-size: 0.82rem;
+        line-height: 1.55;
+      }
+
+      pre code {
+        background: none;
+        padding: 0;
+        color: inherit;
+      }
+
+      .code-note {
+        margin-top: 10px;
+        font-size: 0.8rem;
+        line-height: 1.5;
         color: var(--muted);
       }
 
-      .result-cell strong {
-        font-size: 1.4rem;
-        line-height: 1;
-        letter-spacing: -0.02em;
-      }
-
-      .result-cell.yes strong {
-        color: var(--good);
-      }
-      .result-cell.no strong {
-        color: var(--warn);
-      }
-
-      .result-why {
-        grid-column: 1 / -1;
-        border-left: 5px solid var(--muted);
-        padding: 10px 14px;
-        background: #fff;
-        border-radius: 0 12px 12px 0;
-        font-size: 0.92rem;
+      .transcript-list {
+        margin: 0;
+        padding-left: 26px;
+        display: grid;
+        gap: 5px;
+        max-height: 340px;
+        overflow-y: auto;
+        font-size: 0.78rem;
         line-height: 1.45;
       }
 
-      /* ---- Teaching points ---- */
-      .teach-grid {
+      .transcript-list li {
+        border-left: 3px solid transparent;
+        padding-left: 7px;
+      }
+
+      .transcript-list li.t-hw {
+        border-left-color: var(--line-strong);
+      }
+
+      .transcript-list li.t-os {
+        border-left-color: var(--release);
+      }
+
+      .transcript-list li.t-loop {
+        border-left-color: var(--press);
+      }
+
+      .transcript-list li.t-stage {
+        border-left-color: var(--press);
+      }
+
+      .transcript-list li.t-callback {
+        border-left-color: var(--command);
+        color: var(--command);
+      }
+
+      .transcript-list li.t-value {
+        border-left-color: var(--command);
+        font-weight: 700;
+      }
+
+      .transcript-list li.t-cancel {
+        border-left-color: var(--cancel);
+        color: var(--cancel);
+      }
+
+      /* ============ Ghi chú ============ */
+
+      .tap-note {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px 24px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
       }
 
-      .teach-grid li {
-        position: relative;
-        padding-left: 22px;
+      .tap-card {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 0.82rem;
         line-height: 1.5;
-        color: #2a2926;
       }
 
-      .teach-grid li::before {
-        content: '›';
-        position: absolute;
-        left: 4px;
-        top: -1px;
-        color: var(--accent);
-        font-weight: 900;
+      .tap-dot {
+        flex: 0 0 auto;
+        width: 10px;
+        height: 10px;
+        margin-top: 4px;
+        border-radius: 50%;
+        background: var(--press);
       }
 
-      .teach-grid code {
-        font-family:
-          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          'Liberation Mono', 'Courier New', monospace;
-        font-size: 0.85em;
-        background: var(--accent-soft);
-        padding: 1px 5px;
-        border-radius: 5px;
+      .tap-card.command .tap-dot {
+        background: var(--command);
       }
 
       .footer-note {
-        max-width: 60rem;
+        max-width: 940px;
+        font-size: 0.8rem;
+        line-height: 1.55;
         color: var(--muted);
-        font-size: 0.95rem;
       }
 
-      @media (max-width: 900px) {
-        .panels {
-          grid-template-columns: 1fr;
-        }
-        .teach-grid {
-          grid-template-columns: 1fr;
+      /* ============ Responsive ============ */
+
+      @media (max-width: 1080px) {
+        .stage-head h3 {
+          font-size: 0.85rem;
         }
       }
 
-      @media (max-width: 560px) {
+      @media (max-width: 960px) {
+        .stage-row {
+          flex-direction: column;
+        }
+
+        .stage svg.inset {
+          max-width: 340px;
+          margin: 0 auto;
+        }
+
+        .flow-pipe {
+          flex-basis: auto;
+          width: 6px;
+          height: 22px;
+          margin: 0 auto;
+        }
+
+        .flow-pipe::after {
+          top: auto;
+          right: 50%;
+          bottom: -2px;
+          border: 6px solid transparent;
+          border-top-color: var(--line-strong);
+          transform: translateX(50%);
+        }
+
+        .lesson-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .tap-note {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 520px) {
         main {
-          padding-top: 36px;
+          padding-inline: 10px;
         }
-        .card {
-          border-radius: 20px;
-          box-shadow: 6px 6px 0 var(--ink);
+
+        .control-bar {
+          gap: 8px;
         }
-        .scenario-row button,
-        .scenario-row select {
+
+        .reset {
+          margin-left: 0;
           width: 100%;
         }
+
+        pre {
+          padding: 10px;
+          font-size: 0.74rem;
+        }
       }
 
-      @media (prefers-reduced-motion: reduce) {
-        .evt,
-        .pill.flash,
-        .ghost-pointer,
-        .tkbtn {
-          animation: none !important;
-          transition: none !important;
-        }
+      /* Chế độ giảm chuyển động: điều khiển bằng lớp trên <html> (toggle
+         "Giảm chuyển động" trong thanh điều khiển; mặc định lấy theo
+         prefers-reduced-motion lúc tải trang). Không dùng media query trực
+         tiếp để người dùng luôn có thể bật/tắt lại bằng một cú click, kể cả
+         khi trình duyệt báo sai. */
+      html.reduced-motion *,
+      html.reduced-motion *::before,
+      html.reduced-motion *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.001ms !important;
+      }
+
+      .motion-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.74rem;
+        font-weight: 700;
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      .motion-toggle input {
+        accent-color: var(--press);
+        margin: 0;
+        cursor: pointer;
       }
     </style>
   </head>
   <body>
     <main>
-      <a class="back-link" href="./../">/2026</a>
+      <header class="page-head">
+        <a href="../../">Archive</a>
+        <h1>Điều gì xảy ra bên trong khi click một nút Tkinter</h1>
+        <p class="intro">
+          Nhấn giữ rồi thả nút <strong>"Bấm tôi"</strong> ở stage 5 và quan sát
+          cả chuỗi: công tắc trong chuột đóng mạch điện, tín hiệu chạy dọc cáp,
+          OS đẩy event vào <em>event queue</em>, còn <code>mainloop()</code> —
+          cứ mỗi nhịp lại quay trọn một vòng để kiểm tra — tự đến lấy từng event
+          ra để xử lý. Kéo tốc độ xuống 0.25× để thấy điểm mấu chốt: nút chỉ lún
+          xuống khi <code>mainloop()</code> xử lý <code>ButtonPress</code>, chứ
+          không phải ngay lúc ngón tay nhấn chuột.
+        </p>
+      </header>
 
-      <h1>Điều gì thực sự xảy ra khi bạn click một widget button Tkinter</h1>
-      <h3 class="header-note">
-        Hướng dẫn tương tác về con đường từ một cú click chuột thật đến callback
-        Python của bạn, trong Tkinter của Python (lớp bao quanh Tcl/Tk).
-      </h3>
-      <p class="header-note">
-        Tự nhấn thử widget button mô phỏng, đi qua từng stage bên trong một bước
-        một lúc, hoặc chạy một scenario. Hãy để ý cách một lần press chỉ làm nút
-        lõm vào, còn command chỉ chạy khi release rơi vào bên trong sau một lần
-        press hợp lệ.
-      </p>
+      <section class="panel" aria-labelledby="scene-title">
+        <div class="stage-row">
+          <!-- Stage 1: chuột -->
+          <article class="stage" aria-labelledby="s1-title">
+            <header class="stage-head">
+              <span class="kicker">Stage 1 · Phần cứng</span>
+              <h3 id="s1-title">Chuột — mạch điện</h3>
+            </header>
+            <svg
+              class="inset mouse-svg"
+              id="mouse-svg"
+              viewBox="0 0 220 150"
+              role="img"
+              aria-label="Sơ đồ mạch điện bên trong chuột: pin, công tắc, đèn LED"
+            >
+              <!-- thân chuột -->
+              <path
+                d="M110 14 C146 14 166 40 166 80 C166 118 144 140 110 140 C76 140 54 118 54 80 C54 40 74 14 110 14 Z"
+                fill="var(--panel-soft)"
+                stroke="var(--line-strong)"
+                stroke-width="2"
+              />
+              <path
+                d="M110 16 V46"
+                stroke="var(--line)"
+                stroke-width="1.5"
+                fill="none"
+              />
+              <path
+                d="M60 50 Q86 46 110 46"
+                stroke="var(--line)"
+                stroke-width="1.5"
+                fill="none"
+              />
+              <ellipse
+                class="press-flash"
+                cx="85"
+                cy="31"
+                rx="19"
+                ry="11"
+                fill="var(--press)"
+              />
+              <!-- dây mạch -->
+              <path
+                class="wire"
+                d="M84 60 V108 H104 M112 108 H140 V84 M140 68 V60 H122 M100 60 H84"
+                fill="none"
+                stroke="var(--line-strong)"
+                stroke-width="2"
+              />
+              <path
+                class="current"
+                d="M84 60 V108 H104 M112 108 H140 V84 M140 68 V60 H122 M100 60 H84"
+                fill="none"
+                stroke="var(--press)"
+                stroke-width="2.5"
+              />
+              <!-- pin -->
+              <line
+                x1="104"
+                y1="98"
+                x2="104"
+                y2="118"
+                stroke="var(--ink)"
+                stroke-width="2.5"
+              />
+              <line
+                x1="112"
+                y1="103"
+                x2="112"
+                y2="113"
+                stroke="var(--ink)"
+                stroke-width="4"
+              />
+              <text
+                x="108"
+                y="132"
+                font-size="8"
+                fill="var(--muted)"
+                text-anchor="middle"
+              >
+                pin
+              </text>
+              <!-- công tắc -->
+              <line
+                class="lever"
+                x1="100"
+                y1="60"
+                x2="122"
+                y2="60"
+                stroke="var(--ink)"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              />
+              <circle cx="100" cy="60" r="2.5" fill="var(--ink)" />
+              <circle cx="122" cy="60" r="2.5" fill="var(--ink)" />
+              <text
+                x="107"
+                y="42"
+                font-size="8"
+                fill="var(--muted)"
+                text-anchor="middle"
+              >
+                công tắc
+              </text>
+              <!-- tia lửa -->
+              <g
+                class="spark"
+                id="spark"
+                stroke="#f4c430"
+                stroke-width="2"
+                stroke-linecap="round"
+              >
+                <line x1="122" y1="52" x2="122" y2="45" />
+                <line x1="127" y1="55" x2="132" y2="50" />
+                <line x1="117" y1="55" x2="112" y2="50" />
+                <line x1="128" y1="61" x2="134" y2="63" />
+              </g>
+              <!-- LED -->
+              <circle class="led-glow" cx="140" cy="76" r="14" fill="#f4c430" />
+              <circle
+                class="led-body"
+                cx="140"
+                cy="76"
+                r="7"
+                stroke="var(--ink)"
+                stroke-width="1.5"
+              />
+              <text x="156" y="79" font-size="8" fill="var(--muted)">LED</text>
+            </svg>
+            <p class="stage-note">
+              Nhấn chuột = đóng công tắc, dòng điện chạy (vệt xanh chuyển động),
+              LED sáng. Thả chuột = mở công tắc. Đây là phần vật lý — không có
+              "event" nào ở đây cả.
+            </p>
+          </article>
 
-      <!-- CONTROLS -->
-      <section class="card controls" aria-labelledby="controls-title">
-        <h2 id="controls-title">Bảng điều khiển</h2>
-        <div class="scenario-row">
-          <label class="field" for="scenarioSelect">
-            Scenario
-            <select id="scenarioSelect" aria-label="Chọn một scenario">
-              <option value="success">Click thành công</option>
-              <option value="releaseOutside">
-                Press, rồi release bên ngoài
-              </option>
-              <option value="dragBack">
-                Press, kéo ra ngoài, kéo về, release bên trong
-              </option>
-              <option value="disabled">Widget button bị disabled</option>
-              <option value="space">Kích hoạt bằng phím Space</option>
-            </select>
-          </label>
-          <button type="button" id="runButton">Chạy scenario</button>
-          <button type="button" class="secondary" id="stepButton">
-            Bước nội bộ tiếp theo
-          </button>
-          <button type="button" class="secondary" id="resetButton">
-            Đặt lại
-          </button>
-          <label class="toggle">
-            <input type="checkbox" id="disabledToggle" />
-            Disable widget button
-          </label>
-        </div>
-        <small class="status-line" id="statusLine" aria-live="polite">
-          Mẹo: thử press vào nút, kéo chuột ra khỏi nó, rồi release — command sẽ
-          không chạy.
-        </small>
-      </section>
+          <div class="flow-pipe" aria-hidden="true"></div>
 
-      <!-- FOUR PANELS -->
-      <div class="panels">
-        <!-- Panel 1: Python code -->
-        <section class="card" aria-labelledby="code-title">
-          <h2 id="code-title">1. Code Python</h2>
-          <small
-            >Dòng được tô sáng cho biết mô phỏng đang chạm tới phần nào ngay lúc
-            này.</small
-          >
-          <pre class="code-block" id="codeBlock" aria-label="Ví dụ Tkinter"></pre>
-        </section>
+          <!-- Stage 2: cáp -->
+          <article class="stage" aria-labelledby="s2-title">
+            <header class="stage-head">
+              <span class="kicker">Stage 2 · Truyền dẫn</span>
+              <h3 id="s2-title">Cáp — tín hiệu điện</h3>
+            </header>
+            <svg
+              class="inset"
+              id="cable-svg"
+              viewBox="0 0 220 150"
+              role="img"
+              aria-label="Tín hiệu chạy dọc cáp từ chuột đến máy tính"
+            >
+              <!-- đầu cắm phía chuột -->
+              <rect
+                x="8"
+                y="58"
+                width="22"
+                height="34"
+                rx="4"
+                fill="var(--panel-soft)"
+                stroke="var(--line-strong)"
+                stroke-width="2"
+              />
+              <text
+                x="19"
+                y="106"
+                font-size="8"
+                fill="var(--muted)"
+                text-anchor="middle"
+              >
+                chuột
+              </text>
+              <!-- máy tính -->
+              <rect
+                x="170"
+                y="40"
+                width="42"
+                height="54"
+                rx="4"
+                fill="var(--panel-soft)"
+                stroke="var(--line-strong)"
+                stroke-width="2"
+              />
+              <rect
+                class="port-screen"
+                id="port-screen"
+                x="176"
+                y="46"
+                width="30"
+                height="34"
+                rx="2"
+              />
+              <rect
+                x="184"
+                y="94"
+                width="14"
+                height="8"
+                fill="var(--line-strong)"
+              />
+              <text
+                x="191"
+                y="116"
+                font-size="8"
+                fill="var(--muted)"
+                text-anchor="middle"
+              >
+                máy tính
+              </text>
+              <!-- cáp -->
+              <path
+                id="cable-path"
+                d="M30 75 C70 75 62 112 106 112 C150 112 142 45 170 68"
+                fill="none"
+                stroke="var(--line-strong)"
+                stroke-width="4"
+                stroke-linecap="round"
+              />
+              <path
+                class="comet"
+                id="comet"
+                d="M30 75 C70 75 62 112 106 112 C150 112 142 45 170 68"
+                pathLength="100"
+              />
+            </svg>
+            <p class="stage-note">
+              Mỗi lần nhấn/thả, một xung tín hiệu chạy về máy tính:
+              <span style="color: var(--press); font-weight: 700">xanh</span> =
+              nhấn,
+              <span style="color: var(--release); font-weight: 700">cam</span>
+              = thả.
+            </p>
+          </article>
 
-        <!-- Panel 2: Simulated Tk window -->
-        <section class="card" aria-labelledby="window-title">
-          <h2 id="window-title">2. Cửa sổ Tk mô phỏng</h2>
-          <small
-            >Chuột và bàn phím thật hoạt động ở đây: hover, press, kéo vào/ra,
-            release, hoặc đưa focus vào nó rồi nhấn Space.</small
-          >
-          <div class="stage">
-            <div class="ghost-pointer" id="ghostPointer" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 20 20">
-                <path
-                  d="M2 2 L2 15 L6 11 L9 17 L11 16 L8 10 L14 10 Z"
-                  fill="#151515"
-                  stroke="#fff"
-                  stroke-width="1"
-                />
-              </svg>
+          <div class="flow-pipe" aria-hidden="true"></div>
+
+          <!-- Stage 3: event queue -->
+          <article class="stage" aria-labelledby="s3-title">
+            <header class="stage-head">
+              <span class="kicker">Stage 3 · Hệ điều hành</span>
+              <h3 id="s3-title">OS — event queue</h3>
+            </header>
+            <div class="queue-box">
+              <div
+                class="queue-tube"
+                id="queue-tube"
+                aria-label="Event queue (FIFO)"
+              ></div>
+              <div class="flag-cell" id="flag-cell">
+                <span class="flag-q">có sự kiện?</span>
+                <span class="flag-value" id="flag-value">False</span>
+              </div>
             </div>
+            <p class="stage-note">
+              OS dịch tín hiệu điện thành event <code>ButtonPress</code> /
+              <code>ButtonRelease</code> rồi xếp vào queue (FIFO). Cờ bên cạnh
+              chỉ mang tính minh hoạ — <code>mainloop()</code> đọc thẳng từ
+              queue.
+            </p>
+          </article>
+
+          <div class="flow-pipe" aria-hidden="true"></div>
+
+          <!-- Stage 4: mainloop -->
+          <article class="stage" aria-labelledby="s4-title">
+            <header class="stage-head">
+              <span class="kicker">Stage 4 · Vòng lặp Tk</span>
+              <h3 id="s4-title">mainloop()</h3>
+            </header>
+            <svg
+              class="inset loop-svg"
+              id="loop-svg"
+              viewBox="0 0 220 150"
+              role="img"
+              aria-label="mainloop lặp mãi: mỗi nhịp quay trọn một vòng để kiểm tra event queue"
+            >
+              <circle
+                cx="110"
+                cy="72"
+                r="44"
+                fill="none"
+                stroke="var(--line)"
+                stroke-width="2"
+                stroke-dasharray="2 5"
+              />
+              <!-- vạch mốc + trục quay: giúp mắt bắt được chuyển động quay -->
+              <g stroke="var(--line)" stroke-width="2" aria-hidden="true">
+                <line x1="110" y1="24" x2="110" y2="32" />
+                <line x1="110" y1="112" x2="110" y2="120" />
+                <line x1="62" y1="72" x2="70" y2="72" />
+                <line x1="150" y1="72" x2="158" y2="72" />
+              </g>
+              <circle cx="110" cy="72" r="3" fill="var(--line-strong)" />
+              <g id="loop-rotor">
+                <path
+                  class="rotor-arc"
+                  d="M110 28 A44 44 0 1 1 71.9 50"
+                  fill="none"
+                  stroke-width="5"
+                  stroke-linecap="round"
+                />
+                <polygon
+                  class="rotor-head"
+                  points="77.9,39.6 76.7,52.8 67.1,47.3"
+                />
+              </g>
+              <!-- tia "ngó" về queue -->
+              <g
+                class="peek"
+                id="peek"
+                stroke="var(--press)"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <line x1="60" y1="72" x2="26" y2="72" />
+                <circle
+                  cx="22"
+                  cy="72"
+                  r="4"
+                  fill="var(--press)"
+                  stroke="none"
+                />
+              </g>
+              <!-- tia phát event tới app -->
+              <g
+                class="dispatch-ray"
+                id="dispatch-ray"
+                stroke="var(--command)"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <line x1="158" y1="72" x2="198" y2="72" />
+                <polygon
+                  points="198,66 210,72 198,78"
+                  fill="var(--command)"
+                  stroke="none"
+                />
+              </g>
+              <text
+                class="loop-chip"
+                id="loop-chip"
+                x="110"
+                y="76"
+                font-size="11"
+                font-weight="800"
+                font-family="ui-monospace, Menlo, monospace"
+                text-anchor="middle"
+                fill="var(--ink)"
+              ></text>
+              <text
+                x="110"
+                y="140"
+                font-size="11"
+                font-weight="700"
+                font-family="ui-monospace, Menlo, monospace"
+                text-anchor="middle"
+                fill="var(--muted)"
+              >
+                mainloop()
+              </text>
+            </svg>
+            <div class="loop-badge" id="loop-badge" role="status">
+              Callback đang chạy — mainloop tạm dừng. Callback chạy lâu = GUI
+              "đơ".
+            </div>
+            <p class="stage-note">
+              Chạy ngay từ khi trang tải: nghỉ một nhịp rồi quay nhanh trọn một
+              vòng. Mỗi vòng quay = một lần kiểm tra queue (chớp về stage 3); có
+              event thì lấy ra và gửi cho widget.
+            </p>
+          </article>
+
+          <div class="flow-pipe" aria-hidden="true"></div>
+
+          <!-- Stage 5: app Tk -->
+          <article class="stage" aria-labelledby="s5-title">
+            <header class="stage-head">
+              <span class="kicker">Stage 5 · Widget &amp; callback</span>
+              <h3 id="s5-title">Ứng dụng Tk</h3>
+            </header>
             <div class="tk-window">
-              <div class="tk-titlebar">
-                <span class="tk-dot r"></span>
-                <span class="tk-dot y"></span>
-                <span class="tk-dot g"></span>
+              <div class="tk-titlebar" aria-hidden="true">
+                <span class="tk-dot"></span>
+                <span class="tk-dot"></span>
+                <span class="tk-dot"></span>
                 <span class="tk-title">tk</span>
               </div>
               <div class="tk-body">
-                <button
-                  type="button"
-                  class="tkbtn raised"
-                  id="tkButton"
-                  aria-label="Nhấn tôi (widget button Tkinter mô phỏng)"
+                <span class="tk-label" id="tk-label" aria-live="polite"
+                  >Đã click 0 lần</span
                 >
-                  Nhấn tôi
+                <button class="tk-button" id="tk-button" type="button">
+                  Bấm tôi
                 </button>
-                <div class="tk-status" id="tkStatus">Sẵn sàng</div>
               </div>
             </div>
-          </div>
+            <div class="gate-row">
+              <span class="gate-wrap" id="gate-wrap">
+                <svg
+                  class="gate-svg"
+                  id="gate-svg"
+                  viewBox="0 0 120 44"
+                  aria-hidden="true"
+                >
+                  <line
+                    x1="6"
+                    y1="22"
+                    x2="114"
+                    y2="22"
+                    stroke="var(--line-strong)"
+                    stroke-width="6"
+                    stroke-linecap="round"
+                  />
+                  <line
+                    class="gate-flow"
+                    x1="6"
+                    y1="22"
+                    x2="114"
+                    y2="22"
+                    stroke="var(--command)"
+                    stroke-width="3"
+                  />
+                  <line
+                    class="gate-bar"
+                    x1="60"
+                    y1="8"
+                    x2="60"
+                    y2="36"
+                    stroke-width="5"
+                    stroke-linecap="round"
+                  />
+                  <text
+                    class="gate-x"
+                    x="60"
+                    y="14"
+                    font-size="14"
+                    font-weight="900"
+                    text-anchor="middle"
+                    fill="var(--cancel)"
+                  >
+                    ✕
+                  </text>
+                </svg>
+                <span class="gate-label">command=</span>
+              </span>
+              <code class="fn-chip" id="handle-chip">handle_click()</code>
+              <code class="fn-chip" id="count-chip">count = 0</code>
+            </div>
+            <p class="stage-note">
+              Nhấn giữ rồi thả <em>bên trong</em> nút → cổng
+              <code>command=</code> mở, callback chạy. Thử cả: nhấn bên trong,
+              kéo con trỏ ra ngoài rồi mới thả.
+            </p>
+          </article>
+        </div>
+
+        <div class="control-bar">
+          <label for="speed-slider">Tốc độ hoạt hình</label>
+          <input
+            type="range"
+            id="speed-slider"
+            min="0.25"
+            max="2"
+            step="0.05"
+            value="1"
+          />
+          <span class="speed-readout" id="speed-readout">1×</span>
+          <span class="speed-chips" role="group" aria-label="Tốc độ đặt sẵn">
+            <button class="chip" type="button" data-speed="0.25">0.25×</button>
+            <button class="chip" type="button" data-speed="0.5">0.5×</button>
+            <button class="chip is-active" type="button" data-speed="1">
+              1×
+            </button>
+            <button class="chip" type="button" data-speed="2">2×</button>
+          </span>
+          <label class="motion-toggle">
+            <input type="checkbox" id="motion-toggle" />
+            Giảm chuyển động
+          </label>
+          <button class="reset" id="reset-button" type="button">Reset</button>
+        </div>
+      </section>
+
+      <div class="lesson-grid">
+        <section class="panel" aria-labelledby="code-title">
+          <h2 id="code-title">Code Python tương ứng</h2>
+          <pre><code>import tkinter as tk
+
+count = 0
+
+def handle_click():
+    global count
+    count += 1
+    label.config(text=f"Đã click {count} lần")
+
+root = tk.Tk()
+
+label = tk.Label(root, text="Đã click 0 lần")
+label.pack(pady=8)
+
+button = tk.Button(root, text="Bấm tôi", command=handle_click)
+button.pack(pady=8)
+
+root.mainloop()</code></pre>
+          <p class="code-note">
+            <code>root.mainloop()</code> chính là vòng quay ở stage 4: nó lấy
+            từng event ra khỏi queue và điều phối. <code>handle_click</code>
+            chỉ được gọi khi Tk chấp nhận cả chuỗi press-bên-trong +
+            release-bên-trong.
+          </p>
         </section>
 
-        <!-- Panel 3: Event queue and timeline -->
-        <section class="card" aria-labelledby="timeline-title">
-          <h2 id="timeline-title">3. Event queue &amp; timeline</h2>
-          <div class="legend">
-            <span><i class="swatch low"></i>Tk event cấp thấp</span>
-            <span><i class="swatch stage"></i>Stage trong pipeline</span>
-            <span><i class="swatch high"></i>command callback cấp cao</span>
-          </div>
-          <ul class="timeline" id="timeline" aria-live="polite"></ul>
-          <small>
-            Pipeline: hành động người dùng → OS event → Tk event queue → binding
-            matcher → Button class binding → invoke → Tcl command → _tkinter
-            bridge → Python callback.
-          </small>
-        </section>
-
-        <!-- Panel 4: State table + explanation -->
-        <section class="card" aria-labelledby="state-title">
-          <h2 id="state-title">4. State &amp; giải thích</h2>
-          <table class="state-table">
-            <thead>
-              <tr>
-                <th>Biến</th>
-                <th>Giá trị</th>
-              </tr>
-            </thead>
-            <tbody id="stateBody"></tbody>
-          </table>
-          <div class="explain" id="explain">
-            Chưa có gì xảy ra. Hãy press vào nút, đi qua từng bước, hoặc chạy một
-            scenario.
-          </div>
-          <div class="result-grid">
-            <div class="result-cell no" id="resClicked">
-              <span>Đã click?</span>
-              <strong>Chưa</strong>
-            </div>
-            <div class="result-cell no" id="resCommand">
-              <span>Command đã gọi?</span>
-              <strong>Chưa</strong>
-            </div>
-            <div class="result-why" id="resWhy">
-              Vì sao: chưa có tương tác nào.
-            </div>
-          </div>
+        <section class="panel" aria-labelledby="transcript-title">
+          <h2 id="transcript-title">Nhật ký sự kiện</h2>
+          <ol
+            class="transcript-list"
+            id="event-transcript"
+            aria-live="polite"
+          ></ol>
         </section>
       </div>
 
-      <!-- Teaching points -->
-      <section class="card" aria-labelledby="teach-title">
-        <h2 id="teach-title">Ý chính</h2>
-        <ul class="teach-grid">
-          <li>Tkinter là lớp bao của Python quanh bộ công cụ GUI Tcl/Tk.</li>
-          <li>
-            Một <code>Button</code> lưu callback <code>command</code> của bạn bằng
-            cách đăng ký Python callable đó thành một Tcl command thông qua Tkinter.
-          </li>
-          <li>
-            <code>root.mainloop()</code> chạy event loop của GUI, lấy các event ra
-            khỏi queue của Tk và điều phối chúng.
-          </li>
-          <li>Một widget button chưa được coi là đã "click" chỉ vì chuột nhấn xuống.</li>
-          <li>Một cú click bình thường = press bên trong <em>và</em> release bên trong.</li>
-          <li>Press bên trong rồi release bên ngoài sẽ hủy command.</li>
-          <li>
-            <code>command=...</code> là một callback cấp cao, mang nghĩa "kích hoạt
-            nút này" — nó không nhận đối tượng event nào.
-          </li>
-          <li>
-            <code>.bind("&lt;ButtonPress-1&gt;", ...)</code> là một event binding
-            cấp thấp hơn, có nhận một đối tượng event.
-          </li>
-          <li>
-            <em>class binding</em> của Tk cung cấp hành vi mặc định cho button, nên
-            bạn không phải tự bind press/release cho một button thông thường.
-          </li>
-          <li>
-            Một <code>command</code> chạy lâu sẽ chặn event loop — toàn bộ GUI đơ
-            cho đến khi nó trả về.
-          </li>
-        </ul>
-      </section>
-
       <p class="footer-note">
-        Trang này là một mô hình giảng dạy tĩnh. Tk thật có nhiều chi tiết tinh
-        tế hơn (grab, <code>&lt;Enter&gt;</code>/<code>&lt;Leave&gt;</code> khi
-        đang giữ nút, khác biệt giữa các nền tảng), nhưng quy tắc press-bên-trong
-        / release-bên-trong và sự phân biệt giữa command và event thì được mô tả
-        trung thực.
+        Trang này là một mô hình đã được đơn giản hóa. Thực tế
+        <code>mainloop()</code> không "quay" liên tục như trong mô hình mà
+        <em>block (chờ/đợi)</em> cho đến khi có event; vòng quay ở đây là cách
+        mô hình hoá việc nó liên tục là bên chủ động lấy event ra khỏi queue. Tk
+        thật ra còn nhiều chi tiết khác nữa (grab,
+        <code>&lt;Enter&gt;</code>/<code>&lt;Leave&gt;</code>
+        khi đang giữ nút, khác biệt giữa các nền tảng), nhưng quy tắc
+        press-bên-trong / release-bên-trong và việc callback, tức là hàm
+        handle_click chặn event loop là đúng với thực tế.
       </p>
     </main>
 
     <script>
-      'use strict';
+      (() => {
+        /* ---------- Tham chiếu DOM ---------- */
+        const rootEl = document.documentElement;
+        const mouseSvg = document.querySelector('#mouse-svg');
+        const sparkEl = document.querySelector('#spark');
+        const cometEl = document.querySelector('#comet');
+        const portScreen = document.querySelector('#port-screen');
+        const queueTube = document.querySelector('#queue-tube');
+        const flagCell = document.querySelector('#flag-cell');
+        const flagValue = document.querySelector('#flag-value');
+        const loopSvg = document.querySelector('#loop-svg');
+        const loopRotor = document.querySelector('#loop-rotor');
+        const peekEl = document.querySelector('#peek');
+        const dispatchRay = document.querySelector('#dispatch-ray');
+        const loopChip = document.querySelector('#loop-chip');
+        const loopBadge = document.querySelector('#loop-badge');
+        const tkLabel = document.querySelector('#tk-label');
+        const tkButton = document.querySelector('#tk-button');
+        const gateSvg = document.querySelector('#gate-svg');
+        const gateWrap = document.querySelector('#gate-wrap');
+        const handleChip = document.querySelector('#handle-chip');
+        const countChip = document.querySelector('#count-chip');
+        const transcript = document.querySelector('#event-transcript');
+        const speedSlider = document.querySelector('#speed-slider');
+        const speedReadout = document.querySelector('#speed-readout');
+        const speedChips = [...document.querySelectorAll('.chip[data-speed]')];
+        const motionToggle = document.querySelector('#motion-toggle');
+        const resetButton = document.querySelector('#reset-button');
 
-      // ---- Source code shown in panel 1 ----
-      const codeLines = [
-        [['kw', 'import'], ['t', ' tkinter '], ['kw', 'as'], ['t', ' tk']],
-        [],
-        [['kw', 'def'], ['fn', ' handle_click'], ['t', '():']],
-        [['t', '    label['], ['str', '"text"'], ['t', '] = '], ['str', '"Clicked!"']],
-        [],
-        [['t', 'root = tk.'], ['fn', 'Tk'], ['t', '()']],
-        [
-          ['t', 'button = tk.'],
-          ['fn', 'Button'],
-          ['t', '(root, text='],
-          ['str', '"Click me"'],
-          ['t', ', command=handle_click)'],
-        ],
-        [['t', 'button.'], ['fn', 'pack'], ['t', '()']],
-        [['t', 'root.'], ['fn', 'mainloop'], ['t', '()']],
-      ];
-      const LINE_CALLBACK = [2, 3];
-      const LINE_REGISTER = 6;
-      const LINE_LOOP = 8;
+        /* ---------- Trạng thái toàn cục ---------- */
+        const CANCELLED = Symbol('cancelled');
+        const reduceMotionQuery = window.matchMedia(
+          '(prefers-reduced-motion: reduce)',
+        );
 
-      const els = {
-        codeBlock: document.getElementById('codeBlock'),
-        timeline: document.getElementById('timeline'),
-        stateBody: document.getElementById('stateBody'),
-        explain: document.getElementById('explain'),
-        tkButton: document.getElementById('tkButton'),
-        tkStatus: document.getElementById('tkStatus'),
-        ghost: document.getElementById('ghostPointer'),
-        statusLine: document.getElementById('statusLine'),
-        scenarioSelect: document.getElementById('scenarioSelect'),
-        runButton: document.getElementById('runButton'),
-        stepButton: document.getElementById('stepButton'),
-        resetButton: document.getElementById('resetButton'),
-        disabledToggle: document.getElementById('disabledToggle'),
-        resClicked: document.getElementById('resClicked'),
-        resCommand: document.getElementById('resCommand'),
-        resWhy: document.getElementById('resWhy'),
-      };
-
-      // ---- State model ----
-      const STATE_VARS = [
-        ['pointerInside', 'Con trỏ nằm trên nút'],
-        ['mouseDown', 'Đang giữ nút chuột'],
-        ['armed', 'Đã armed (press đang hiệu lực bên trong)'],
-        ['focused', 'Focus bàn phím'],
-        ['disabled', 'Đã disabled'],
-        ['visualRelief', 'Relief hiển thị'],
-        ['commandInvoked', 'Command đã được invoke'],
-      ];
-
-      function freshState(disabled) {
-        return {
-          pointerInside: false,
-          mouseDown: false,
-          armed: false,
-          focused: false,
-          disabled: !!disabled,
-          visualRelief: 'raised', // 'raised' | 'sunken'
-          commandInvoked: false,
+        const state = {
+          speed: 1,
+          epoch: 0, // tăng khi Reset — huỷ mọi timeline
+          queue: [], // event queue của "OS": { kind, inside }
+          count: 0,
+          reduceMotion: false, // đặt qua setReduceMotion() bên dưới
         };
-      }
 
-      let state = freshState(false);
-      let result = { clicked: false, command: false, why: 'Chưa có tương tác nào.' };
-      let activeLines = [];
+        let pressSeq = 0; // tăng mỗi pointerdown — huỷ hardware timeline đang chạy
+        let dispatching = false;
+        let loopPaused = false;
+        let activePointerId = null;
+        let keyHeld = false;
 
-      // interaction / animation guards
-      let isRunning = false; // scenario animation in progress
-      let manualPressActive = false;
-      let spaceHeld = false;
-      let scenarioTimer = null;
+        /* ---------- Giảm chuyển động ----------
+           Mặc định theo prefers-reduced-motion, nhưng người dùng luôn có thể
+           bật/tắt bằng toggle (Reset KHÔNG động vào lựa chọn này). */
 
-      // step mode
-      let stepIndex = 0;
-      let stepModeActive = false;
+        let motionOverridden = false;
 
-      const stepDelay = 950;
+        function setReduceMotion(on) {
+          state.reduceMotion = on;
+          motionToggle.checked = on;
+          rootEl.classList.toggle('reduced-motion', on);
+        }
 
-      // ---- Rendering ----
-      function buildStateTable() {
-        els.stateBody.replaceChildren();
-        STATE_VARS.forEach(([key, label]) => {
-          const tr = document.createElement('tr');
-          const nameTd = document.createElement('td');
-          const nameSpan = document.createElement('span');
-          nameSpan.className = 'var-name';
-          nameSpan.textContent = key;
-          const desc = document.createElement('div');
-          desc.innerHTML =
-            '<small style="font-family:inherit">' + label + '</small>';
-          nameTd.appendChild(nameSpan);
-          nameTd.appendChild(desc);
-
-          const valTd = document.createElement('td');
-          const pill = document.createElement('span');
-          pill.className = 'pill';
-          pill.id = 'pill-' + key;
-          valTd.appendChild(pill);
-
-          tr.appendChild(nameTd);
-          tr.appendChild(valTd);
-          els.stateBody.appendChild(tr);
+        motionToggle.addEventListener('change', () => {
+          motionOverridden = true;
+          setReduceMotion(motionToggle.checked);
         });
-      }
 
-      function renderCode() {
-        els.codeBlock.replaceChildren();
-        codeLines.forEach((line, index) => {
-          const span = document.createElement('span');
-          span.className =
-            'code-line' + (activeLines.includes(index) ? ' active' : '');
-          if (line.length === 0) {
-            span.textContent = ' ';
-          } else {
-            line.forEach(([type, text]) => {
-              if (type === 't') {
-                span.appendChild(document.createTextNode(text));
-              } else {
-                const t = document.createElement('span');
-                t.className =
-                  type === 'kw'
-                    ? 'tok-kw'
-                    : type === 'fn'
-                      ? 'tok-fn'
-                      : type === 'str'
-                        ? 'tok-str'
-                        : 'tok-cmt';
-                t.textContent = text;
-                span.appendChild(t);
+        reduceMotionQuery.addEventListener?.('change', event => {
+          if (!motionOverridden) setReduceMotion(event.matches);
+        });
+
+        /* ---------- Tiện ích ---------- */
+
+        function replay(el, cls) {
+          el.classList.remove(cls);
+          // Ép reflow để animation một-lần chạy lại được.
+          el.getBoundingClientRect();
+          el.classList.add(cls);
+        }
+
+        // Chờ `ms` (đã nhân tốc độ) bằng rAF; tốc độ đổi giữa chừng vẫn áp
+        // dụng ngay vì mỗi frame cộng dồn dt * state.speed.
+        function wait(ms, isCancelled) {
+          return new Promise(resolve => {
+            let acc = 0;
+            let last = performance.now();
+            function frame(now) {
+              if (isCancelled()) {
+                resolve(CANCELLED);
+                return;
               }
-            });
-          }
-          els.codeBlock.appendChild(span);
-        });
-      }
+              const dt = Math.min(now - last, 100);
+              last = now;
+              acc += dt * state.speed;
+              if (state.reduceMotion || acc >= ms) {
+                resolve(null);
+                return;
+              }
+              requestAnimationFrame(frame);
+            }
+            requestAnimationFrame(frame);
+          });
+        }
 
-      function pillFor(key) {
-        const value = state[key];
-        if (key === 'visualRelief') {
-          return {
-            text: value,
-            cls: value === 'sunken' ? 'warn' : 'off',
+        function say(text, kind) {
+          const li = document.createElement('li');
+          li.textContent = text;
+          if (kind) li.classList.add(`t-${kind}`);
+          transcript.append(li);
+          while (transcript.children.length > 60) {
+            transcript.firstElementChild.remove();
+          }
+          transcript.scrollTop = transcript.scrollHeight;
+        }
+
+        function resetTranscript() {
+          transcript.replaceChildren();
+          say(
+            'Sẵn sàng. mainloop() đang chạy — mỗi nhịp nó quay trọn một vòng để kiểm tra event queue. ' +
+              'Hãy nhấn giữ rồi thả nút "Bấm tôi" ở stage 5.',
+            'loop',
+          );
+        }
+
+        /* ---------- Tốc độ ---------- */
+
+        function formatSpeed(v) {
+          return `${String(parseFloat(v.toFixed(2)))}×`;
+        }
+
+        function setSpeed(value) {
+          const v = Math.min(2, Math.max(0.25, value));
+          state.speed = v;
+          rootEl.style.setProperty('--speed-dur', String(1 / v));
+          speedSlider.value = String(v);
+          speedReadout.textContent = formatSpeed(v);
+          speedChips.forEach(chip => {
+            chip.classList.toggle(
+              'is-active',
+              Math.abs(parseFloat(chip.dataset.speed) - v) < 0.001,
+            );
+          });
+        }
+
+        speedSlider.addEventListener('input', () => {
+          setSpeed(parseFloat(speedSlider.value));
+        });
+
+        speedChips.forEach(chip => {
+          chip.addEventListener('click', () => {
+            setSpeed(parseFloat(chip.dataset.speed));
+          });
+        });
+
+        /* ---------- Stage 3: queue + cờ ---------- */
+
+        function updateFlag() {
+          const hasEvent = state.queue.length > 0;
+          const text = hasEvent ? 'True' : 'False';
+          if (flagValue.textContent !== text) {
+            flagValue.textContent = text;
+            flagCell.classList.toggle('is-true', hasEvent);
+            replay(flagValue, 'is-flip');
+          }
+        }
+
+        function enqueueEvent(evt) {
+          state.queue.push(evt);
+          const chip = document.createElement('span');
+          chip.className = `q-chip ${evt.kind === 'press' ? 'q-press' : 'q-release'}`;
+          chip.textContent =
+            evt.kind === 'press' ? 'ButtonPress' : 'ButtonRelease';
+          queueTube.append(chip);
+          updateFlag();
+        }
+
+        function consumeChipDom() {
+          const chip = queueTube.firstElementChild;
+          if (!chip) return;
+          chip.classList.add('is-out');
+          const drop = () => chip.remove();
+          chip.addEventListener('animationend', drop, { once: true });
+          setTimeout(drop, 1200); // lưới an toàn
+        }
+
+        /* ---------- Hardware timeline (stage 1 → 3) ---------- */
+
+        // Công tắc là vật lý: bám theo ngón tay, không theo tốc độ hoạt hình.
+        function physicalDown() {
+          mouseSvg.classList.add('is-closed');
+          replay(sparkEl, 'is-spark');
+        }
+
+        function physicalUp() {
+          mouseSvg.classList.remove('is-closed');
+          replay(sparkEl, 'is-spark');
+        }
+
+        const hwPending = [];
+        let hwPumping = false;
+
+        async function runHardware(evt) {
+          const startSeq = pressSeq;
+          const { epoch } = state;
+          const cancelled = () =>
+            startSeq !== pressSeq || epoch !== state.epoch;
+          let committed = false;
+          // Khi bị huỷ giữa chừng (click mới đè lên), vẫn "tua nhanh" phần
+          // logic: event phải vào queue, chỉ phần hoạt hình bị bỏ qua.
+          const commit = () => {
+            if (committed || epoch !== state.epoch) return;
+            committed = true;
+            enqueueEvent(evt);
           };
-        }
-        return {
-          text: value ? 'true' : 'false',
-          cls: value ? 'on' : 'off',
-        };
-      }
+          const isPress = evt.kind === 'press';
+          const eventName = isPress ? 'ButtonPress' : 'ButtonRelease';
 
-      function renderState(flashKeys) {
-        STATE_VARS.forEach(([key]) => {
-          const pill = document.getElementById('pill-' + key);
-          if (!pill) return;
-          const info = pillFor(key);
-          if (pill.textContent !== info.text) {
-            pill.textContent = info.text;
+          // Stage 1 — mạch điện (công tắc đã đóng/mở sẵn trong physicalDown/Up)
+          if (isPress) {
+            say(
+              'Khi nhấn nút chuột — công tắc bên trong đóng mạch, dòng điện chạy, LED sáng.',
+              'hw',
+            );
+          } else {
+            say(
+              evt.inside
+                ? 'Khi thả nút chuột (con trỏ vẫn trong nút) — công tắc mở, mạch ngắt.'
+                : 'Khi thả nút chuột (con trỏ đã ra NGOÀI nút) — công tắc mở, mạch ngắt.',
+              'hw',
+            );
           }
-          pill.className = 'pill ' + info.cls;
-          if (flashKeys && flashKeys.includes(key)) {
-            // restart flash animation
-            pill.classList.remove('flash');
-            void pill.offsetWidth;
-            pill.classList.add('flash');
+          if ((await wait(340, cancelled)) === CANCELLED) return commit();
+
+          // Stage 2 — xung tín hiệu chạy dọc cáp
+          cometEl.classList.remove('is-press', 'is-release');
+          cometEl.classList.add(isPress ? 'is-press' : 'is-release');
+          replay(cometEl, 'is-travel');
+          say(
+            `Xung tín hiệu ${isPress ? 'nhấn' : 'thả'} chạy dọc cáp về máy tính.`,
+            'hw',
+          );
+          if ((await wait(620, cancelled)) === CANCELLED) return commit();
+
+          replay(portScreen, 'is-arrive');
+          if ((await wait(180, cancelled)) === CANCELLED) return commit();
+
+          // Stage 3 — OS tạo event và xếp vào queue
+          commit();
+          say(
+            `OS dịch tín hiệu thành event ${eventName} và đẩy vào event queue. ` +
+              'Nó KHÔNG gọi thẳng chương trình — mainloop() sẽ tự đến lấy.',
+            'os',
+          );
+          await wait(260, cancelled);
+          return undefined;
+        }
+
+        async function pumpHardware() {
+          hwPumping = true;
+          try {
+            while (hwPending.length > 0) {
+              // eslint-disable-next-line no-await-in-loop
+              await runHardware(hwPending.shift());
+            }
+          } finally {
+            hwPumping = false;
+          }
+        }
+
+        function queueHardware(evt) {
+          hwPending.push(evt);
+          if (!hwPumping) pumpHardware();
+        }
+
+        /* ---------- Stage 4: vòng quay mainloop ---------- */
+
+        function setLoopPaused(paused) {
+          loopPaused = paused;
+          loopSvg.classList.toggle('is-paused', paused);
+          loopBadge.classList.toggle('is-shown', paused);
+        }
+
+        function flashPeek() {
+          if (state.reduceMotion) {
+            // Không dùng animation: bật/tắt lớp tĩnh để "chớp" rời rạc.
+            peekEl.classList.remove('is-peek'); // dọn lớp cũ từ chế độ thường
+            peekEl.classList.add('is-peek-hold');
+            setTimeout(() => peekEl.classList.remove('is-peek-hold'), 180);
+          } else {
+            replay(peekEl, 'is-peek');
+          }
+        }
+
+        /* Mô hình quay-rồi-nghỉ: mỗi chu kỳ = NGHỈ (rotor đứng yên) rồi QUAY
+           nhanh trọn một vòng 360°. Một vòng quay = một lần mainloop kiểm
+           tra queue — nên chớp "ngó" và quyết định dequeue xảy ra đúng lúc
+           vòng quay hoàn tất. Rotor luôn quay lại chu kỳ mới, không bao giờ
+           đứng im vĩnh viễn (kể cả ở chế độ giảm chuyển động — khi đó vòng
+           quay chỉ chậm hơn). */
+        const CYCLE_MS = 1500; // một chu kỳ (nghỉ + quay) ở 1×
+        const SPIN_MS = 500; // thời gian quay ở 1×
+        const SPIN_MS_REDUCED = 900; // giảm chuyển động: quay chậm hơn
+
+        let loopPhase = 'rest'; // 'rest' | 'spin'
+        let phaseAcc = 0;
+        let lastTick = performance.now();
+
+        const easeInOut = t =>
+          t < 0.5 ? 2 * t * t : 1 - ((-2 * t + 2) * (-2 * t + 2)) / 2;
+
+        function setRotor(deg) {
+          loopRotor.setAttribute(
+            'transform',
+            `rotate(${deg.toFixed(2)} 110 72)`,
+          );
+        }
+
+        function renderCountAndLabel() {
+          countChip.textContent = `count = ${state.count}`;
+          tkLabel.textContent = `Đã click ${state.count} lần`;
+        }
+
+        function showLoopChip(text) {
+          loopChip.textContent = text;
+          loopChip.classList.add('is-shown');
+        }
+
+        function hideLoopChip() {
+          loopChip.classList.remove('is-shown');
+        }
+
+        async function dispatchEvent_(evt) {
+          const { epoch } = state;
+          const dead = () => epoch !== state.epoch;
+          const isPress = evt.kind === 'press';
+          const eventName = isPress ? 'ButtonPress' : 'ButtonRelease';
+
+          try {
+            consumeChipDom();
+            updateFlag();
+            showLoopChip(eventName);
+            say(`mainloop() lấy ${eventName} ra khỏi event queue.`, 'loop');
+            if ((await wait(420, dead)) === CANCELLED) return;
+
+            replay(dispatchRay, 'is-dispatch');
+
+            if (isPress) {
+              tkButton.classList.add('is-pressed');
+              say(
+                'Tk gửi ButtonPress tới widget button — BÂY GIỜ nút mới lún xuống. ' +
+                  'Ở tốc độ chậm, ta có thể thấy rõ độ trễ giữa ngón tay và giao diện.',
+                'stage',
+              );
+              if ((await wait(480, dead)) === CANCELLED) return;
+            } else if (evt.inside) {
+              tkButton.classList.remove('is-pressed');
+              say(
+                'ButtonRelease bên trong nút → widget được kích hoạt.',
+                'stage',
+              );
+              if ((await wait(360, dead)) === CANCELLED) return;
+
+              gateSvg.classList.add('is-open');
+              say('Cổng command= mở — Tk gọi callback đã đăng ký.', 'callback');
+              if ((await wait(420, dead)) === CANCELLED) return;
+
+              setLoopPaused(true);
+              replay(handleChip, 'is-run');
+              say(
+                'handle_click() đang chạy — mainloop tạm dừng: trong lúc callback ' +
+                  'chưa trả về, không event nào được xử lý.',
+                'callback',
+              );
+              if ((await wait(750, dead)) === CANCELLED) return;
+
+              state.count += 1;
+              renderCountAndLabel();
+              replay(countChip, 'is-pop');
+              replay(tkLabel, 'is-swap');
+              say(
+                `count = ${state.count}; label đổi thành "Đã click ${state.count} lần".`,
+                'value',
+              );
+              if ((await wait(480, dead)) === CANCELLED) return;
+
+              gateSvg.classList.remove('is-open');
+              setLoopPaused(false);
+              say(
+                'Callback trả về — mainloop quay tiếp, chờ event kế.',
+                'loop',
+              );
+            } else {
+              tkButton.classList.remove('is-pressed');
+              gateSvg.classList.add('is-refused');
+              replay(gateWrap, 'is-shake');
+              say(
+                'ButtonRelease bên NGOÀI nút → Tk huỷ kích hoạt: cổng command= ' +
+                  'đóng chặt, handle_click() KHÔNG được gọi, count giữ nguyên.',
+                'cancel',
+              );
+              if ((await wait(650, dead)) === CANCELLED) return;
+              gateSvg.classList.remove('is-refused');
+            }
+
+            hideLoopChip();
+          } finally {
+            if (epoch === state.epoch) {
+              dispatching = false;
+              setLoopPaused(false);
+            }
+          }
+        }
+
+        function onRevolution() {
+          flashPeek();
+          if (state.queue.length > 0 && !dispatching) {
+            dispatching = true;
+            dispatchEvent_(state.queue.shift());
+          }
+        }
+
+        function tick(now) {
+          const dt = Math.min(now - lastTick, 100);
+          lastTick = now;
+          if (!loopPaused) {
+            phaseAcc += dt * state.speed;
+            const spinMs = state.reduceMotion ? SPIN_MS_REDUCED : SPIN_MS;
+            const restMs = Math.max(CYCLE_MS - spinMs, 0);
+            if (loopPhase === 'rest' && phaseAcc >= restMs) {
+              phaseAcc -= restMs;
+              loopPhase = 'spin';
+            }
+            if (loopPhase === 'spin') {
+              if (phaseAcc >= spinMs) {
+                phaseAcc -= spinMs;
+                loopPhase = 'rest';
+                setRotor(0); // kết thúc đúng tư thế ban đầu
+                onRevolution();
+              } else {
+                setRotor(360 * easeInOut(phaseAcc / spinMs));
+              }
+            }
+          }
+          requestAnimationFrame(tick);
+        }
+
+        /* ---------- Theo dõi con trỏ (port từ bản trước) ---------- */
+
+        function isInsideButton(event) {
+          const rect = tkButton.getBoundingClientRect();
+          return (
+            event.clientX >= rect.left &&
+            event.clientX <= rect.right &&
+            event.clientY >= rect.top &&
+            event.clientY <= rect.bottom
+          );
+        }
+
+        function beginPress(event) {
+          if (activePointerId !== null || keyHeld) return;
+          if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+          event.preventDefault();
+          activePointerId = event.pointerId;
+
+          if (tkButton.setPointerCapture) {
+            try {
+              tkButton.setPointerCapture(activePointerId);
+            } catch {
+              // Pointer event tổng hợp (test) có thể không tạo capture được.
+            }
+          }
+
+          pressSeq += 1; // huỷ hardware timeline đang bay (nếu có)
+          tkButton.classList.add('is-aimed');
+          physicalDown();
+          queueHardware({ kind: 'press', inside: true });
+        }
+
+        function trackPress(event) {
+          if (event.pointerId !== activePointerId) return;
+          tkButton.classList.toggle('is-aimed', isInsideButton(event));
+        }
+
+        function endPress(event) {
+          if (event.pointerId !== activePointerId) return;
+
+          event.preventDefault();
+          const endedInside = isInsideButton(event);
+          activePointerId = null;
+
+          if (
+            tkButton.releasePointerCapture &&
+            tkButton.hasPointerCapture?.(event.pointerId)
+          ) {
+            try {
+              tkButton.releasePointerCapture(event.pointerId);
+            } catch {
+              // Guard tương ứng cho pointer event tổng hợp.
+            }
+          }
+
+          tkButton.classList.remove('is-aimed');
+          physicalUp();
+          queueHardware({ kind: 'release', inside: endedInside });
+        }
+
+        function cancelPress(event) {
+          if (event.pointerId !== activePointerId) return;
+          activePointerId = null;
+          tkButton.classList.remove('is-aimed');
+          physicalUp();
+          queueHardware({ kind: 'release', inside: false });
+        }
+
+        tkButton.addEventListener('pointerdown', beginPress);
+        document.addEventListener('pointermove', trackPress);
+        document.addEventListener('pointerup', endPress);
+        document.addEventListener('pointercancel', cancelPress);
+
+        // Bàn phím: Space/Enter mô phỏng nhấn + thả bên trong.
+        tkButton.addEventListener('keydown', event => {
+          if (event.key !== ' ' && event.key !== 'Enter') return;
+          event.preventDefault();
+          if (event.repeat || keyHeld || activePointerId !== null) return;
+          keyHeld = true;
+          pressSeq += 1;
+          physicalDown();
+          queueHardware({ kind: 'press', inside: true });
+        });
+
+        tkButton.addEventListener('keyup', event => {
+          if (event.key !== ' ' && event.key !== 'Enter') return;
+          if (!keyHeld) return;
+          keyHeld = false;
+          physicalUp();
+          queueHardware({ kind: 'release', inside: true });
+        });
+
+        tkButton.addEventListener('click', event => event.preventDefault());
+
+        // Mất focus giữa chừng (Alt-Tab…): keyup/pointerup sẽ không bao giờ
+        // tới — thả "công tắc" ra để không kẹt trạng thái nhấn giữ.
+        window.addEventListener('blur', () => {
+          if (keyHeld) {
+            keyHeld = false;
+            physicalUp();
+            queueHardware({ kind: 'release', inside: true });
+          }
+          if (activePointerId !== null) {
+            activePointerId = null;
+            tkButton.classList.remove('is-aimed');
+            physicalUp();
+            queueHardware({ kind: 'release', inside: false });
           }
         });
-      }
 
-      function renderButton() {
-        const b = els.tkButton;
-        b.classList.toggle('sunken', state.visualRelief === 'sunken');
-        b.classList.toggle('raised', state.visualRelief !== 'sunken');
-        b.classList.toggle('disabled', state.disabled);
-        b.classList.toggle('focused', state.focused);
-        b.classList.toggle('active', state.pointerInside && !state.disabled);
+        /* ---------- Reset ---------- */
 
-        let status = 'Sẵn sàng';
-        if (state.disabled) status = 'Disabled';
-        else if (state.commandInvoked && !state.mouseDown && !state.armed)
-          status = 'handle_click() đã chạy ✓';
-        else if (state.armed) status = 'Armed (đang giữ)';
-        else if (state.pointerInside) status = 'Đang hover';
-        els.tkStatus.textContent = status;
-      }
-
-      function renderResult(flash) {
-        setResultCell(els.resClicked, result.clicked, flash);
-        setResultCell(els.resCommand, result.command, flash);
-        els.resWhy.textContent = 'Vì sao: ' + result.why;
-      }
-
-      function setResultCell(cell, value, flash) {
-        cell.classList.toggle('yes', value);
-        cell.classList.toggle('no', !value);
-        const strong = cell.querySelector('strong');
-        strong.textContent = value ? 'Có' : 'Chưa';
-        if (flash) {
-          strong.classList.remove('pill');
-          cell.style.transition = 'transform 300ms ease';
-          cell.style.transform = 'scale(1.03)';
-          setTimeout(() => {
-            cell.style.transform = 'scale(1)';
-          }, 260);
+        function clearVisualState() {
+          mouseSvg.classList.remove('is-closed');
+          sparkEl.classList.remove('is-spark');
+          cometEl.classList.remove('is-travel', 'is-press', 'is-release');
+          portScreen.classList.remove('is-arrive');
+          queueTube.replaceChildren();
+          flagValue.textContent = 'False';
+          flagValue.classList.remove('is-flip');
+          flagCell.classList.remove('is-true');
+          hideLoopChip();
+          peekEl.classList.remove('is-peek', 'is-peek-hold');
+          dispatchRay.classList.remove('is-dispatch');
+          gateSvg.classList.remove('is-open', 'is-refused');
+          gateWrap.classList.remove('is-shake');
+          handleChip.classList.remove('is-run');
+          countChip.classList.remove('is-pop');
+          tkLabel.classList.remove('is-swap');
+          tkButton.classList.remove('is-pressed', 'is-aimed');
+          setLoopPaused(false);
         }
-      }
 
-      function render(flashKeys) {
-        renderCode();
-        renderState(flashKeys);
-        renderButton();
-      }
-
-      function explain(text) {
-        els.explain.textContent = text;
-      }
-
-      function setStatus(text) {
-        els.statusLine.textContent = text;
-      }
-
-      // ---- Timeline ----
-      function logEvent(label, tier) {
-        const li = document.createElement('li');
-        li.className = 'evt ' + tier;
-        const tag = document.createElement('span');
-        tag.className = 'tag';
-        tag.textContent =
-          tier === 'low' ? 'event' : tier === 'high' ? 'callback' : 'stage';
-        const lab = document.createElement('span');
-        lab.className = 'label';
-        lab.textContent = label;
-        li.appendChild(tag);
-        li.appendChild(lab);
-        els.timeline.appendChild(li);
-        els.timeline.scrollTop = els.timeline.scrollHeight;
-      }
-
-      function clearTimeline() {
-        els.timeline.replaceChildren();
-      }
-
-      // ---- Command invoke (shared) ----
-      function invokeCommand(reason) {
-        logEvent('button invoke → Tcl command → _tkinter bridge', 'stage');
-        logEvent('command → handle_click()', 'high');
-        state.commandInvoked = true;
-        state.armed = false;
-        activeLines = LINE_CALLBACK.slice();
-        result = { clicked: true, command: true, why: reason };
-        explain(
-          'Release hợp lệ bên trong sau một lần press bên trong. Tk gọi invoke, ' +
-            'thứ chạy Tcl command đã đăng ký cho command=, băng qua _tkinter ' +
-            'bridge, và cuối cùng chạy hàm Python handle_click() của bạn.',
-        );
-        render(['commandInvoked', 'armed']);
-        renderResult(true);
-      }
-
-      function setNoResult(why, note) {
-        result = { clicked: false, command: false, why: why };
-        renderResult(false);
-        if (note) explain(note);
-      }
-
-      // ---- Reset ----
-      function resetAll(opts) {
-        opts = opts || {};
-        if (scenarioTimer) {
-          clearTimeout(scenarioTimer);
-          scenarioTimer = null;
-        }
-        isRunning = false;
-        manualPressActive = false;
-        spaceHeld = false;
-        stepModeActive = false;
-        stepIndex = 0;
-        const keepDisabled =
-          opts.disabled !== undefined ? opts.disabled : els.disabledToggle.checked;
-        state = freshState(keepDisabled);
-        result = { clicked: false, command: false, why: 'Chưa có tương tác nào.' };
-        activeLines = [LINE_LOOP];
-        clearTimeline();
-        explain(
-          'Sẵn sàng. mainloop() đang chạy và chờ event. Hãy press vào nút, đi ' +
-            'qua từng bước, hoặc chạy một scenario.',
-        );
-        render();
-        renderResult(false);
-        setControlsDisabled(false);
-        hideGhost();
-      }
-
-      function setControlsDisabled(disabled) {
-        els.runButton.disabled = disabled;
-        els.scenarioSelect.disabled = disabled;
-        els.disabledToggle.disabled = disabled;
-        // step button stays usable except during scenario animation
-        els.stepButton.disabled = disabled;
-      }
-
-      // ---- Ghost pointer ----
-      function moveGhost(where) {
-        const g = els.ghost;
-        g.classList.add('show');
-        if (where === 'inside') {
-          g.style.left = '50%';
-          g.style.top = '52%';
-        } else if (where === 'edge') {
-          g.style.left = '68%';
-          g.style.top = '52%';
-        } else if (where === 'outside') {
-          g.style.left = '90%';
-          g.style.top = '18%';
-        }
-      }
-      function hideGhost() {
-        els.ghost.classList.remove('show');
-      }
-
-      // ======================================================
-      //  INTERNAL STEP MODE (12 canonical steps of a click)
-      // ======================================================
-      const internalSteps = [
-        {
-          code: [LINE_LOOP],
-          logs: [['Hành động người dùng: nhấn nút chuột xuống', 'stage']],
-          apply: { pointerInside: true, mouseDown: true, focused: true },
-          ghost: 'inside',
-          note:
-            'Bước 1 — Bạn nhấn nút chuột thật trong khi con trỏ đang nằm trên ' +
-            'nút. Phía Python chưa có gì xảy ra cả.',
-        },
-        {
-          logs: [['OS event: <ButtonPress-1> được tạo', 'stage']],
-          note:
-            'Bước 2 — OS / hệ thống cửa sổ biến cú nhấn phần cứng thành một ' +
-            'ButtonPress event gửi tới cửa sổ Tk.',
-        },
-        {
-          logs: [
-            ['Tk event queue ← <ButtonPress-1>', 'stage'],
-            ['<ButtonPress-1>', 'low'],
-          ],
-          note:
-            'Bước 3 — Tk đặt event vào event queue nội bộ của nó. mainloop() sẽ ' +
-            'lấy nó ra.',
-        },
-        {
-          logs: [['Tk binding matcher → Button widget', 'stage']],
-          note:
-            'Bước 4 — mainloop() lấy event ra khỏi queue và binding matcher quyết ' +
-            'định widget nào và binding nào được áp dụng.',
-        },
-        {
-          logs: [['Button class binding: <ButtonPress-1> → relief=sunken', 'stage']],
-          apply: { armed: true, visualRelief: 'sunken' },
-          note:
-            'Bước 5 — Button class binding mặc định làm nút lõm vào: relief thành ' +
-            'sunken và nút được armed. Command VẪN CHƯA chạy.',
-        },
-        {
-          logs: [['Hành động người dùng: thả nút chuột', 'stage']],
-          apply: { mouseDown: false },
-          note: 'Bước 6 — Bạn thả nút chuột trong khi vẫn ở trên nút.',
-        },
-        {
-          logs: [
-            ['OS event: <ButtonRelease-1> được tạo', 'stage'],
-            ['<ButtonRelease-1>', 'low'],
-          ],
-          note:
-            'Bước 7 — OS tạo một ButtonRelease event, được Tk đưa vào queue và ' +
-            'điều phối như trước.',
-        },
-        {
-          logs: [['Button class binding: release bên trong nút? → có', 'stage']],
-          apply: { visualRelief: 'raised' },
-          note:
-            'Bước 8 — Class binding cho <ButtonRelease-1> kiểm tra xem con trỏ có ' +
-            'còn ở bên trong không. Có, nên đây được coi là một cú click thật.',
-        },
-        {
-          logs: [['button invoke (kích hoạt cấp cao)', 'stage']],
-          note:
-            'Bước 9 — Vì release là hợp lệ, Tk gọi invoke của nút, tức hành động ' +
-            'cấp cao "kích hoạt nút này".',
-        },
-        {
-          code: [LINE_REGISTER],
-          logs: [['Tcl command → _tkinter bridge', 'stage']],
-          note:
-            'Bước 10 — invoke chạy Tcl command mà Tkinter đã đăng ký cho command=. ' +
-            'Nó băng qua _tkinter bridge bằng C để quay lại Python.',
-        },
-        {
-          code: LINE_CALLBACK.slice(),
-          logs: [['command → handle_click()', 'high']],
-          apply: { commandInvoked: true, armed: false },
-          note:
-            'Bước 11 — Hàm Python handle_click() của bạn cuối cùng cũng chạy. ĐÂY ' +
-            'chính là khoảnh khắc cú click thực sự làm điều gì đó.',
-          flash: ['commandInvoked'],
-        },
-        {
-          code: LINE_CALLBACK.slice(),
-          logs: [['handle_click() trả về; điều khiển quay lại mainloop()', 'stage']],
-          note:
-            'Bước 12 — Callback trả về, điều khiển quay lại mainloop(), và ' +
-            'app/GUI phản ánh thay đổi.',
-          result: {
-            clicked: true,
-            command: true,
-            why:
-              'Press bên trong rồi release bên trong = một cú click hợp lệ, nên invoke đã chạy handle_click().',
-          },
-        },
-      ];
-
-      function applyStep(step) {
-        if (step.code) activeLines = step.code.slice();
-        if (step.logs) step.logs.forEach(([label, tier]) => logEvent(label, tier));
-        if (step.apply) Object.assign(state, step.apply);
-        if (step.ghost) moveGhost(step.ghost);
-        if (step.note) explain(step.note);
-        render(step.flash);
-        if (step.result) {
-          result = step.result;
-          renderResult(true);
-        }
-      }
-
-      function doNextStep() {
-        if (isRunning) return;
-        if (!stepModeActive) {
-          // begin step mode fresh
-          resetAll();
-          stepModeActive = true;
-          stepIndex = 0;
-          setStatus(
-            'Chế độ bước nội bộ: đi qua một cú click thành công, mỗi lần một stage.',
+        function resetAll() {
+          state.epoch += 1; // huỷ mọi timeline đang chạy
+          pressSeq += 1;
+          hwPending.length = 0;
+          state.queue.length = 0;
+          state.count = 0;
+          dispatching = false;
+          activePointerId = null;
+          keyHeld = false;
+          clearVisualState();
+          renderCountAndLabel();
+          resetTranscript();
+          say(
+            'Đã reset. mainloop() vẫn lặp tiếp — nó không bao giờ dừng hẳn.',
+            'loop',
           );
         }
-        if (stepIndex >= internalSteps.length) {
-          setStatus('Đã tới cuối 12 bước nội bộ. Đặt lại để bắt đầu lại.');
-          return;
-        }
-        applyStep(internalSteps[stepIndex]);
-        stepIndex += 1;
-        els.stepButton.textContent =
-          stepIndex >= internalSteps.length
-            ? 'Xong (12/12)'
-            : 'Bước nội bộ tiếp theo (' + stepIndex + '/12)';
-      }
 
-      // ======================================================
-      //  SCENARIOS (animated)
-      // ======================================================
-      const scenarios = {
-        success: [
-          {
-            code: [LINE_LOOP],
-            logs: [['<Enter>', 'low']],
-            apply: { pointerInside: true, focused: true },
-            ghost: 'inside',
-            note: 'Con trỏ di chuyển lên trên nút; Tk phát ra <Enter>.',
-          },
-          {
-            logs: [
-              ['<ButtonPress-1>', 'low'],
-              ['Button class binding: relief=sunken', 'stage'],
-            ],
-            apply: { mouseDown: true, armed: true, visualRelief: 'sunken' },
-            note:
-              'Press bên trong: nút lõm xuống (sunken) và được armed. Command VẪN CHƯA chạy.',
-            flash: ['armed', 'visualRelief'],
-          },
-          {
-            logs: [
-              ['<ButtonRelease-1>', 'low'],
-              ['Class binding: release bên trong? → có', 'stage'],
-            ],
-            apply: { mouseDown: false, visualRelief: 'raised' },
-            note: 'Release bên trong sau một lần press hợp lệ: đây là một cú click thật.',
-          },
-          {
-            code: LINE_CALLBACK.slice(),
-            logs: [
-              ['button invoke → Tcl command → _tkinter bridge', 'stage'],
-              ['command → handle_click()', 'high'],
-            ],
-            apply: { commandInvoked: true, armed: false },
-            note: 'invoke chạy Python callback handle_click() đã được đăng ký.',
-            flash: ['commandInvoked'],
-            result: {
-              clicked: true,
-              command: true,
-              why: 'Release đã xảy ra bên trong sau một lần press bên trong.',
-            },
-          },
-        ],
-        releaseOutside: [
-          {
-            code: [LINE_LOOP],
-            logs: [['<Enter>', 'low']],
-            apply: { pointerInside: true, focused: true },
-            ghost: 'inside',
-            note: 'Con trỏ nằm trên nút.',
-          },
-          {
-            logs: [
-              ['<ButtonPress-1>', 'low'],
-              ['Button class binding: relief=sunken', 'stage'],
-            ],
-            apply: { mouseDown: true, armed: true, visualRelief: 'sunken' },
-            note: 'Press bên trong: sunken + armed.',
-            flash: ['armed'],
-          },
-          {
-            logs: [
-              ['<B1-Motion> (đang kéo)', 'low'],
-              ['<Leave>', 'low'],
-              ['Class binding: disarm, relief=raised', 'stage'],
-            ],
-            apply: { pointerInside: false, armed: false, visualRelief: 'raised' },
-            ghost: 'outside',
-            note:
-              'Kéo ra ngoài trong khi đang giữ: nút bị disarm và nhô trở lại, ' +
-              'nhưng Tk vẫn giữ grab.',
-            flash: ['pointerInside', 'armed'],
-          },
-          {
-            logs: [
-              ['<ButtonRelease-1>', 'low'],
-              ['Class binding: release bên trong? → không', 'stage'],
-            ],
-            apply: { mouseDown: false },
-            note: 'Release BÊN NGOÀI nút, nên invoke bị bỏ qua. handle_click() KHÔNG được gọi.',
-            result: {
-              clicked: false,
-              command: false,
-              why: 'Release đã xảy ra bên ngoài nút, nên Tk đã hủy việc kích hoạt.',
-            },
-          },
-        ],
-        dragBack: [
-          {
-            code: [LINE_LOOP],
-            logs: [['<Enter>', 'low']],
-            apply: { pointerInside: true, focused: true },
-            ghost: 'inside',
-            note: 'Con trỏ nằm trên nút.',
-          },
-          {
-            logs: [
-              ['<ButtonPress-1>', 'low'],
-              ['Button class binding: relief=sunken', 'stage'],
-            ],
-            apply: { mouseDown: true, armed: true, visualRelief: 'sunken' },
-            note: 'Press bên trong: sunken + armed.',
-          },
-          {
-            logs: [
-              ['<B1-Motion>', 'low'],
-              ['<Leave>', 'low'],
-              ['Class binding: disarm, relief=raised', 'stage'],
-            ],
-            apply: { pointerInside: false, armed: false, visualRelief: 'raised' },
-            ghost: 'outside',
-            note: 'Kéo ra ngoài: bị disarm, nút nhô lên. Vẫn đang giữ chuột.',
-            flash: ['armed'],
-          },
-          {
-            logs: [
-              ['<B1-Motion>', 'low'],
-              ['<Enter>', 'low'],
-              ['Class binding: re-arm, relief=sunken', 'stage'],
-            ],
-            apply: { pointerInside: true, armed: true, visualRelief: 'sunken' },
-            ghost: 'inside',
-            note: 'Kéo trở lại bên trong: nút được arm lại và lõm xuống lần nữa.',
-            flash: ['pointerInside', 'armed'],
-          },
-          {
-            code: LINE_CALLBACK.slice(),
-            logs: [
-              ['<ButtonRelease-1>', 'low'],
-              ['Class binding: release bên trong? → có', 'stage'],
-              ['button invoke → Tcl command → _tkinter bridge', 'stage'],
-              ['command → handle_click()', 'high'],
-            ],
-            apply: {
-              mouseDown: false,
-              visualRelief: 'raised',
-              commandInvoked: true,
-              armed: false,
-            },
-            note:
-              'Bạn kết thúc bằng một release bên trong sau khi quay vào lại, nên vẫn tính là một cú click hợp lệ.',
-            flash: ['commandInvoked'],
-            result: {
-              clicked: true,
-              command: true,
-              why: 'Kết thúc bằng một release bên trong sau khi quay vào lại, nên đây là một cú click hợp lệ.',
-            },
-          },
-        ],
-        disabled: [
-          {
-            code: [LINE_LOOP],
-            logs: [['<Enter>', 'low']],
-            apply: { pointerInside: true },
-            ghost: 'inside',
-            note: 'Con trỏ nằm trên một widget button đã bị disabled.',
-          },
-          {
-            logs: [
-              ['<ButtonPress-1>', 'low'],
-              ['Class binding không hoạt động (state=disabled)', 'stage'],
-            ],
-            apply: { mouseDown: true },
-            note:
-              'Event vẫn đến được Tk, nhưng class binding của một button đã ' +
-              'disabled không làm gì cả — không đổi relief, không arm.',
-          },
-          {
-            logs: [
-              ['<ButtonRelease-1>', 'low'],
-              ['Class binding không hoạt động (state=disabled)', 'stage'],
-            ],
-            apply: { mouseDown: false },
-            note: 'Không có gì xảy ra trên một button đã disabled. handle_click() không bao giờ được gọi.',
-            result: {
-              clicked: false,
-              command: false,
-              why: 'Button đã bị disabled, nên class binding của nó không hoạt động và invoke không bao giờ chạy.',
-            },
-          },
-        ],
-        space: [
-          {
-            code: [LINE_LOOP],
-            logs: [['<FocusIn>', 'low']],
-            apply: { focused: true },
-            note: 'Tab đưa focus bàn phím tới nút (chú ý vòng focus).',
-            flash: ['focused'],
-          },
-          {
-            logs: [
-              ['<KeyPress-space>', 'low'],
-              ['Class binding: <space> → relief=sunken', 'stage'],
-            ],
-            apply: { armed: true, visualRelief: 'sunken' },
-            note: 'Nhấn Space trên một nút đang có focus làm nó lõm vào — không cần chuột.',
-            flash: ['armed'],
-          },
-          {
-            code: LINE_CALLBACK.slice(),
-            logs: [
-              ['<KeyRelease-space>', 'low'],
-              ['button invoke → Tcl command → _tkinter bridge', 'stage'],
-              ['command → handle_click()', 'high'],
-            ],
-            apply: { visualRelief: 'raised', commandInvoked: true, armed: false },
-            note: 'Thả Space sẽ invoke nút: cùng con đường như một cú click chuột.',
-            flash: ['commandInvoked'],
-            result: {
-              clicked: true,
-              command: true,
-              why: 'Space trên một nút đang có focus kích hoạt cùng con đường invoke như một cú click chuột.',
-            },
-          },
-        ],
-      };
+        resetButton.addEventListener('click', resetAll);
 
-      function runScenario() {
-        const name = els.scenarioSelect.value;
-        const steps = scenarios[name];
-        if (!steps) return;
-        const wantDisabled = name === 'disabled';
-        if (wantDisabled) els.disabledToggle.checked = true;
-        else els.disabledToggle.checked = false;
-        resetAll({ disabled: wantDisabled });
-        isRunning = true;
-        setControlsDisabled(true);
-        setStatus('Đang chạy scenario: ' + currentScenarioLabel() + ' …');
+        /* ---------- Khởi động ---------- */
 
-        let i = 0;
-        function next() {
-          if (i >= steps.length) {
-            isRunning = false;
-            setControlsDisabled(false);
-            hideGhost();
-            setStatus('Scenario đã xong: ' + currentScenarioLabel() + '.');
-            return;
-          }
-          applyStep(steps[i]);
-          i += 1;
-          scenarioTimer = setTimeout(next, stepDelay);
-        }
-        next();
-      }
-
-      function currentScenarioLabel() {
-        const opt = els.scenarioSelect.options[els.scenarioSelect.selectedIndex];
-        return opt ? opt.textContent.trim() : '';
-      }
-
-      // ======================================================
-      //  REAL POINTER + KEYBOARD INTERACTION on the button
-      // ======================================================
-      function isInsideButton(clientX, clientY) {
-        const r = els.tkButton.getBoundingClientRect();
-        return (
-          clientX >= r.left &&
-          clientX <= r.right &&
-          clientY >= r.top &&
-          clientY <= r.top + r.height
-        );
-      }
-
-      function endStepModeForManual() {
-        // once the user interacts by hand, drop the step-mode counter label
-        if (stepModeActive) {
-          stepModeActive = false;
-          els.stepButton.textContent = 'Bước nội bộ tiếp theo';
-        }
-      }
-
-      els.tkButton.addEventListener('pointerenter', () => {
-        if (isRunning) return;
-        endStepModeForManual();
-        state.pointerInside = true;
-        logEvent('<Enter>', 'low');
-        if (!state.disabled && state.mouseDown) {
-          state.armed = true;
-          state.visualRelief = 'sunken';
-          explain('Con trỏ vào lại khi đang giữ: nút được arm lại.');
-        } else {
-          explain('Con trỏ đã vào nút. Tk phát ra một event <Enter>.');
-        }
-        render();
-      });
-
-      els.tkButton.addEventListener('pointerleave', () => {
-        if (isRunning) return;
-        // pointermove during a press handles the drag-out; this covers plain leave
-        if (manualPressActive) return;
-        state.pointerInside = false;
-        logEvent('<Leave>', 'low');
-        explain('Con trỏ đã rời nút. Tk phát ra một event <Leave>.');
-        render();
-      });
-
-      els.tkButton.addEventListener('pointerdown', e => {
-        if (isRunning) return;
-        if (e.button !== 0 && e.pointerType === 'mouse') return;
-        endStepModeForManual();
-        try {
-          els.tkButton.setPointerCapture(e.pointerId);
-        } catch (err) {
-          /* ignore */
-        }
-        manualPressActive = true;
-        state.mouseDown = true;
-        state.pointerInside = true;
-        state.commandInvoked = false;
-        logEvent('<ButtonPress-1>', 'low');
-        if (!state.disabled) {
-          state.armed = true;
-          state.visualRelief = 'sunken';
-          activeLines = [LINE_LOOP];
-          explain(
-            'Chuột nhấn xuống bên trong: relief là sunken và nút được armed — ' +
-              'nhưng command VẪN CHƯA chạy. Release bên trong để chạy nó, hoặc kéo ra ngoài để hủy.',
-          );
-          setNoResult('Đã ghi nhận press; đang chờ release.');
-        } else {
-          logEvent('Class binding không hoạt động (state=disabled)', 'stage');
-          explain('Nút đã bị disabled, nên class binding bỏ qua cú press.');
-          setNoResult('Widget button đã bị disabled.');
-        }
-        render(['mouseDown', 'armed']);
-      });
-
-      els.tkButton.addEventListener('pointermove', e => {
-        if (isRunning || !manualPressActive) return;
-        const inside = isInsideButton(e.clientX, e.clientY);
-        if (inside === state.pointerInside) return;
-        state.pointerInside = inside;
-        logEvent(inside ? '<Enter>' : '<Leave>', 'low');
-        if (!state.disabled) {
-          state.armed = inside;
-          state.visualRelief = inside ? 'sunken' : 'raised';
-        }
-        explain(
-          inside
-            ? 'Kéo trở lại bên trong khi đang giữ: nút được arm lại.'
-            : 'Kéo ra ngoài khi đang giữ: nút bị disarm nhưng Tk vẫn giữ grab. Release lúc này thì không có gì xảy ra.',
-        );
-        render(['pointerInside', 'armed']);
-      });
-
-      function finishManualPress(e) {
-        if (isRunning || !manualPressActive) return;
-        manualPressActive = false;
-        try {
-          els.tkButton.releasePointerCapture(e.pointerId);
-        } catch (err) {
-          /* ignore */
-        }
-        const validPress = state.armed && state.pointerInside && !state.disabled;
-        state.mouseDown = false;
-        state.visualRelief = 'raised';
-        logEvent('<ButtonRelease-1>', 'low');
-        if (state.disabled) {
-          logEvent('Class binding không hoạt động (state=disabled)', 'stage');
-          setNoResult(
-            'Nút đã bị disabled, nên class binding của nó không bao giờ invoke nó.',
-            'Widget button đã disabled: release không làm gì cả.',
-          );
-        } else if (validPress) {
-          logEvent('Class binding: release bên trong? → có', 'stage');
-          invokeCommand('Bạn đã release bên trong sau một lần press hợp lệ bên trong.');
-        } else {
-          logEvent('Class binding: release bên trong? → không', 'stage');
-          state.armed = false;
-          setNoResult(
-            'Bạn đã release bên ngoài nút, nên Tk đã hủy việc kích hoạt.',
-            'Release bên ngoài: cú press không kết thúc bên trong, nên command bị hủy.',
-          );
-        }
-        render();
-      }
-
-      els.tkButton.addEventListener('pointerup', finishManualPress);
-      els.tkButton.addEventListener('pointercancel', e => {
-        if (!manualPressActive) return;
-        manualPressActive = false;
-        state.mouseDown = false;
-        state.armed = false;
-        state.visualRelief = 'raised';
-        render();
-      });
-
-      els.tkButton.addEventListener('focus', () => {
-        if (isRunning) return;
-        state.focused = true;
-        logEvent('<FocusIn>', 'low');
-        render(['focused']);
-      });
-      els.tkButton.addEventListener('blur', () => {
-        if (isRunning) return;
-        state.focused = false;
-        logEvent('<FocusOut>', 'low');
-        render();
-      });
-
-      els.tkButton.addEventListener('keydown', e => {
-        if (e.code !== 'Space' && e.key !== ' ') return;
-        e.preventDefault();
-        if (isRunning) return;
-        endStepModeForManual();
-        if (state.disabled) {
-          explain('Nút đã disabled sẽ bỏ qua Space.');
-          return;
-        }
-        if (spaceHeld) return;
-        spaceHeld = true;
-        state.commandInvoked = false;
-        logEvent('<KeyPress-space>', 'low');
-        state.armed = true;
-        state.visualRelief = 'sunken';
-        explain('Nhấn Space trên nút đang có focus: relief sunken và armed.');
-        setNoResult('Đang giữ Space; thả Space để invoke.');
-        render(['armed']);
-      });
-
-      els.tkButton.addEventListener('keyup', e => {
-        if (e.code !== 'Space' && e.key !== ' ') return;
-        e.preventDefault();
-        if (isRunning) return;
-        if (!spaceHeld) return;
-        spaceHeld = false;
-        logEvent('<KeyRelease-space>', 'low');
-        state.visualRelief = 'raised';
-        if (!state.disabled) {
-          invokeCommand('Space trên một nút đang có focus chạy cùng con đường invoke như một cú click.');
-        }
-        render();
-      });
-
-      // prevent the browser's synthetic click from doing anything unexpected
-      els.tkButton.addEventListener('click', e => e.preventDefault());
-      els.tkButton.addEventListener('contextmenu', e => e.preventDefault());
-
-      // ---- Disabled toggle ----
-      els.disabledToggle.addEventListener('change', () => {
-        if (isRunning) return;
-        state.disabled = els.disabledToggle.checked;
-        if (state.disabled) {
-          state.armed = false;
-          state.visualRelief = 'raised';
-          manualPressActive = false;
-          explain('Nút được đặt state="disabled". Class binding của nó giờ không hoạt động.');
-        } else {
-          explain('Nút được bật lại (state="normal"). Class binding hoạt động trở lại.');
-        }
-        render();
-      });
-
-      // ---- Wire controls ----
-      els.runButton.addEventListener('click', runScenario);
-      els.stepButton.addEventListener('click', doNextStep);
-      els.resetButton.addEventListener('click', () => {
-        resetAll();
-        els.stepButton.textContent = 'Bước nội bộ tiếp theo';
-        setStatus('Đã đặt lại. mainloop() đang rảnh, chờ event.');
-      });
-
-      // ---- Init ----
-      buildStateTable();
-      resetAll({ disabled: false });
-      setStatus(
-        'Mẹo: thử press vào nút, kéo chuột ra khỏi nó, rồi release — command sẽ không chạy.',
-      );
+        setSpeed(0.25);
+        setReduceMotion(false);
+        renderCountAndLabel();
+        resetTranscript();
+        setRotor(0);
+        requestAnimationFrame(now => {
+          lastTick = now;
+          requestAnimationFrame(tick);
+        });
+      })();
     </script>
   </body>
 </html>
