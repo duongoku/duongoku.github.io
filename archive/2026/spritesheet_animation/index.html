@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spritesheet Row Animator</title>
+    <link rel="stylesheet" href="./../../archive.css" />
+    <!-- Arco Design + React from CDN, versions pinned -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@arco-design/web-react@2.66.18/dist/css/arco.min.css"
+      integrity="sha384-nDHFZvae09/hHWbz4/Q1A+dxa1EOV6HLbyPW80DT76PZLSzRP/mGoDnbPDtARLhQ"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"
+      integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"
+      integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@arco-design/web-react@2.66.18/dist/arco.min.js"
+      integrity="sha384-kehlwSdLFo9p4/ZpEfl66hQD8N0no+lFqBdX2xKGN68v/Gghxq2+V8yRK4R2yRpn"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <style>
+      #root {
+        width: 100%;
+      }
+
+      .header-note {
+        max-width: 40rem;
+      }
+
+      .panel {
+        border-radius: var(--border-radius-medium, 4px);
+      }
+
+      .drop-inner {
+        display: grid;
+        gap: 4px;
+        justify-items: center;
+        padding: 12px 8px;
+        color: var(--color-text-1, #1d2129);
+      }
+
+      .drop-inner svg {
+        color: var(--color-primary-6, #165dff);
+      }
+
+      .controls-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+      }
+
+      .field-label {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 13px;
+        color: var(--color-text-2, #4e5969);
+      }
+
+      .anim-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .anim-card {
+        border: 1px solid var(--color-border-2, #e5e6eb);
+        border-radius: var(--border-radius-medium, 4px);
+        padding: 12px;
+        display: grid;
+        gap: 8px;
+        background: var(--color-bg-2, #ffffff);
+      }
+
+      .anim-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        justify-content: space-between;
+      }
+
+      .anim-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .anim-stage {
+        overflow: auto;
+        padding: 8px;
+        border-radius: var(--border-radius-medium, 4px);
+        background:
+          /* checkerboard so transparency is visible */
+          repeating-conic-gradient(
+              var(--color-fill-2, #f2f3f5) 0% 25%,
+              var(--color-bg-2, #ffffff) 0% 50%
+            )
+            0 0 / 16px 16px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+
+      .anim-stage canvas {
+        display: block;
+        image-rendering: pixelated;
+      }
+
+      .summary-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-top: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back-link" href="#animator">Skip to animator</a>
+      <h1>Spritesheet row animator</h1>
+      <h3 class="header-note">
+        Drop in a sprite grid, set rows, columns and FPS — every row plays as
+        its own animation, stepping frames left to right with
+        requestAnimationFrame timing.
+      </h3>
+      <div id="root"></div>
+    </main>
+
+    <script>
+      (function () {
+        'use strict';
+
+        var h = React.createElement;
+        var arco = window.arco;
+        var Typography = arco.Typography;
+        var Text = Typography.Text;
+        var Card = arco.Card;
+        var InputNumber = arco.InputNumber;
+        var Upload = arco.Upload;
+        var Alert = arco.Alert;
+        var Message = arco.Message;
+        var Tag = arco.Tag;
+        var Empty = arco.Empty;
+
+        var DropIcon = function () {
+          return h(
+            'svg',
+            {
+              viewBox: '0 0 48 48',
+              width: '28',
+              height: '28',
+              fill: 'none',
+              stroke: 'currentColor',
+              'stroke-width': '3',
+              'stroke-linecap': 'round',
+              'stroke-linejoin': 'round',
+              'aria-hidden': 'true',
+            },
+            h('path', {
+              d: 'M9 11a2 2 0 0 1 2-2h26a2 2 0 0 1 2 2v26a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2z',
+            }),
+            h('path', { d: 'M9 31l10-8 8 6 8-9 4 4' }),
+            h('circle', { cx: '18.5', cy: '18.5', r: '2.5' })
+          );
+        };
+
+        var DEFAULTS = { rows: 4, cols: 4, fps: 30 };
+
+        /* One animation = one row of the sheet. Canvas drawn at the frame's
+           natural size; timing via rAF timestamp accumulation (no setInterval
+           drift). Re-derives (and cancels the old rAF) whenever any prop
+           changes. */
+        function RowAnimation(props) {
+          var canvasRef = React.useRef(null);
+
+          React.useEffect(
+            function () {
+              var canvas = canvasRef.current;
+              if (!canvas || !props.image) return undefined;
+
+              var frameW = props.frameW;
+              var frameH = props.frameH;
+              canvas.width = frameW;
+              canvas.height = frameH;
+
+              var ctx = canvas.getContext('2d');
+              ctx.imageSmoothingEnabled = false;
+
+              var frameIntervalMs = 1000 / props.fps;
+              var rafId = 0;
+              var lastTs = null;
+              var elapsedMs = 0;
+
+              var drawFrame = function (frameIndex) {
+                ctx.clearRect(0, 0, frameW, frameH);
+                ctx.drawImage(
+                  props.image,
+                  frameIndex * frameW,
+                  props.rowIndex * frameH,
+                  frameW,
+                  frameH,
+                  0,
+                  0,
+                  frameW,
+                  frameH
+                );
+              };
+
+              var tick = function (ts) {
+                if (lastTs === null) lastTs = ts;
+                elapsedMs += ts - lastTs;
+                lastTs = ts;
+                var frameIndex =
+                  Math.floor(elapsedMs / frameIntervalMs) % props.cols;
+                drawFrame(frameIndex);
+                rafId = window.requestAnimationFrame(tick);
+              };
+
+              drawFrame(0);
+              rafId = window.requestAnimationFrame(tick);
+
+              return function cleanup() {
+                window.cancelAnimationFrame(rafId);
+              };
+            },
+            [
+              props.image,
+              props.rowIndex,
+              props.cols,
+              props.fps,
+              props.frameW,
+              props.frameH,
+            ]
+          );
+
+          return h('canvas', {
+            ref: canvasRef,
+            style: { width: props.frameW + 'px', height: props.frameH + 'px' },
+            'aria-label':
+              'Animation row ' +
+              (props.rowIndex + 1) +
+              ', ' +
+              props.cols +
+              ' frames at ' +
+              props.fps +
+              ' fps',
+          });
+        }
+
+        function App() {
+          var image = React.useState(null); // HTMLImageElement
+          var setImage = image[1];
+          image = image[0];
+
+          var imgMeta = React.useState(null); // { name, w, h }
+          var setImgMeta = imgMeta[1];
+          imgMeta = imgMeta[0];
+
+          var rows = React.useState(DEFAULTS.rows);
+          var setRows = rows[1];
+          rows = rows[0];
+
+          var cols = React.useState(DEFAULTS.cols);
+          var setCols = cols[1];
+          cols = cols[0];
+
+          var fps = React.useState(DEFAULTS.fps);
+          var setFps = fps[1];
+          fps = fps[0];
+
+          // Track the live object URL so a new upload revokes the old one.
+          var objectUrlRef = React.useRef(null);
+
+          var clampPositiveInt = function (raw, fallback) {
+            var n = Math.floor(Number(raw));
+            if (!Number.isFinite(n) || n < 1) return fallback;
+            return n;
+          };
+
+          var handleFile = function (file) {
+            if (
+              !file ||
+              !file.type ||
+              String(file.type).indexOf('image/') !== 0
+            ) {
+              Message.error(
+                'Not an image file — drop a PNG, JPG, GIF or WebP spritesheet.'
+              );
+              return;
+            }
+            var url = URL.createObjectURL(file);
+            var candidate = new Image();
+            candidate.onload = function () {
+              if (objectUrlRef.current && objectUrlRef.current !== url) {
+                URL.revokeObjectURL(objectUrlRef.current);
+              }
+              objectUrlRef.current = url;
+              setImage(candidate);
+              setImgMeta({
+                name: file.name,
+                w: candidate.naturalWidth,
+                h: candidate.naturalHeight,
+              });
+            };
+            candidate.onerror = function () {
+              Message.error(
+                'Could not load "' +
+                  file.name +
+                  '" as an image. Try re-exporting the sheet.'
+              );
+              URL.revokeObjectURL(url);
+            };
+            candidate.src = url;
+          };
+
+          var frameW = imgMeta ? Math.floor(imgMeta.w / cols) : 0;
+          var frameH = imgMeta ? Math.floor(imgMeta.h / rows) : 0;
+          var frameTooSmall = Boolean(imgMeta) && (frameW < 1 || frameH < 1);
+
+          var rowNumbers = [];
+          if (imgMeta && !frameTooSmall) {
+            for (var i = 0; i < rows; i++) rowNumbers.push(i);
+          }
+
+          return h(
+            'div',
+            { id: 'animator' },
+            h(
+              Card,
+              {
+                className: 'panel',
+                title: 'Spritesheet',
+                style: { marginTop: '8px' },
+              },
+              h(
+                Upload,
+                {
+                  accept: 'image/*',
+                  multiple: false,
+                  showUploadList: false,
+                  style: { display: 'block', width: '100%' },
+                  beforeUpload: function (file) {
+                    handleFile(file);
+                    return false; // local-only, no network upload
+                  },
+                },
+                h(
+                  'div',
+                  {
+                    className: 'drop-inner',
+                    // Note: no custom onDrop — Arco Upload (rc-upload) already
+                    // handles native drops on its trigger area through
+                    // beforeUpload; a second handler would double-process files.
+                  },
+                  h(DropIcon, null),
+                  h(Text, { style: { fontWeight: 600 } },
+                    imgMeta
+                      ? 'Replace sheet — "' + imgMeta.name + '"'
+                      : 'Click or drag a spritesheet image here'
+                  ),
+                  h(
+                    Text,
+                    { type: 'secondary', style: { fontSize: 12 } },
+                    imgMeta
+                      ? imgMeta.w + ' × ' + imgMeta.h + ' px, loaded locally'
+                      : 'Runs fully in your browser — nothing is uploaded'
+                  )
+                )
+              ),
+              h(
+                'div',
+                { className: 'controls-grid', style: { marginTop: 16 } },
+                h(
+                  'div',
+                  null,
+                  h('label', { className: 'field-label' }, 'Rows'),
+                  h(InputNumber, {
+                    value: rows,
+                    min: 1,
+                    step: 1,
+                    precision: 0,
+                    suffix: ' rows',
+                    'aria-label': 'Rows',
+                    onChange: function (v) {
+                      setRows(clampPositiveInt(v, 1));
+                    },
+                  })
+                ),
+                h(
+                  'div',
+                  null,
+                  h('label', { className: 'field-label' }, 'Columns'),
+                  h(InputNumber, {
+                    value: cols,
+                    min: 1,
+                    step: 1,
+                    precision: 0,
+                    suffix: ' cols',
+                    'aria-label': 'Columns',
+                    onChange: function (v) {
+                      setCols(clampPositiveInt(v, 1));
+                    },
+                  })
+                ),
+                h(
+                  'div',
+                  null,
+                  h('label', { className: 'field-label' }, 'FPS'),
+                  h(InputNumber, {
+                    value: fps,
+                    min: 1,
+                    step: 1,
+                    precision: 0,
+                    suffix: ' fps',
+                    'aria-label': 'Frames per second',
+                    onChange: function (v) {
+                      setFps(clampPositiveInt(v, 1));
+                    },
+                  })
+                )
+              ),
+              imgMeta
+                ? h(
+                    'div',
+                    { className: 'summary-row' },
+                    h(
+                      Tag,
+                      { color: 'arcoblue', size: 'small' },
+                      imgMeta.w + '×' + imgMeta.h + ' source'
+                    ),
+                    h(
+                      Tag,
+                      { color: 'green', size: 'small' },
+                      'frame ' + frameW + '×' + frameH + ' px'
+                    ),
+                    h(
+                      Tag,
+                      { color: 'orange', size: 'small' },
+                      rows + ' animations × ' + cols + ' frames'
+                    ),
+                    h(
+                      Tag,
+                      { size: 'small' },
+                      Math.round((1000 / fps) * 100) / 100 + ' ms/frame'
+                    )
+                  )
+                : null
+            ),
+            frameTooSmall
+              ? h(
+                  Alert,
+                  {
+                    type: 'warning',
+                    style: { marginTop: 16 },
+                    content:
+                      'Frame size would be ' +
+                      frameW +
+                      '×' +
+                      frameH +
+                      ' px — rows or columns exceed the image dimensions (' +
+                      imgMeta.w +
+                      '×' +
+                      imgMeta.h +
+                      '). Lower the grid or use a bigger sheet.',
+                  }
+                )
+              : null,
+            imgMeta && !frameTooSmall
+              ? h(
+                  'div',
+                  { className: 'anim-list' },
+                  rowNumbers.map(function (rowIndex) {
+                    return h(
+                      'section',
+                      { className: 'anim-card', key: rowIndex },
+                      h(
+                        'div',
+                        { className: 'anim-head' },
+                        h(Text, { bold: true }, 'Row ' + (rowIndex + 1)),
+                        h(
+                          'div',
+                          { className: 'anim-tags' },
+                          h(
+                            Tag,
+                            { size: 'small' },
+                            frameW + '×' + frameH + ' px'
+                          ),
+                          h(
+                            Tag,
+                            { size: 'small' },
+                            cols + ' frames @ ' + fps + ' fps'
+                          )
+                        )
+                      ),
+                      h(
+                        'div',
+                        { className: 'anim-stage' },
+                        h(RowAnimation, {
+                          image: image,
+                          rowIndex: rowIndex,
+                          cols: cols,
+                          fps: fps,
+                          frameW: frameW,
+                          frameH: frameH,
+                        })
+                      )
+                    );
+                  })
+                )
+              : !imgMeta
+                ? h(
+                    Card,
+                    { className: 'panel', style: { marginTop: 16 } },
+                    h(Empty, {
+                      description: 'Drop a spritesheet to see each row animate.',
+                    })
+                  )
+                : null
+          );
+        }
+
+        var root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(h(App, null));
+      })();
+    </script>
+  </body>
+</html>
