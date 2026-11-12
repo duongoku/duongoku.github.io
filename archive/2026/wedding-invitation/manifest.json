@@ -1,0 +1,31 @@
+{
+  "name": "Bình Dương & Hồng Vân - Wedding",
+  "short_name": "D&V Wedding",
+  "description": "Thiệp mời cưới Bình Dương & Hồng Vân — Lễ thành hôn 24.11.2026 tại Phú Thọ.",
+  "lang": "vi",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#9E1B32",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

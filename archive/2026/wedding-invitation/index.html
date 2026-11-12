@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Bình Dương &amp; Hồng Vân — Save the Date 24.11.2026</title>
+        <meta
+            name="description"
+            content="Thiệp mời cưới của Bình Dương &amp; Hồng Vân — Lễ thành hôn vào thứ Ba ngày 24.11.2026 (tức 16 tháng 10 năm Bính Ngọ) tại Phú Thọ. Trân trọng kính mời quý khách chung vui cùng gia đình."
+        />
+        <meta name="theme-color" content="#9E1B32" />
+        <link rel="manifest" href="./manifest.json" />
+        <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+        <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+        <!-- Critical CSS: first-visit loading overlay (paints before web fonts /
+             styles.css arrive). Shown only when JS runs (.js gate). -->
+        <style>
+            #site-loader { display: none; }
+            html.js.loading { overflow: hidden; }
+            .js #site-loader {
+                position: fixed;
+                inset: 0;
+                z-index: 2147483647;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #fff;
+                opacity: 1;
+                transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .js #site-loader.is-hiding { opacity: 0; pointer-events: none; }
+            #site-loader svg { width: 72px; height: 72px; overflow: visible; }
+            #site-loader .ring { fill: none; stroke: #9e1b32; stroke-width: 0.75; opacity: 0.22; }
+            #site-loader .arc {
+                fill: none;
+                stroke: #9e1b32;
+                stroke-width: 1;
+                stroke-linecap: round;
+                stroke-dasharray: 30 146;
+                transform-origin: 36px 36px;
+                animation: sl-spin 2.4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+            }
+            #site-loader .arc-in {
+                stroke-dasharray: 18 133;
+                animation-duration: 3.2s;
+                animation-direction: reverse;
+                opacity: 0.7;
+            }
+            #site-loader .petal {
+                fill: #9e1b32;
+                transform-origin: 36px 36px;
+                animation: sl-pulse 1.8s ease-in-out infinite;
+            }
+            #site-loader .sl-label {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                overflow: hidden;
+                clip: rect(0 0 0 0);
+                white-space: nowrap;
+            }
+            @keyframes sl-spin { to { transform: rotate(360deg); } }
+            @keyframes sl-pulse {
+                0%, 100% { transform: scale(0.82); opacity: 0.45; }
+                50% { transform: scale(1); opacity: 0.9; }
+            }
+        </style>
+        <script>
+            /* Personalized guest name — ?khach=<name> (alias ?to=), e.g.
+               /?khach=Anh%20Minh%20v%C3%A0%20gia%20%C4%91%C3%ACnh
+               Sanitized here (NFC, controls stripped, whitespace collapsed,
+               capped at 60 chars on a word boundary) and exposed as
+               window.__guest so the font gate below can load the Pinyon
+               Script subsets for the guest's characters before the overlay
+               hides. window.__guestApply() writes it via textContent only
+               (called inline right after each .guest-name element). The
+               static fallback text lives in the HTML for no-JS visitors. */
+            (function () {
+                var FALLBACK = 'Quý Anh Chị cùng gia đình';
+                var MAX = 60, LONG = 28;
+                function clean(raw) {
+                    if (typeof raw !== 'string') return '';
+                    var s = raw;
+                    try { s = s.normalize('NFC'); } catch (e) {}
+                    /* C0/C1 controls → space; invisible format chars
+                       (zero-width, bidi overrides, soft hyphen) → removed */
+                    s = s.replace(/[\u0000-\u001F\u007F-\u009F]/g, ' ')
+                        .replace(/[\u00AD\u061C\u180E\u200B-\u200F\u202A-\u202E\u2060-\u206F\uFFF9-\uFFFB]/g, '')
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                    var cp = Array.from(s);
+                    if (cp.length > MAX) {
+                        var cut = cp.slice(0, MAX + 1).join('');
+                        var sp = cut.lastIndexOf(' ');
+                        s = sp >= 20 ? cut.slice(0, sp) : cp.slice(0, MAX).join('');
+                        s = s.replace(/[\s,;:.\/&+\-\u2013\u2014]+$/, '').trim();
+                    }
+                    return s;
+                }
+                var name = '';
+                try {
+                    var q = new URLSearchParams(location.search);
+                    name = clean(q.get('khach')) || clean(q.get('to'));
+                } catch (e) { name = ''; }
+                var text = name || FALLBACK;
+                var isLong = Array.from(text).length > LONG;
+                window.__guest = { name: name, text: text, fallback: FALLBACK, long: isLong };
+                window.__guestApply = function () {
+                    var els = document.querySelectorAll('.guest-name');
+                    for (var i = 0; i < els.length; i++) {
+                        var el = els[i];
+                        if (el.textContent !== text) el.textContent = text;
+                        if (isLong) el.setAttribute('data-long', '');
+                        else el.removeAttribute('data-long');
+                        if (name) el.setAttribute('data-guest', '');
+                    }
+                };
+            })();
+        </script>
+        <script>
+            /* Site-ready gate: hides #site-loader once window load + all
+               required web-font faces (Vietnamese subsets) are loaded, then
+               fires `site:ready` (html.ready). Adaptive safety timeouts,
+               measured from navigation start (performance.now()):
+               - fonts CSS link errors (blocked)       → hide on window load ('blocked')
+               - fonts CSS not arrived by 5s           → hide at 5s ('timeout-css')
+               - CSS arrived, font files still loading → keep waiting for
+                 document.fonts.load, hard cap 10s     ('timeout-hard')
+               - a font load rejects / a face is missing → hide ('error')
+               window.__loader.reason records which path hid the overlay. */
+            (function () {
+                var d = document;
+                var de = d.documentElement;
+                de.classList.add('js', 'loading');
+                var t0 = performance.now();
+                var MIN = 350, CSS_MAX = 5000, HARD_MAX = 10000, FADE = 500, QUICK = 150;
+                var done = false;
+                var resolveReady;
+                var timers = [];
+                window.__siteReady = new Promise(function (r) { resolveReady = r; });
+                /* css: 'pending' | 'ok' | 'blocked' */
+                var L = window.__loader = { t0: t0, hiddenAt: 0, reason: '', css: 'pending' };
+
+                function fireReady() {
+                    de.classList.add('ready');
+                    resolveReady();
+                    try { d.dispatchEvent(new Event('site:ready')); } catch (e) {}
+                }
+                function cleanup(el) {
+                    if (el && el.parentNode) el.parentNode.removeChild(el);
+                    de.classList.remove('loading');
+                }
+                function hide(reason) {
+                    if (done) return;
+                    done = true;
+                    for (var i = 0; i < timers.length; i++) { clearTimeout(timers[i]); clearInterval(timers[i]); }
+                    var el = d.getElementById('site-loader');
+                    var elapsed = performance.now() - t0;
+                    L.reason = reason;
+                    if (!el || elapsed < QUICK) {
+                        /* already ready: no fade, no flicker */
+                        L.hiddenAt = performance.now();
+                        cleanup(el);
+                        fireReady();
+                        return;
+                    }
+                    setTimeout(function () {
+                        requestAnimationFrame(function () {
+                            L.hiddenAt = performance.now();
+                            el.classList.add('is-hiding');
+                            fireReady();
+                            setTimeout(function () { cleanup(el); }, FADE + 50);
+                        });
+                    }, Math.max(0, MIN - elapsed));
+                }
+                L.hide = hide;
+                function at(ms, fn) {
+                    timers.push(setTimeout(fn, Math.max(0, ms - performance.now())));
+                }
+
+                try {
+                    function onEvt(type, target, test) {
+                        return new Promise(function (r) {
+                            if (test()) r();
+                            else target.addEventListener(type, function () { r(); });
+                        });
+                    }
+                    /* Google Fonts CSS is non-render-blocking (preload → onload
+                       swaps rel to stylesheet), so its @font-face rules may
+                       arrive after DOMContentLoaded. Wait for them before
+                       fonts.load(): ok once the sheet is applied (link.sheet
+                       set) or CSS-connected faces for our families appear in
+                       document.fonts (events + 50ms poll, robust to missed
+                       events); blocked on link error. */
+                    function hasFaces() {
+                        if (!d.fonts || !d.fonts.forEach) return false;
+                        var n = 0;
+                        try {
+                            d.fonts.forEach(function (f) {
+                                if (/Luxurious Roman|Tinos|Pinyon Script/.test(f.family)) n++;
+                            });
+                        } catch (e) {}
+                        return n > 0;
+                    }
+                    var gfErr = false;
+                    var settleCss;
+                    /* Capture-phase listeners on document (attached now, before
+                       the <link> is parsed) so an early load/error is never
+                       missed — a blocked preload can fail before DOMContentLoaded. */
+                    function testCss() {
+                        if (L.css !== 'pending') return;
+                        var link = d.getElementById('gf-css');
+                        if (gfErr) settleCss('blocked');
+                        else if ((link && link.rel === 'stylesheet' && link.sheet) || hasFaces()) settleCss('ok');
+                        else if (!link && d.readyState !== 'loading') settleCss('blocked');
+                    }
+                    function onGf(e) {
+                        if (!e.target || e.target.id !== 'gf-css') return;
+                        if (e.type === 'error') gfErr = true;
+                        testCss();
+                    }
+                    var fontsCss = new Promise(function (r) {
+                        settleCss = function (state) {
+                            L.css = state;
+                            L.fontsCss = state === 'ok' ? Math.round(performance.now()) : -1;
+                            d.removeEventListener('load', onGf, true);
+                            d.removeEventListener('error', onGf, true);
+                            r(state);
+                        };
+                    });
+                    d.addEventListener('load', onGf, true);
+                    d.addEventListener('error', onGf, true);
+                    timers.push(setInterval(testCss, 50));
+
+                    /* 5s: stylesheet still missing → fonts probably unreachable.
+                       If it has arrived, keep waiting for the font files. */
+                    at(CSS_MAX, function () {
+                        testCss();
+                        if (L.css === 'pending') hide('timeout-css');
+                    });
+                    /* Hard cap: never keep the overlay up past 10s. */
+                    at(HARD_MAX, function () { hide('timeout-hard'); });
+
+                    var loaded = onEvt('load', window, function () {
+                        return d.readyState === 'complete';
+                    });
+                    var VI = 'BÌNH DƯƠNG HỒNG VÂN Ễ Ữ Đ';
+                    var BODY = 'Trân trọng kính mời Vị trí Nhà hàng';
+                    /* Pinyon sample includes the guest name + fallback so the
+                       Vietnamese / latin-ext subsets they need load under the
+                       overlay (no fallback-glyph flash on the name). */
+                    var G = window.__guest || { name: '', fallback: 'Quý Anh Chị cùng gia đình' };
+                    var SCRIPT = 'and The & ' + G.fallback + (G.name ? ' ' + G.name : '');
+                    /* Resolves 'fonts' when every required face loaded,
+                       'blocked' when the CSS errored, 'error' when a face is
+                       missing (empty result) or failed. Rejection → 'error'. */
+                    var fontsLoaded = fontsCss.then(function (state) {
+                        if (state !== 'ok') return 'blocked';
+                        if (!d.fonts || !d.fonts.load) return 'error';
+                        return Promise.all([
+                            d.fonts.load('400 1em "Luxurious Roman"', VI),
+                            d.fonts.load('400 1em "Tinos"', VI),
+                            d.fonts.load('700 1em "Tinos"', 'NHÀ TRAI NHÀ GÁI 11:00'),
+                            d.fonts.load('italic 400 1em "Tinos"', BODY),
+                            d.fonts.load('400 1em "Pinyon Script"', SCRIPT)
+                        ]).then(function (sets) {
+                            for (var i = 0; i < sets.length; i++) {
+                                if (!sets[i] || !sets[i].length) return 'error';
+                                for (var j = 0; j < sets[i].length; j++) {
+                                    if (sets[i][j].status !== 'loaded') return 'error';
+                                }
+                            }
+                            return 'fonts';
+                        });
+                    });
+                    /* A font failure hides right away (fallback text is all we
+                       will get); success additionally waits for window load. */
+                    fontsLoaded.then(function (why) {
+                        if (why === 'error') hide('error');
+                    }, function () { hide('error'); });
+                    Promise.all([loaded, fontsLoaded])
+                        .then(function (res) {
+                            return Promise.resolve(d.fonts ? d.fonts.ready : null)
+                                .then(function () { return res[1]; });
+                        })
+                        .then(
+                            function (why) { hide(why); },
+                            function () { hide('error'); }
+                        );
+                } catch (e) {
+                    hide('error');
+                }
+            })();
+        </script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <!-- Google Fonts CSS: non-render-blocking (spinner paints first);
+             the inline gate waits for #gf-css before document.fonts.load. -->
+        <link
+            id="gf-css"
+            rel="preload"
+            as="style"
+            href="https://fonts.googleapis.com/css2?family=Luxurious+Roman&family=Pinyon+Script&family=Tinos:ital,wght@0,400;0,700;1,400&display=swap"
+            onload="this.onload=null;this.rel='stylesheet'"
+        />
+        <noscript>
+            <link
+                rel="stylesheet"
+                href="https://fonts.googleapis.com/css2?family=Luxurious+Roman&family=Pinyon+Script&family=Tinos:ital,wght@0,400;0,700;1,400&display=swap"
+            />
+        </noscript>
+        <link rel="stylesheet" href="./styles.css" />
+        <script src="./main.js" defer></script>
+    </head>
+    <body>
+        <!-- ============ LOADING OVERLAY (JS only; removed when site:ready) ============ -->
+        <div id="site-loader" role="status" aria-live="polite">
+            <svg viewBox="0 0 72 72" aria-hidden="true" focusable="false">
+                <circle class="ring" cx="36" cy="36" r="28" />
+                <circle class="ring" cx="36" cy="36" r="24" />
+                <circle class="arc" cx="36" cy="36" r="28" />
+                <circle class="arc arc-in" cx="36" cy="36" r="24" />
+                <path
+                    class="petal"
+                    d="M36 30.6 C 40.7 30.6, 41.4 38.3, 36 42.3 C 30.6 38.3, 31.3 30.6, 36 30.6 Z"
+                />
+            </svg>
+            <span class="sl-label">Đang tải…</span>
+        </div>
+
+        <!-- ============ SECTION 1 · HERO (cover) ============ -->
+        <header class="hero">
+            <p class="eyebrow">THE WEDDING OF</p>
+            <h1 class="hero-names">
+                <span class="name">BÌNH DƯƠNG</span>
+                <span class="script-and" aria-hidden="true">
+                    <svg
+                        class="swash swash-left"
+                        viewBox="0 0 80 24"
+                        aria-hidden="true"
+                    >
+                        <path
+                            d="M78 16 C 58 4, 30 2, 4 10 M12 6 C 8 8, 6 10, 4 12 C 7 12, 10 12, 13 11"
+                        />
+                    </svg>
+                    <span class="script">and</span>
+                    <svg
+                        class="swash swash-right"
+                        viewBox="0 0 80 24"
+                        aria-hidden="true"
+                    >
+                        <path
+                            d="M2 16 C 22 4, 50 2, 76 10 M68 6 C 72 8, 74 10, 76 12 C 73 12, 70 12, 67 11"
+                        />
+                    </svg>
+                </span>
+                <span class="name">HỒNG VÂN</span>
+            </h1>
+            <div class="hero-invite">
+                <p class="invite-lead">Trân trọng kính mời:</p>
+                <p class="guest"><span class="guest-name" translate="no">Quý Anh Chị cùng gia đình</span><script>window.__guestApply && window.__guestApply();</script></p>
+            </div>
+        </header>
+
+        <!-- ============ SECTION 2 · SAVE THE DATE ============ -->
+        <section class="save-the-date reveal" aria-label="Save the date">
+            <p class="std-line">
+                <span class="std-word">SAVE</span>
+                <span class="std-script">The</span>
+                <span class="std-word">DATE</span>
+            </p>
+            <p class="std-date">24 . 11 . 2026</p>
+        </section>
+
+        <!-- ============ SECTIONS 3 + 4 · CEREMONY & RECEPTION SPREAD ============ -->
+        <main class="spread">
+            <!-- ===== Section 3 · LỄ THÀNH HÔN ===== -->
+            <article class="panel ceremony reveal">
+                <div class="monogram" aria-label="D&V">
+                    <span class="mono-letter">D</span
+                    ><span class="mono-amp">&amp;</span
+                    ><span class="mono-letter">V</span>
+                </div>
+
+                <h2 class="panel-title">LỄ THÀNH HÔN</h2>
+                <p class="info">TỔ CHỨC VÀO LÚC 10 GIỜ 00</p>
+
+                <div class="date-row">
+                    <div class="date-label"><span>THỨ BA</span></div>
+                    <div class="date-number">
+                        <span class="day">24</span
+                        ><span class="year">2026</span>
+                    </div>
+                    <div class="date-label"><span>THÁNG 11</span></div>
+                </div>
+                <p class="lunar info">(TỨC NGÀY 16 THÁNG 10 NĂM BÍNH NGỌ)</p>
+
+                <p class="venue-title">TẠI GIA ĐÌNH NHÀ TRAI</p>
+                <p class="info">
+                    THÔN THỐNG NHẤT - XÃ XUÂN LÃNG - TỈNH PHÚ THỌ
+                </p>
+
+                <div class="parents">
+                    <div class="parent-col">
+                        <p class="parent-head">NHÀ TRAI</p>
+                        <p class="parent-name">NGUYỄN TRUNG DŨNG</p>
+                        <p class="parent-name">VŨ THỊ THẢO HIỀN</p>
+                    </div>
+                    <div class="parent-col">
+                        <p class="parent-head">NHÀ GÁI</p>
+                        <p class="parent-name">ĐỖ SÁCH THÀNH</p>
+                        <p class="parent-name">BÙI THỊ TOAN</p>
+                    </div>
+                </div>
+
+                <p class="honor info">SỰ HIỆN DIỆN CỦA QUÝ KHÁCH</p>
+                <p class="honor info">
+                    LÀ NIỀM VINH HẠNH CHO GIA ĐÌNH CHÚNG TÔI!
+                </p>
+
+                <div class="fleuron" role="presentation">
+                    <svg viewBox="0 0 200 24" aria-hidden="true">
+                        <line x1="4" y1="12" x2="72" y2="12" />
+                        <line x1="128" y1="12" x2="196" y2="12" />
+                        <path
+                            d="M100 12 c -4 -8, -16 -8, -18 -1 c -2 6, 6 9, 10 4 c 2 -3, 1 -6, -2 -7"
+                        />
+                        <path
+                            d="M100 12 c 4 -8, 16 -8, 18 -1 c 2 6, -6 9, -10 4 c -2 -3, -1 -6, 2 -7"
+                        />
+                    </svg>
+                </div>
+            </article>
+
+            <!-- ===== Section 4 · Reception ===== -->
+            <article class="panel reception reveal">
+                <h2 class="panel-title ink">TRÂN TRỌNG KÍNH MỜI</h2>
+                <p class="guest"><span class="guest-name" translate="no">Quý Anh Chị cùng gia đình</span><script>window.__guestApply && window.__guestApply();</script></p>
+
+                <p class="info">TỚI DỰ BỮA CƠM THÂN MẬT</p>
+                <p class="info">CHUNG VUI CÙNG GIA ĐÌNH CHÚNG TÔI</p>
+
+                <div class="reception-names">
+                    <span class="name-burgundy">BÌNH DƯƠNG</span>
+                    <span class="script">and</span>
+                    <span class="name-burgundy">HỒNG VÂN</span>
+                </div>
+
+                <p class="info">ĐƯỢC TỔ CHỨC VÀO LÚC</p>
+                <p class="big-time">11:00</p>
+
+                <div class="date-row">
+                    <div class="date-label"><span>THỨ BA</span></div>
+                    <div class="date-number">
+                        <span class="day">24</span
+                        ><span class="year">2026</span>
+                    </div>
+                    <div class="date-label"><span>THÁNG 11</span></div>
+                </div>
+                <p class="lunar info">(TỨC NGÀY 16 THÁNG 10 NĂM BÍNH NGỌ)</p>
+
+                <p class="info">TẠI: TRUNG TÂM HỘI NGHỊ - TIỆC CƯỚI</p>
+                <p class="venue-title">NHÀ HÀNG HANH NGUYỆT</p>
+                <p class="info">KHU PHỐ 2, XÃ BÌNH NGUYÊN, TỈNH PHÚ THỌ</p>
+
+                <div class="timeline reveal">
+                    <div class="tl-icons">
+                        <!-- Rings + heart -->
+                        <svg
+                            class="tl-icon"
+                            viewBox="0 0 64 48"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M32 15 C 27.5 10, 25 7.5, 27.2 5.2 C 29 3.4, 31.3 4.4, 32 6.5 C 32.7 4.4, 35 3.4, 36.8 5.2 C 39 7.5, 36.5 10, 32 15 Z"
+                            />
+                            <circle cx="25" cy="32" r="10.5" />
+                            <circle cx="39" cy="32" r="10.5" />
+                        </svg>
+                        <!-- Bride & groom -->
+                        <svg
+                            class="tl-icon"
+                            viewBox="0 0 64 48"
+                            aria-hidden="true"
+                        >
+                            <circle cx="21" cy="9" r="4.5" />
+                            <path
+                                d="M21 14 L 14 32 M21 14 L 28 32 M16 32 L 26 32"
+                            />
+                            <circle cx="43" cy="9" r="4.5" />
+                            <path
+                                d="M43 4.5 C 50 5, 53.5 9, 54 14 C 50 12, 46.5 12, 44 13"
+                            />
+                            <path
+                                d="M43 14 L 35 32 M43 14 L 51 32 M35 32 C 36.5 30.5, 38 30.5, 39.5 32 C 41 33.5, 42.5 33.5, 44 32 C 45.5 30.5, 47 30.5, 48.5 32 C 50 33.5, 50.5 33, 51 32"
+                            />
+                        </svg>
+                        <!-- Plate + heart, fork & knife -->
+                        <svg
+                            class="tl-icon"
+                            viewBox="0 0 64 48"
+                            aria-hidden="true"
+                        >
+                            <circle cx="32" cy="24" r="12.5" />
+                            <circle cx="32" cy="24" r="8" />
+                            <path
+                                d="M32 21.5 C 30.6 19.8, 28.4 20.1, 28.1 21.9 C 27.9 23.4, 29.3 24.6, 32 26.8 C 34.7 24.6, 36.1 23.4, 35.9 21.9 C 35.6 20.1, 33.4 19.8, 32 21.5 Z"
+                            />
+                            <path
+                                d="M9 12 V 17 M13 12 V 17 M11 12 V 36 M9 17 C 9 20, 13 20, 13 17"
+                            />
+                            <path
+                                d="M53 12 C 55.5 12, 56.5 15, 56.5 17.5 C 56.5 20, 55 21.5, 53 21.5 C 51 21.5, 49.5 20, 49.5 17.5 C 49.5 15, 50.5 12, 53 12 Z M53 21.5 V 36"
+                            />
+                        </svg>
+                    </div>
+                    <div class="tl-times">
+                        <span>10:00</span><span>11:00</span><span>11:00</span>
+                    </div>
+                    <div class="tl-track" role="presentation">
+                        <span class="tl-dot d1"></span
+                        ><span class="tl-dot d2"></span
+                        ><span class="tl-dot d3"></span>
+                    </div>
+                    <div class="tl-labels">
+                        <span>LỄ THÀNH HÔN</span><span>ĐÓN KHÁCH</span
+                        ><span>KHAI TIỆC</span>
+                    </div>
+                </div>
+            </article>
+        </main>
+
+        <!-- ============ SECTION 5 · QR CODES ============ -->
+        <section class="qr-section reveal" aria-label="Vị trí">
+            <div class="qr-block">
+                <p class="qr-label">Vị trí Nhà hàng</p>
+                <a
+                    class="qr-link"
+                    href="https://q.me-qr.com/55g1jozf"
+                    target="_blank"
+                    rel="noopener"
+                    title="Vị trí Nhà hàng — bản đồ"
+                >
+                    <img
+                        src="./assets/qr-nha-hang.png"
+                        width="220"
+                        height="220"
+                        alt="Mã QR vị trí nhà hàng Hanh Nguyệt"
+                        loading="lazy"
+                    />
+                </a>
+            </div>
+            <div class="qr-block">
+                <p class="qr-label">Vị trí Nhà trai</p>
+                <a
+                    class="qr-link"
+                    href="https://q.me-qr.com/7xh3iw1i"
+                    target="_blank"
+                    rel="noopener"
+                    title="Vị trí Nhà trai — bản đồ"
+                >
+                    <img
+                        src="./assets/qr-nha-trai.png"
+                        width="220"
+                        height="220"
+                        alt="Mã QR vị trí nhà trai — Thôn Thống Nhất, Xuân Lãng, Phú Thọ"
+                        loading="lazy"
+                    />
+                </a>
+            </div>
+        </section>
+
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () {
+                    navigator.serviceWorker
+                        .register('./sw.js', { scope: './' })
+                        .catch(function () {});
+                });
+            }
+        </script>
+    </body>
+</html>

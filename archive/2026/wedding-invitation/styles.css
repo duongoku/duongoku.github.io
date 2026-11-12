@@ -1,0 +1,671 @@
+/* ============================================================
+   Bình Dương & Hồng Vân — Wedding invitation
+   White · Burgundy #9E1B32 · Ink #1A1A1A · Luxurious Roman + Pinyon Script + Tinos
+   ============================================================ */
+
+:root {
+  --burgundy: #9E1B32;
+  --ink: #1A1A1A;
+  --hairline: rgba(158, 27, 50, 0.35);
+  --serif-display: "Luxurious Roman", "Times New Roman", Times, serif;
+  --serif-body: "Tinos", "Times New Roman", Times, serif;
+  --script: "Pinyon Script", cursive;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: #ffffff;
+  color: var(--ink);
+  font-family: var(--serif-body);
+  line-height: 1.6;
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- shared ---------- */
+
+/* Luxurious Roman / Pinyon Script ship a single 400 weight:
+   never let the browser fake bold/italic on display or script text */
+.eyebrow,
+.hero-names .name,
+.script,
+.std-line,
+.std-date,
+.panel-title,
+.monogram,
+.date-label span,
+.date-number .day,
+.venue-title,
+.name-burgundy {
+  font-synthesis: none;
+}
+
+.info {
+  color: var(--ink);
+  font-family: var(--serif-body);
+  letter-spacing: 0.08em;
+  font-size: clamp(0.85rem, 1.8vw, 1.05rem);
+}
+
+.script {
+  font-family: var(--script);
+  color: var(--burgundy);
+  font-weight: 400;
+}
+
+/* personalized guest name: handwritten Pinyon Script on a hairline.
+   Text set from ?khach= / ?to= (inline script, textContent only);
+   static fallback "Quý Anh Chị cùng gia đình" for no-JS / no param.
+   line-height 1.8 keeps Pinyon's stacked Vietnamese marks (Ữ Ễ ồ, which
+   reach ~0.2em above the em box) and deep descenders inside each line box,
+   so wrapped lines never collide or clip. */
+.guest {
+  position: relative;
+  width: min(32rem, 100%);
+  margin: 0.25rem auto 0;
+  padding: 0 0.25rem 0.5rem;
+}
+
+.guest-name {
+  display: block;
+  font-family: var(--script);
+  font-weight: 400;
+  font-synthesis: none;
+  color: var(--burgundy);
+  font-size: clamp(2.05rem, 5.4vw, 2.75rem);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.guest-name[data-long] { font-size: clamp(1.7rem, 4.4vw, 2.25rem); }
+
+/* thin hairline under the name (draws on with scaleX, see animations) */
+.guest::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: min(20rem, 80%);
+  height: 1px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, transparent, var(--burgundy) 16%, var(--burgundy) 84%, transparent);
+  opacity: 0.6;
+  transform-origin: center;
+}
+
+/* ---------- section 1 · hero ---------- */
+
+.hero {
+  padding: clamp(3.5rem, 9vh, 6.5rem) 1.25rem clamp(3rem, 7vh, 5rem);
+}
+
+.eyebrow {
+  font-family: var(--serif-display);
+  font-weight: 400;
+  color: var(--burgundy);
+  letter-spacing: 0.55em;
+  text-indent: 0.55em; /* balance trailing letter-space */
+  font-size: clamp(0.8rem, 2vw, 1.05rem);
+  text-transform: uppercase;
+  margin-bottom: clamp(1.2rem, 3vh, 2rem);
+}
+
+.hero-names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.hero-names .name {
+  font-family: var(--serif-display);
+  font-weight: 400;
+  color: var(--burgundy);
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
+  font-size: clamp(2.1rem, 6.5vw, 3.6rem);
+  line-height: 1.15;
+}
+
+.script-and {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 0.2rem 0 0.3rem;
+}
+
+.script-and .script {
+  font-size: clamp(2rem, 5.25vw, 3.05rem);
+  line-height: 1.1;
+}
+
+.swash {
+  width: clamp(52px, 9vw, 96px);
+  height: auto;
+}
+
+.swash path {
+  fill: none;
+  stroke: var(--burgundy);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.hero-invite { margin-top: clamp(2.2rem, 6vh, 4rem); }
+
+.invite-lead {
+  font-style: italic;
+  color: var(--burgundy);
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+}
+
+/* ---------- section 2 · save the date ---------- */
+
+.save-the-date {
+  padding: clamp(2rem, 5vh, 3.2rem) 1.25rem;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.std-line {
+  font-family: var(--serif-display);
+  color: var(--burgundy);
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.std-word {
+  font-size: clamp(1.7rem, 5vw, 2.6rem);
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-indent: 0.32em;
+}
+
+.std-script {
+  font-family: var(--script);
+  font-size: clamp(2.4rem, 6.6vw, 3.4rem);
+  display: inline-block;
+  transform: rotate(-8deg) translateY(0.18em);
+  line-height: 1;
+}
+
+.std-date {
+  margin-top: 0.9rem;
+  font-family: var(--serif-display);
+  font-weight: 400;
+  color: var(--burgundy);
+  font-size: clamp(1.25rem, 3.4vw, 1.8rem);
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+}
+
+/* ---------- sections 3 + 4 · spread ---------- */
+
+.spread {
+  display: grid;
+  grid-template-columns: 1fr;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(2rem, 5vh, 3.5rem) 1.25rem clamp(2.5rem, 6vh, 4rem);
+  gap: clamp(2.5rem, 6vh, 3.5rem) 0;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.55rem, 1.4vh, 0.8rem);
+}
+
+.panel-title {
+  font-family: var(--serif-display);
+  color: var(--burgundy);
+  font-size: clamp(1.1rem, 2.6vw, 1.7rem);
+  letter-spacing: 0.24em;
+  text-indent: 0.24em;
+  font-weight: 400;
+}
+
+.panel-title.ink { color: var(--ink); }
+
+/* monogram D&V */
+.monogram {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15em;
+  margin-bottom: 0.4rem;
+  line-height: 1;
+}
+
+.mono-letter {
+  font-family: var(--serif-display);
+  font-weight: 400;
+  color: var(--burgundy);
+  font-size: clamp(4rem, 9vw, 6.5rem);
+}
+
+.mono-amp {
+  font-family: var(--script);
+  color: var(--burgundy);
+  font-size: clamp(2.8rem, 6.2vw, 4.1rem);
+  transform: translateY(-0.45em);
+}
+
+/* date triplet */
+.date-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 3.5vw, 2.2rem);
+  margin: clamp(0.9rem, 2.5vh, 1.4rem) 0 clamp(0.7rem, 2vh, 1.1rem);
+}
+
+.date-label {
+  border-top: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  padding: 0.5em 0.7em 0.4em 1.05em;
+}
+
+.date-label span {
+  font-family: var(--serif-display);
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: 0.3em;
+  font-size: clamp(0.8rem, 1.8vw, 1rem);
+  white-space: nowrap;
+}
+
+.date-number {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.date-number .day {
+  font-family: var(--serif-display);
+  font-weight: 400;
+  color: var(--burgundy);
+  font-size: clamp(3rem, 7vw, 4.6rem);
+}
+
+.date-number .year {
+  margin-top: 0.35em;
+  font-family: var(--serif-body);
+  color: var(--ink);
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
+  font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+}
+
+.lunar { font-style: italic; }
+
+.venue-title {
+  font-family: var(--serif-display);
+  color: var(--burgundy);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  font-size: clamp(1.05rem, 2.6vw, 1.45rem);
+  margin-top: 0.4rem;
+}
+
+/* parents */
+.parents {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.25rem;
+  margin: clamp(1.1rem, 3vh, 1.7rem) auto clamp(1.1rem, 3vh, 1.7rem);
+  width: min(560px, 100%);
+}
+
+.parent-col { display: flex; flex-direction: column; gap: 0.45rem; }
+
+.parent-head {
+  font-family: var(--serif-body);
+  font-weight: bold;
+  letter-spacing: 0.14em;
+  font-size: clamp(0.85rem, 1.8vw, 1rem);
+}
+
+.parent-name {
+  font-family: var(--serif-body);
+  letter-spacing: 0.06em;
+  font-size: clamp(0.85rem, 1.8vw, 1rem);
+}
+
+/* reception-specific */
+.reception-names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  margin: clamp(1rem, 3vh, 1.6rem) 0;
+}
+
+.name-burgundy {
+  font-family: var(--serif-display);
+  font-weight: 400;
+  color: var(--burgundy);
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  font-size: clamp(1.6rem, 4.2vw, 2.4rem);
+  line-height: 1.2;
+}
+
+.reception-names .script {
+  font-size: clamp(1.8rem, 4.2vw, 2.4rem);
+  margin: 0.15rem 0;
+}
+
+.big-time {
+  font-family: var(--serif-body);
+  font-weight: bold;
+  color: var(--ink);
+  font-size: clamp(1.9rem, 4.5vw, 2.6rem);
+  letter-spacing: 0.12em;
+  margin: 0.2rem 0 0.4rem;
+}
+
+/* fleuron divider */
+.fleuron {
+  margin-top: clamp(1rem, 3vh, 1.6rem);
+  width: min(240px, 60%);
+}
+
+.fleuron svg { width: 100%; height: auto; display: block; }
+
+.fleuron line,
+.fleuron path {
+  stroke: var(--burgundy);
+  stroke-width: 1.4;
+  fill: none;
+  stroke-linecap: round;
+}
+
+/* timeline */
+.timeline {
+  margin-top: clamp(1.4rem, 4vh, 2.2rem);
+  width: 100%;
+  max-width: 560px;
+}
+
+.tl-icons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-items: center;
+}
+
+.tl-icon {
+  width: clamp(46px, 8vw, 64px);
+  height: auto;
+}
+
+.tl-icon path,
+.tl-icon circle {
+  fill: none;
+  stroke: var(--burgundy);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tl-times {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 0.5rem;
+  font-family: var(--serif-body);
+  color: var(--ink);
+  font-size: clamp(0.85rem, 1.8vw, 1rem);
+  letter-spacing: 0.1em;
+}
+
+.tl-track {
+  position: relative;
+  height: 9px;
+  margin: 0.6rem clamp(24px, 6%, 40px) 0.2rem;
+  border-top: 1.5px solid var(--burgundy);
+}
+
+.tl-dot {
+  position: absolute;
+  top: -5.25px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--burgundy);
+}
+
+.tl-dot.d1 { left: calc(16.666% - 4.5px); }
+.tl-dot.d2 { left: calc(50% - 4.5px); }
+.tl-dot.d3 { left: calc(83.333% - 4.5px); }
+
+.tl-labels {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 0.35rem;
+  font-family: var(--serif-body);
+  color: var(--ink);
+  letter-spacing: 0.12em;
+  font-size: clamp(0.72rem, 1.6vw, 0.85rem);
+}
+
+/* ---------- section 5 · QR ---------- */
+
+.qr-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  padding: clamp(2rem, 5vh, 3.5rem) 1.25rem clamp(3rem, 8vh, 5rem);
+  border-top: 1px solid var(--hairline);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.qr-block { display: flex; flex-direction: column; align-items: center; }
+
+.qr-label {
+  font-style: italic;
+  color: var(--burgundy);
+  font-size: clamp(1rem, 2.2vw, 1.2rem);
+  margin-bottom: 0.75rem;
+}
+
+.qr-link { display: inline-block; }
+
+.qr-link img {
+  width: clamp(150px, 34vw, 220px);
+  height: auto;
+  border: 1px solid var(--hairline);
+  padding: 8px;
+  border-radius: 10px;
+  transition: transform 0.2s ease;
+}
+
+.qr-link:hover img { transform: scale(1.03); }
+
+/* ---------- desktop: two-column spread ---------- */
+
+@media (min-width: 900px) {
+  .spread {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .panel { padding: 0 clamp(1.5rem, 4vw, 3.5rem); }
+
+  .panel + .panel { border-left: 1px solid var(--hairline); }
+}
+
+/* ============================================================
+   Animations — hero reveal · petals · scroll reveals · draw-ons
+   All initial-hidden states are gated behind `.js` (set inline in
+   <head> before paint), so no-JS users see everything immediately.
+   Animations always run, regardless of the OS reduced-motion setting.
+   ============================================================ */
+
+:root { --ease-soft: cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* petals ambient layer (created by main.js) */
+#petals-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* date-label rule boxes: overlay pseudo-lines exactly on the borders
+   (identical resting look) so they can draw on with scaleX */
+.date-label { position: relative; }
+
+.date-label::before,
+.date-label::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: var(--ink);
+  transform-origin: center;
+}
+
+.date-label::before { top: -1.5px; }
+.date-label::after { bottom: -1.5px; }
+
+/* timeline axis: overlay line exactly on the border-top */
+.tl-track::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1.5px;
+  height: 1.5px;
+  background: var(--burgundy);
+  transform-origin: left center;
+}
+
+/* ---------- hero: line-by-line reveal ---------- */
+
+.js .hero .eyebrow,
+.js .hero .hero-names > .name,
+.js .hero .script-and,
+.js .hero .invite-lead,
+.js .hero-invite .guest {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.5s var(--ease-soft),
+    transform 0.5s var(--ease-soft);
+}
+
+.js .hero .script-and { transform: translateY(18px) scale(0.92); }
+
+.js .hero .eyebrow { transition-delay: 0ms; }
+.js .hero .hero-names > :nth-child(1) { transition-delay: 150ms; }
+.js .hero .script-and { transition-delay: 300ms; }
+.js .hero .hero-names > :nth-child(3) { transition-delay: 450ms; }
+.js .hero .invite-lead { transition-delay: 600ms; }
+.js .hero-invite .guest { transition-delay: 750ms; }
+
+.js.hero-in .hero .eyebrow,
+.js.hero-in .hero .hero-names > .name,
+.js.hero-in .hero .script-and,
+.js.hero-in .hero .invite-lead,
+.js.hero-in .hero-invite .guest {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.js.hero-in .hero .script-and { transform: translateY(0) scale(1); }
+
+/* ---------- scroll reveals: staggered fade-up of block children ---------- */
+
+.js .reveal > :nth-child(1) { --i: 0; }
+.js .reveal > :nth-child(2) { --i: 1; }
+.js .reveal > :nth-child(3) { --i: 2; }
+.js .reveal > :nth-child(4) { --i: 3; }
+.js .reveal > :nth-child(5) { --i: 4; }
+.js .reveal > :nth-child(6) { --i: 5; }
+.js .reveal > :nth-child(7) { --i: 6; }
+.js .reveal > :nth-child(8) { --i: 7; }
+.js .reveal > :nth-child(9) { --i: 8; }
+.js .reveal > :nth-child(10) { --i: 9; }
+.js .reveal > :nth-child(11) { --i: 10; }
+.js .reveal > :nth-child(12) { --i: 11; }
+.js .reveal > :nth-child(n + 13) { --i: 12; }
+
+.js .reveal > * {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.55s var(--ease-soft),
+    transform 0.55s var(--ease-soft);
+  transition-delay: calc(min(var(--i, 0), 12) * 90ms);
+}
+
+.js .reveal.in-view > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- draw-ons ---------- */
+
+/* timeline axis + dots */
+.js .timeline:not(.in-view) .tl-track { border-top-color: transparent; }
+.js .timeline:not(.in-view) .tl-track::before { transform: scaleX(0); }
+.tl-track::before {
+  transition: transform 1s var(--ease-soft) 150ms;
+}
+
+.tl-dot {
+  transition:
+    opacity 0.45s var(--ease-soft),
+    transform 0.45s var(--ease-soft);
+}
+.js .timeline:not(.in-view) .tl-dot {
+  opacity: 0;
+  transform: scale(0);
+}
+.timeline.in-view .tl-dot.d1 { transition-delay: 400ms; }
+.timeline.in-view .tl-dot.d2 { transition-delay: 700ms; }
+.timeline.in-view .tl-dot.d3 { transition-delay: 1000ms; }
+
+/* date-label rule boxes (scaleX after the row has faded up) */
+.js .panel:not(.in-view) .date-label { border-color: transparent; }
+.js .panel:not(.in-view) .date-label::before,
+.js .panel:not(.in-view) .date-label::after { transform: scaleX(0); }
+.date-label::before,
+.date-label::after {
+  transition: transform 0.8s var(--ease-soft);
+}
+.panel.in-view .date-label::before { transition-delay: calc(min(var(--i, 0), 12) * 90ms + 250ms); }
+.panel.in-view .date-label::after { transition-delay: calc(min(var(--i, 0), 12) * 90ms + 400ms); }
+
+/* guest-name hairline: hero after the name fades in; reception after its
+   stagger slot */
+.guest::after { transition: transform 0.9s var(--ease-soft); }
+.js:not(.hero-in) .hero .guest::after,
+.js .panel:not(.in-view) .guest::after { transform: scaleX(0); }
+.js .hero .guest::after { transition-delay: 1000ms; }
+.panel.in-view .guest::after { transition-delay: calc(min(var(--i, 0), 12) * 90ms + 300ms); }
+
+/* SVG stroke draw-ons (dash lengths armed by main.js) */
+.js .tl-icon path,
+.js .tl-icon circle,
+.js .fleuron path,
+.js .fleuron line {
+  transition: stroke-dashoffset 0.9s var(--ease-soft);
+}
