@@ -1,0 +1,38 @@
+- generic [ref=f3e2]:
+  - banner [ref=f3e3]:
+    - generic [ref=f3e4]:
+      - heading "Pocket Habitat" [level=1] [ref=f3e5]
+      - paragraph [ref=f3e6]: Warm light settles on open leaves.
+    - generic "Garden stats" [ref=f3e7]:
+      - generic [ref=f3e8]: 4 petals
+      - generic [ref=f3e9]: Day · Clear
+  - main [ref=f3e10]:
+    - generic [ref=f3e12]:
+      - generic [ref=f3e13]:
+        - generic [ref=f3e14]:
+          - heading "Garden" [level=2] [ref=f3e15]
+          - paragraph [ref=f3e16]: 3 items placed · 5 traits active
+        - button "Check paths" [ref=f3e17] [cursor=pointer]
+      - generic "Habitat scene" [ref=f3e18]:
+        - generic [ref=f3e21]:
+          - generic "Seed Tray" [ref=f3e22]
+          - generic "Moss Stone" [ref=f3e23]
+          - generic "Shallow Basin" [ref=f3e24]
+        - generic [ref=f3e28]: Sprig
+      - generic [ref=f3e29]: Local save active. Offline time uses device clock since last visit.
+    - complementary [ref=f3e30]:
+      - generic [ref=f3e31]:
+        - generic [ref=f3e32]:
+          - heading "Recent" [level=2] [ref=f3e33]
+          - generic [ref=f3e34]: 3/20 items
+        - paragraph [ref=f3e35]: No logged visits yet. Check paths or return later.
+  - navigation "Primary" [ref=f3e36]:
+    - button "Garden" [ref=f3e37] [cursor=pointer]:
+      - generic [ref=f3e38]: ◇
+      - generic [ref=f3e39]: Garden
+    - button "Journal" [ref=f3e40] [cursor=pointer]:
+      - generic [ref=f3e41]: ▤
+      - generic [ref=f3e42]: Journal
+    - button "Items" [ref=f3e43] [cursor=pointer]:
+      - generic [ref=f3e44]: ▦
+      - generic [ref=f3e45]: Items

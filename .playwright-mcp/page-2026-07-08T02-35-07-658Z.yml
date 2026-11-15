@@ -1,0 +1,45 @@
+- generic [ref=f2e2]:
+  - banner [ref=f2e54]:
+    - generic [ref=f2e55]:
+      - heading "Pocket Habitat" [level=1] [ref=f2e56]
+      - paragraph [ref=f2e57]: Warm light settles on open leaves.
+    - generic "Garden stats" [ref=f2e58]:
+      - generic [ref=f2e59]: 12 petals
+      - generic [ref=f2e60]: Day · Clear
+  - main [ref=f2e61]:
+    - generic [ref=f2e63]:
+      - generic [ref=f2e64]:
+        - generic [ref=f2e65]:
+          - heading "Garden" [level=2] [ref=f2e66]
+          - paragraph [ref=f2e67]: 2 items placed · 4 traits active
+        - button "Check paths" [ref=f2e68] [cursor=pointer]
+      - generic "Habitat scene" [ref=f2e69]:
+        - generic [ref=f2e72]:
+          - generic "Seed Tray" [ref=f2e73]
+          - generic "Moss Stone" [ref=f2e74]
+        - generic [ref=f2e78]: Sprig
+      - generic [ref=f2e79]: Local save active. Offline time uses device clock since last visit.
+    - complementary [ref=f2e80]:
+      - generic [ref=f2e81]:
+        - generic [ref=f2e82]:
+          - heading "Recent" [level=2] [ref=f2e83]
+          - generic [ref=f2e84]: 2/20 items
+        - paragraph [ref=f2e85]: No logged visits yet. Check paths or return later.
+  - navigation "Primary" [ref=f2e86]:
+    - button "Garden" [ref=f2e87] [cursor=pointer]:
+      - generic [ref=f2e88]: ◇
+      - generic [ref=f2e89]: Garden
+    - button "Journal" [ref=f2e90] [cursor=pointer]:
+      - generic [ref=f2e91]: ▤
+      - generic [ref=f2e92]: Journal
+    - button "Items" [ref=f2e93] [cursor=pointer]:
+      - generic [ref=f2e94]: ▦
+      - generic [ref=f2e95]: Items
+  - dialog "Time keeps moving" [ref=f2e96]:
+    - generic [ref=f2e97]:
+      - paragraph [ref=f2e99]: Step 2 of 3
+      - heading "Time keeps moving" [level=2] [ref=f2e100]
+      - paragraph [ref=f2e101]: Weather and time of day use your device clock. Missed visits are simulated when you return.
+      - generic [ref=f2e102]:
+        - button "Skip" [ref=f2e103] [cursor=pointer]
+        - button "Next" [ref=f2e104] [cursor=pointer]
