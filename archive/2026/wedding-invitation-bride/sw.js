@@ -7,7 +7,7 @@
    them can live on the same origin: only `wedding-wife-*` caches are pruned. */
 
 const CACHE_PREFIXES = ['wedding-wife-'];
-const CACHE_VERSION = 'wedding-wife-v3';
+const CACHE_VERSION = 'wedding-wife-v4';
 const PRECACHE_PATHS = [
   './',
   './index.html',

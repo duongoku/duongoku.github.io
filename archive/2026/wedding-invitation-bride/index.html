@@ -182,6 +182,60 @@
                 };
             })();
         </script>
+        <!-- Event time override — ?gio=HH:MM (alias ?time=), e.g. ?gio=16:00.
+             The static 18:00 in the markup stays as the no-JS fallback; a
+             valid ?gio (strict 24-hour HH:MM, sanitized) rewrites the
+             visible <time>, its datetime attribute and the <head> meta
+             descriptions, and feeds the font-gate sample below. Runs before
+             the font gate so the gate preloads the overridden time's glyphs.
+             Applied inline right after the <time> element in the body. -->
+        <script>
+            (function () {
+                var DEFAULT_TEXT = '18:00';
+                var DEFAULT_DT = '2026-11-23T18:00+07:00';
+                /* Strict 24-hour HH:MM; "9:30" is normalized to "09:30". */
+                function parse(raw) {
+                    if (typeof raw !== 'string') return null;
+                    var m = raw.trim().match(/^([01]?\d|2[0-3]):([0-5]\d)$/);
+                    if (!m) return null;
+                    var text = ('0' + m[1]).slice(-2) + ':' + m[2];
+                    return {
+                        text: text,
+                        datetime: '2026-11-23T' + text + '+07:00',
+                    };
+                }
+                var value = null;
+                try {
+                    var q = new URLSearchParams(location.search);
+                    value = parse(q.get('gio')) || parse(q.get('time'));
+                } catch (e) {}
+                window.__time = {
+                    text: value ? value.text : DEFAULT_TEXT,
+                    datetime: value ? value.datetime : DEFAULT_DT,
+                    custom: !!value,
+                };
+                window.__timeApply = function () {
+                    if (!value) return;
+                    var el = document.getElementById('when-hour');
+                    if (el) {
+                        if (el.textContent !== value.text)
+                            el.textContent = value.text;
+                        el.setAttribute('datetime', value.datetime);
+                    }
+                    var metas = document.querySelectorAll(
+                        'meta[name="description"], meta[property="og:description"]',
+                    );
+                    for (var i = 0; i < metas.length; i++) {
+                        var m = metas[i].getAttribute('content');
+                        if (m && m.indexOf('18:00') !== -1)
+                            metas[i].setAttribute(
+                                'content',
+                                m.replace(/18:00/g, value.text),
+                            );
+                    }
+                };
+            })();
+        </script>
         <!-- Site-ready font gate — same as site/index.html (font samples
              adapted to this page's text). Hard cap 10s: never hangs.
              The photos are not lazy, so `window load` (which the gate
@@ -354,8 +408,12 @@
                     var loaded = onEvt('load', window, function () {
                         return d.readyState === 'complete';
                     });
+                    var TIME =
+                        (window.__time && window.__time.text) || '18:00';
                     var VI =
-                        'THE WEDDING OF BÌNH DƯƠNG HỒNG VÂN VÀO LÚC THỨ HAI 18:00 23.11.2026';
+                        'THE WEDDING OF BÌNH DƯƠNG HỒNG VÂN VÀO LÚC THỨ HAI ' +
+                        TIME +
+                        ' 23.11.2026';
                     var BODY =
                         'Trân trọng kính mời: Tới dự bữa cơm thân mật chung vui cùng gia đình chúng tôi (Tức ngày 15 tháng 10 năm Bính Ngọ) Tại: Sự hiện diện của Quý khách là niềm vinh hạnh cho gia đình chúng tôi!';
                     var BOLD =
@@ -572,10 +630,15 @@
                             <p class="when-cell">
                                 <span class="when-label">VÀO LÚC</span>
                                 <time
+                                    id="when-hour"
                                     class="when-value"
                                     datetime="2026-11-23T18:00+07:00"
                                     >18:00</time
                                 >
+                                <script>
+                                    window.__timeApply &&
+                                        window.__timeApply();
+                                </script>
                             </p>
                             <p class="when-cell">
                                 <span class="when-label">THỨ HAI</span>
