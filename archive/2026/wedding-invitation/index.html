@@ -15,8 +15,12 @@
         <!-- Critical CSS: first-visit loading overlay (paints before web fonts /
              styles.css arrive). Shown only when JS runs (.js gate). -->
         <style>
-            #site-loader { display: none; }
-            html.js.loading { overflow: hidden; }
+            #site-loader {
+                display: none;
+            }
+            html.js.loading {
+                overflow: hidden;
+            }
             .js #site-loader {
                 position: fixed;
                 inset: 0;
@@ -28,9 +32,21 @@
                 opacity: 1;
                 transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             }
-            .js #site-loader.is-hiding { opacity: 0; pointer-events: none; }
-            #site-loader svg { width: 72px; height: 72px; overflow: visible; }
-            #site-loader .ring { fill: none; stroke: #9e1b32; stroke-width: 0.75; opacity: 0.22; }
+            .js #site-loader.is-hiding {
+                opacity: 0;
+                pointer-events: none;
+            }
+            #site-loader svg {
+                width: 72px;
+                height: 72px;
+                overflow: visible;
+            }
+            #site-loader .ring {
+                fill: none;
+                stroke: #9e1b32;
+                stroke-width: 0.75;
+                opacity: 0.22;
+            }
             #site-loader .arc {
                 fill: none;
                 stroke: #9e1b32;
@@ -38,7 +54,8 @@
                 stroke-linecap: round;
                 stroke-dasharray: 30 146;
                 transform-origin: 36px 36px;
-                animation: sl-spin 2.4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+                animation: sl-spin 2.4s cubic-bezier(0.45, 0.05, 0.55, 0.95)
+                    infinite;
             }
             #site-loader .arc-in {
                 stroke-dasharray: 18 133;
@@ -59,10 +76,21 @@
                 clip: rect(0 0 0 0);
                 white-space: nowrap;
             }
-            @keyframes sl-spin { to { transform: rotate(360deg); } }
+            @keyframes sl-spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
             @keyframes sl-pulse {
-                0%, 100% { transform: scale(0.82); opacity: 0.45; }
-                50% { transform: scale(1); opacity: 0.9; }
+                0%,
+                100% {
+                    transform: scale(0.82);
+                    opacity: 0.45;
+                }
+                50% {
+                    transform: scale(1);
+                    opacity: 0.9;
+                }
             }
         </style>
         <script>
@@ -76,24 +104,36 @@
                (called inline right after each .guest-name element). The
                static fallback text lives in the HTML for no-JS visitors. */
             (function () {
-                var FALLBACK = 'Quý Anh Chị cùng gia đình';
-                var MAX = 60, LONG = 28;
+                var FALLBACK = 'Quý khách mời và gia đình';
+                var MAX = 60,
+                    LONG = 28;
                 function clean(raw) {
                     if (typeof raw !== 'string') return '';
                     var s = raw;
-                    try { s = s.normalize('NFC'); } catch (e) {}
+                    try {
+                        s = s.normalize('NFC');
+                    } catch (e) {}
                     /* C0/C1 controls → space; invisible format chars
                        (zero-width, bidi overrides, soft hyphen) → removed */
-                    s = s.replace(/[\u0000-\u001F\u007F-\u009F]/g, ' ')
-                        .replace(/[\u00AD\u061C\u180E\u200B-\u200F\u202A-\u202E\u2060-\u206F\uFFF9-\uFFFB]/g, '')
+                    s = s
+                        .replace(/[\u0000-\u001F\u007F-\u009F]/g, ' ')
+                        .replace(
+                            /[\u00AD\u061C\u180E\u200B-\u200F\u202A-\u202E\u2060-\u206F\uFFF9-\uFFFB]/g,
+                            '',
+                        )
                         .replace(/\s+/g, ' ')
                         .trim();
                     var cp = Array.from(s);
                     if (cp.length > MAX) {
                         var cut = cp.slice(0, MAX + 1).join('');
                         var sp = cut.lastIndexOf(' ');
-                        s = sp >= 20 ? cut.slice(0, sp) : cp.slice(0, MAX).join('');
-                        s = s.replace(/[\s,;:.\/&+\-\u2013\u2014]+$/, '').trim();
+                        s =
+                            sp >= 20
+                                ? cut.slice(0, sp)
+                                : cp.slice(0, MAX).join('');
+                        s = s
+                            .replace(/[\s,;:.\/&+\-\u2013\u2014]+$/, '')
+                            .trim();
                     }
                     return s;
                 }
@@ -101,10 +141,17 @@
                 try {
                     var q = new URLSearchParams(location.search);
                     name = clean(q.get('khach')) || clean(q.get('to'));
-                } catch (e) { name = ''; }
+                } catch (e) {
+                    name = '';
+                }
                 var text = name || FALLBACK;
                 var isLong = Array.from(text).length > LONG;
-                window.__guest = { name: name, text: text, fallback: FALLBACK, long: isLong };
+                window.__guest = {
+                    name: name,
+                    text: text,
+                    fallback: FALLBACK,
+                    long: isLong,
+                };
                 window.__guestApply = function () {
                     var els = document.querySelectorAll('.guest-name');
                     for (var i = 0; i < els.length; i++) {
@@ -133,18 +180,31 @@
                 var de = d.documentElement;
                 de.classList.add('js', 'loading');
                 var t0 = performance.now();
-                var MIN = 350, CSS_MAX = 5000, HARD_MAX = 10000, FADE = 500, QUICK = 150;
+                var MIN = 350,
+                    CSS_MAX = 5000,
+                    HARD_MAX = 10000,
+                    FADE = 500,
+                    QUICK = 150;
                 var done = false;
                 var resolveReady;
                 var timers = [];
-                window.__siteReady = new Promise(function (r) { resolveReady = r; });
+                window.__siteReady = new Promise(function (r) {
+                    resolveReady = r;
+                });
                 /* css: 'pending' | 'ok' | 'blocked' */
-                var L = window.__loader = { t0: t0, hiddenAt: 0, reason: '', css: 'pending' };
+                var L = (window.__loader = {
+                    t0: t0,
+                    hiddenAt: 0,
+                    reason: '',
+                    css: 'pending',
+                });
 
                 function fireReady() {
                     de.classList.add('ready');
                     resolveReady();
-                    try { d.dispatchEvent(new Event('site:ready')); } catch (e) {}
+                    try {
+                        d.dispatchEvent(new Event('site:ready'));
+                    } catch (e) {}
                 }
                 function cleanup(el) {
                     if (el && el.parentNode) el.parentNode.removeChild(el);
@@ -153,7 +213,10 @@
                 function hide(reason) {
                     if (done) return;
                     done = true;
-                    for (var i = 0; i < timers.length; i++) { clearTimeout(timers[i]); clearInterval(timers[i]); }
+                    for (var i = 0; i < timers.length; i++) {
+                        clearTimeout(timers[i]);
+                        clearInterval(timers[i]);
+                    }
                     var el = d.getElementById('site-loader');
                     var elapsed = performance.now() - t0;
                     L.reason = reason;
@@ -164,25 +227,35 @@
                         fireReady();
                         return;
                     }
-                    setTimeout(function () {
-                        requestAnimationFrame(function () {
-                            L.hiddenAt = performance.now();
-                            el.classList.add('is-hiding');
-                            fireReady();
-                            setTimeout(function () { cleanup(el); }, FADE + 50);
-                        });
-                    }, Math.max(0, MIN - elapsed));
+                    setTimeout(
+                        function () {
+                            requestAnimationFrame(function () {
+                                L.hiddenAt = performance.now();
+                                el.classList.add('is-hiding');
+                                fireReady();
+                                setTimeout(function () {
+                                    cleanup(el);
+                                }, FADE + 50);
+                            });
+                        },
+                        Math.max(0, MIN - elapsed),
+                    );
                 }
                 L.hide = hide;
                 function at(ms, fn) {
-                    timers.push(setTimeout(fn, Math.max(0, ms - performance.now())));
+                    timers.push(
+                        setTimeout(fn, Math.max(0, ms - performance.now())),
+                    );
                 }
 
                 try {
                     function onEvt(type, target, test) {
                         return new Promise(function (r) {
                             if (test()) r();
-                            else target.addEventListener(type, function () { r(); });
+                            else
+                                target.addEventListener(type, function () {
+                                    r();
+                                });
                         });
                     }
                     /* Google Fonts CSS is non-render-blocking (preload → onload
@@ -197,7 +270,12 @@
                         var n = 0;
                         try {
                             d.fonts.forEach(function (f) {
-                                if (/Luxurious Roman|Tinos|Pinyon Script/.test(f.family)) n++;
+                                if (
+                                    /Luxurious Roman|Tinos|Pinyon Script/.test(
+                                        f.family,
+                                    )
+                                )
+                                    n++;
                             });
                         } catch (e) {}
                         return n > 0;
@@ -211,8 +289,13 @@
                         if (L.css !== 'pending') return;
                         var link = d.getElementById('gf-css');
                         if (gfErr) settleCss('blocked');
-                        else if ((link && link.rel === 'stylesheet' && link.sheet) || hasFaces()) settleCss('ok');
-                        else if (!link && d.readyState !== 'loading') settleCss('blocked');
+                        else if (
+                            (link && link.rel === 'stylesheet' && link.sheet) ||
+                            hasFaces()
+                        )
+                            settleCss('ok');
+                        else if (!link && d.readyState !== 'loading')
+                            settleCss('blocked');
                     }
                     function onGf(e) {
                         if (!e.target || e.target.id !== 'gf-css') return;
@@ -222,7 +305,10 @@
                     var fontsCss = new Promise(function (r) {
                         settleCss = function (state) {
                             L.css = state;
-                            L.fontsCss = state === 'ok' ? Math.round(performance.now()) : -1;
+                            L.fontsCss =
+                                state === 'ok'
+                                    ? Math.round(performance.now())
+                                    : -1;
                             d.removeEventListener('load', onGf, true);
                             d.removeEventListener('error', onGf, true);
                             r(state);
@@ -239,7 +325,9 @@
                         if (L.css === 'pending') hide('timeout-css');
                     });
                     /* Hard cap: never keep the overlay up past 10s. */
-                    at(HARD_MAX, function () { hide('timeout-hard'); });
+                    at(HARD_MAX, function () {
+                        hide('timeout-hard');
+                    });
 
                     var loaded = onEvt('load', window, function () {
                         return d.readyState === 'complete';
@@ -249,8 +337,14 @@
                     /* Pinyon sample includes the guest name + fallback so the
                        Vietnamese / latin-ext subsets they need load under the
                        overlay (no fallback-glyph flash on the name). */
-                    var G = window.__guest || { name: '', fallback: 'Quý Anh Chị cùng gia đình' };
-                    var SCRIPT = 'and The & ' + G.fallback + (G.name ? ' ' + G.name : '');
+                    var G = window.__guest || {
+                        name: '',
+                        fallback: 'Quý khách mời và gia đình',
+                    };
+                    var SCRIPT =
+                        'and The & ' +
+                        G.fallback +
+                        (G.name ? ' ' + G.name : '');
                     /* Resolves 'fonts' when every required face loaded,
                        'blocked' when the CSS errored, 'error' when a face is
                        missing (empty result) or failed. Rejection → 'error'. */
@@ -260,14 +354,18 @@
                         return Promise.all([
                             d.fonts.load('400 1em "Luxurious Roman"', VI),
                             d.fonts.load('400 1em "Tinos"', VI),
-                            d.fonts.load('700 1em "Tinos"', 'NHÀ TRAI NHÀ GÁI 11:00'),
+                            d.fonts.load(
+                                '700 1em "Tinos"',
+                                'NHÀ TRAI NHÀ GÁI 11:00',
+                            ),
                             d.fonts.load('italic 400 1em "Tinos"', BODY),
-                            d.fonts.load('400 1em "Pinyon Script"', SCRIPT)
+                            d.fonts.load('400 1em "Pinyon Script"', SCRIPT),
                         ]).then(function (sets) {
                             for (var i = 0; i < sets.length; i++) {
                                 if (!sets[i] || !sets[i].length) return 'error';
                                 for (var j = 0; j < sets[i].length; j++) {
-                                    if (sets[i][j].status !== 'loaded') return 'error';
+                                    if (sets[i][j].status !== 'loaded')
+                                        return 'error';
                                 }
                             }
                             return 'fonts';
@@ -275,17 +373,29 @@
                     });
                     /* A font failure hides right away (fallback text is all we
                        will get); success additionally waits for window load. */
-                    fontsLoaded.then(function (why) {
-                        if (why === 'error') hide('error');
-                    }, function () { hide('error'); });
+                    fontsLoaded.then(
+                        function (why) {
+                            if (why === 'error') hide('error');
+                        },
+                        function () {
+                            hide('error');
+                        },
+                    );
                     Promise.all([loaded, fontsLoaded])
                         .then(function (res) {
-                            return Promise.resolve(d.fonts ? d.fonts.ready : null)
-                                .then(function () { return res[1]; });
+                            return Promise.resolve(
+                                d.fonts ? d.fonts.ready : null,
+                            ).then(function () {
+                                return res[1];
+                            });
                         })
                         .then(
-                            function (why) { hide(why); },
-                            function () { hide('error'); }
+                            function (why) {
+                                hide(why);
+                            },
+                            function () {
+                                hide('error');
+                            },
                         );
                 } catch (e) {
                     hide('error');
@@ -301,7 +411,10 @@
             rel="preload"
             as="style"
             href="https://fonts.googleapis.com/css2?family=Luxurious+Roman&family=Pinyon+Script&family=Tinos:ital,wght@0,400;0,700;1,400&display=swap"
-            onload="this.onload=null;this.rel='stylesheet'"
+            onload="
+                this.onload = null;
+                this.rel = 'stylesheet';
+            "
         />
         <noscript>
             <link
@@ -358,7 +471,14 @@
             </h1>
             <div class="hero-invite">
                 <p class="invite-lead">Trân trọng kính mời:</p>
-                <p class="guest"><span class="guest-name" translate="no">Quý Anh Chị cùng gia đình</span><script>window.__guestApply && window.__guestApply();</script></p>
+                <p class="guest">
+                    <span class="guest-name" translate="no"
+                        >Quý khách mời và gia đình</span
+                    >
+                    <script>
+                        window.__guestApply && window.__guestApply();
+                    </script>
+                </p>
             </div>
         </header>
 
@@ -435,7 +555,14 @@
             <!-- ===== Section 4 · Reception ===== -->
             <article class="panel reception reveal">
                 <h2 class="panel-title ink">TRÂN TRỌNG KÍNH MỜI</h2>
-                <p class="guest"><span class="guest-name" translate="no">Quý Anh Chị cùng gia đình</span><script>window.__guestApply && window.__guestApply();</script></p>
+                <p class="guest">
+                    <span class="guest-name" translate="no"
+                        >Quý khách mời và gia đình</span
+                    >
+                    <script>
+                        window.__guestApply && window.__guestApply();
+                    </script>
+                </p>
 
                 <p class="info">TỚI DỰ BỮA CƠM THÂN MẬT</p>
                 <p class="info">CHUNG VUI CÙNG GIA ĐÌNH CHÚNG TÔI</p>

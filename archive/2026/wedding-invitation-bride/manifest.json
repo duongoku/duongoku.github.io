@@ -1,0 +1,31 @@
+{
+  "name": "Thiệp mời Bình Dương & Hồng Vân — 23.11.2026",
+  "short_name": "Thiệp mời D&V",
+  "description": "Thiệp mời của Bình Dương & Hồng Vân — bữa cơm thân mật lúc 18:00, thứ Hai 23.11.2026 tại Số 9, Xóm 2, Thôn Tử Dương, Xã Vân Đình, Hà Nội.",
+  "lang": "vi",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#9E1B32",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

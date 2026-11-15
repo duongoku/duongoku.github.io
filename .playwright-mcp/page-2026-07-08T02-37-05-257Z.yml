@@ -1,0 +1,236 @@
+- generic [ref=f2e2]:
+  - banner [ref=f2e198]:
+    - generic [ref=f2e199]:
+      - heading "Pocket Habitat" [level=1] [ref=f2e200]
+      - paragraph [ref=f2e201]: Warm light settles on open leaves.
+    - generic "Garden stats" [ref=f2e202]:
+      - generic [ref=f2e203]: 12 petals
+      - generic [ref=f2e204]: Day · Clear
+  - main [ref=f2e205]:
+    - generic [ref=f2e206]:
+      - generic [ref=f2e207]:
+        - generic [ref=f2e208]:
+          - heading "Items" [level=2] [ref=f2e209]
+          - paragraph [ref=f2e210]: Buy with petals. Tap owned items to place or store.
+        - generic [ref=f2e211]:
+          - button "Help" [ref=f2e212] [cursor=pointer]
+          - button "Reset" [ref=f2e213] [cursor=pointer]
+      - generic [ref=f2e214]:
+        - article [ref=f2e215]:
+          - generic [ref=f2e218]:
+            - generic [ref=f2e219]:
+              - heading "Seed Tray" [level=3] [ref=f2e220]
+              - generic [ref=f2e221]: placed
+            - paragraph [ref=f2e222]: A tidy tray with quiet green starts.
+            - generic [ref=f2e223]:
+              - generic [ref=f2e224]: food +1
+              - generic [ref=f2e225]: flower +1
+            - button "Store" [ref=f2e226] [cursor=pointer]
+        - article [ref=f2e227]:
+          - generic [ref=f2e230]:
+            - generic [ref=f2e231]:
+              - heading "Moss Stone" [level=3] [ref=f2e232]
+              - generic [ref=f2e233]: placed
+            - paragraph [ref=f2e234]: A cool place to pause between steps.
+            - generic [ref=f2e235]:
+              - generic [ref=f2e236]: shelter +1
+              - generic [ref=f2e237]: stone +1
+            - button "Store" [ref=f2e238] [cursor=pointer]
+        - article [ref=f2e239]:
+          - generic [ref=f2e242]:
+            - generic [ref=f2e243]:
+              - heading "Shallow Basin" [level=3] [ref=f2e244]
+              - generic [ref=f2e245]: available
+            - paragraph [ref=f2e246]: A palm-wide pool for sipping and looking.
+            - generic [ref=f2e248]: water +2
+            - button "Buy 8" [ref=f2e249] [cursor=pointer]
+        - article [ref=f2e250]:
+          - generic [ref=f2e253]:
+            - generic [ref=f2e254]:
+              - heading "Clover Patch" [level=3] [ref=f2e255]
+              - generic [ref=f2e256]: available
+            - paragraph [ref=f2e257]: Round leaves packed close like small umbrellas.
+            - generic [ref=f2e258]:
+              - generic [ref=f2e259]: flower +1
+              - generic [ref=f2e260]: food +1
+              - generic [ref=f2e261]: scent +1
+            - button "Buy 10" [ref=f2e262] [cursor=pointer]
+        - article [ref=f2e263]:
+          - generic [ref=f2e266]:
+            - generic [ref=f2e267]:
+              - heading "Curled Log" [level=3] [ref=f2e268]
+              - generic [ref=f2e269]: available
+            - paragraph [ref=f2e270]: Hollow shade with a warm bark roof.
+            - generic [ref=f2e271]:
+              - generic [ref=f2e272]: shelter +2
+              - generic [ref=f2e273]: wood +1
+            - button "Buy 12" [ref=f2e274] [cursor=pointer]
+        - article [ref=f2e275]:
+          - generic [ref=f2e278]:
+            - generic [ref=f2e279]:
+              - heading "Berry Bowl" [level=3] [ref=f2e280]
+              - generic [ref=f2e281]: locked
+            - paragraph [ref=f2e282]: Tart berries arranged by size.
+            - generic [ref=f2e284]: food +2
+            - button "14 petals" [disabled] [ref=f2e285]
+        - article [ref=f2e286]:
+          - generic [ref=f2e289]:
+            - generic [ref=f2e290]:
+              - heading "Fern Screen" [level=3] [ref=f2e291]
+              - generic [ref=f2e292]: locked
+            - paragraph [ref=f2e293]: Layered green cover for cautious guests.
+            - generic [ref=f2e294]:
+              - generic [ref=f2e295]: shelter +1
+              - generic [ref=f2e296]: leaf +2
+            - button "16 petals" [disabled] [ref=f2e297]
+        - article [ref=f2e298]:
+          - generic [ref=f2e301]:
+            - generic [ref=f2e302]:
+              - heading "Sunflower" [level=3] [ref=f2e303]
+              - generic [ref=f2e304]: locked
+            - paragraph [ref=f2e305]: A bright face for daytime wanderers.
+            - generic [ref=f2e306]:
+              - generic [ref=f2e307]: flower +2
+              - generic [ref=f2e308]: height +1
+              - generic [ref=f2e309]: light +1
+            - button "18 petals" [disabled] [ref=f2e310]
+        - article [ref=f2e311]:
+          - generic [ref=f2e314]:
+            - generic [ref=f2e315]:
+              - heading "Rain Cup" [level=3] [ref=f2e316]
+              - generic [ref=f2e317]: locked
+            - paragraph [ref=f2e318]: A cupped leaf that rings softly in drizzle.
+            - generic [ref=f2e319]:
+              - generic [ref=f2e320]: water +1
+              - generic [ref=f2e321]: rain +2
+            - button "20 petals" [disabled] [ref=f2e322]
+        - article [ref=f2e323]:
+          - generic [ref=f2e326]:
+            - generic [ref=f2e327]:
+              - heading "Mushroom Ring" [level=3] [ref=f2e328]
+              - generic [ref=f2e329]: locked
+            - paragraph [ref=f2e330]: Little caps marking a slow circle.
+            - generic [ref=f2e331]:
+              - generic [ref=f2e332]: shelter +1
+              - generic [ref=f2e333]: scent +1
+              - generic [ref=f2e334]: night +1
+            - button "22 petals" [disabled] [ref=f2e335]
+        - article [ref=f2e336]:
+          - generic [ref=f2e339]:
+            - generic [ref=f2e340]:
+              - heading "Twig Nest" [level=3] [ref=f2e341]
+              - generic [ref=f2e342]: locked
+            - paragraph [ref=f2e343]: A woven bowl set above damp ground.
+            - generic [ref=f2e344]:
+              - generic [ref=f2e345]: shelter +2
+              - generic [ref=f2e346]: height +1
+            - button "24 petals" [disabled] [ref=f2e347]
+        - article [ref=f2e348]:
+          - generic [ref=f2e351]:
+            - generic [ref=f2e352]:
+              - heading "Honey Tile" [level=3] [ref=f2e353]
+              - generic [ref=f2e354]: locked
+            - paragraph [ref=f2e355]: Amber sweetness on a flat warm tile.
+            - generic [ref=f2e356]:
+              - generic [ref=f2e357]: food +1
+              - generic [ref=f2e358]: scent +2
+            - button "26 petals" [disabled] [ref=f2e359]
+        - article [ref=f2e360]:
+          - generic [ref=f2e363]:
+            - generic [ref=f2e364]:
+              - heading "Wind Chime" [level=3] [ref=f2e365]
+              - generic [ref=f2e366]: locked
+            - paragraph [ref=f2e367]: Three quiet notes when evening air moves.
+            - generic [ref=f2e368]:
+              - generic [ref=f2e369]: sound +2
+              - generic [ref=f2e370]: height +1
+            - button "28 petals" [disabled] [ref=f2e371]
+        - article [ref=f2e372]:
+          - generic [ref=f2e375]:
+            - generic [ref=f2e376]:
+              - heading "Flat Pond" [level=3] [ref=f2e377]
+              - generic [ref=f2e378]: locked
+            - paragraph [ref=f2e379]: Still water broad enough to mirror clouds.
+            - generic [ref=f2e380]:
+              - generic [ref=f2e381]: water +3
+              - generic [ref=f2e382]: stone +1
+            - button "30 petals" [disabled] [ref=f2e383]
+        - article [ref=f2e384]:
+          - generic [ref=f2e387]:
+            - generic [ref=f2e388]:
+              - heading "Firefly Lamp" [level=3] [ref=f2e389]
+              - generic [ref=f2e390]: locked
+            - paragraph [ref=f2e391]: A gentle glow for late arrivals.
+            - generic [ref=f2e392]:
+              - generic [ref=f2e393]: light +2
+              - generic [ref=f2e394]: night +2
+            - button "34 petals" [disabled] [ref=f2e395]
+        - article [ref=f2e396]:
+          - generic [ref=f2e399]:
+            - generic [ref=f2e400]:
+              - heading "Herb Spiral" [level=3] [ref=f2e401]
+              - generic [ref=f2e402]: locked
+            - paragraph [ref=f2e403]: A tiny spiral of mint, basil, and thyme.
+            - generic [ref=f2e404]:
+              - generic [ref=f2e405]: scent +2
+              - generic [ref=f2e406]: food +1
+              - generic [ref=f2e407]: leaf +1
+            - button "36 petals" [disabled] [ref=f2e408]
+        - article [ref=f2e409]:
+          - generic [ref=f2e412]:
+            - generic [ref=f2e413]:
+              - heading "Perch Bell" [level=3] [ref=f2e414]
+              - generic [ref=f2e415]: locked
+            - paragraph [ref=f2e416]: A high perch with a low brass tone.
+            - generic [ref=f2e417]:
+              - generic [ref=f2e418]: sound +1
+              - generic [ref=f2e419]: height +2
+            - button "38 petals" [disabled] [ref=f2e420]
+        - article [ref=f2e421]:
+          - generic [ref=f2e424]:
+            - generic [ref=f2e425]:
+              - heading "Moonvine" [level=3] [ref=f2e426]
+              - generic [ref=f2e427]: locked
+            - paragraph [ref=f2e428]: Pale blooms that open after sunset.
+            - generic [ref=f2e429]:
+              - generic [ref=f2e430]: flower +2
+              - generic [ref=f2e431]: night +2
+              - generic [ref=f2e432]: scent +1
+            - button "42 petals" [disabled] [ref=f2e433]
+        - article [ref=f2e434]:
+          - generic [ref=f2e437]:
+            - generic [ref=f2e438]:
+              - heading "Crystal Dew" [level=3] [ref=f2e439]
+              - generic [ref=f2e440]: locked
+            - paragraph [ref=f2e441]: A cool point where fog gathers.
+            - generic [ref=f2e442]:
+              - generic [ref=f2e443]: water +1
+              - generic [ref=f2e444]: light +1
+              - generic [ref=f2e445]: mist +2
+            - button "48 petals" [disabled] [ref=f2e446]
+        - article [ref=f2e447]:
+          - generic [ref=f2e450]:
+            - generic [ref=f2e451]:
+              - heading "Woven Feeder" [level=3] [ref=f2e452]
+              - generic [ref=f2e453]: locked
+            - paragraph [ref=f2e454]: A hanging basket that never spills much.
+            - generic [ref=f2e455]:
+              - generic [ref=f2e456]: food +3
+              - generic [ref=f2e457]: height +1
+            - button "54 petals" [disabled] [ref=f2e458]
+    - complementary [ref=f2e459]:
+      - generic [ref=f2e460]:
+        - generic [ref=f2e461]:
+          - heading "Recent" [level=2] [ref=f2e462]
+          - generic [ref=f2e463]: 2/20 items
+        - paragraph [ref=f2e464]: No logged visits yet. Check paths or return later.
+  - navigation "Primary" [ref=f2e465]:
+    - button "Garden" [ref=f2e466] [cursor=pointer]:
+      - generic [ref=f2e467]: ◇
+      - generic [ref=f2e468]: Garden
+    - button "Journal" [ref=f2e469] [cursor=pointer]:
+      - generic [ref=f2e470]: ▤
+      - generic [ref=f2e471]: Journal
+    - button "Items" [ref=f2e472] [cursor=pointer]:
+      - generic [ref=f2e473]: ▦
+      - generic [ref=f2e474]: Items
