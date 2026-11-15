@@ -40,3 +40,8 @@ Thumbs.db
 ## Temp files
 .tmp/
 .cache/
+.learnings/
+
+## Tool artifacts
+.playwright-mcp/
+.python-version

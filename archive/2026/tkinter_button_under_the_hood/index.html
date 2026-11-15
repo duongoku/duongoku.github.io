@@ -1,0 +1,2194 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Điều gì xảy ra bên trong khi click một nút Tkinter</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f8fb;
+        --panel: #ffffff;
+        --panel-soft: #eef3f8;
+        --ink: #17202a;
+        --muted: #5b6673;
+        --line: #cbd5e1;
+        --line-strong: #94a3b8;
+        --code: #111827;
+        --press: #0072b2;
+        --release: #d55e00;
+        --command: #0f766e;
+        --warn: #b45309;
+        --cancel: #b42318;
+        --cancel-soft: #ffe7e4;
+        --press-soft: color-mix(in srgb, var(--press) 14%, #ffffff);
+        --release-soft: color-mix(in srgb, var(--release) 16%, #ffffff);
+        --command-soft: color-mix(in srgb, var(--command) 14%, #ffffff);
+        --shadow: rgba(15, 23, 42, 0.14);
+        /* Hệ số nhân thời lượng: JS đặt = 1 / tốc độ. */
+        --speed-dur: 1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          linear-gradient(90deg, rgba(0, 114, 178, 0.08), transparent 38%),
+          linear-gradient(180deg, #ffffff, var(--bg));
+        color: var(--ink);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+      }
+
+      main {
+        width: min(100%, 1280px);
+        margin: 0 auto;
+        padding: clamp(14px, 3vw, 34px);
+        display: grid;
+        gap: 18px;
+      }
+
+      header.page-head {
+        display: grid;
+        gap: 10px;
+      }
+
+      a {
+        width: max-content;
+        color: #0f5f91;
+        font-weight: 800;
+        text-underline-offset: 4px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 940px;
+        font-size: clamp(1.7rem, 4.6vw, 3.4rem);
+        line-height: 1.04;
+      }
+
+      .intro {
+        max-width: 900px;
+        color: var(--muted);
+        font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+        line-height: 1.55;
+      }
+
+      code {
+        font-family:
+          'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        font-size: 0.92em;
+        background: var(--panel-soft);
+        padding: 1px 5px;
+        border-radius: 6px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: clamp(12px, 2vw, 20px);
+        box-shadow: 0 10px 26px -22px var(--shadow);
+      }
+
+      .panel > h2 {
+        font-size: 1.05rem;
+        margin-bottom: 10px;
+      }
+
+      /* ============ Sân khấu 5 stage ============ */
+
+      .stage-row {
+        display: flex;
+        align-items: stretch;
+        gap: 0;
+      }
+
+      .stage {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background: var(--panel-soft);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 10px 10px 12px;
+      }
+
+      .stage-head {
+        display: grid;
+        gap: 2px;
+      }
+
+      .kicker {
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .stage-head h3 {
+        font-size: 0.95rem;
+        line-height: 1.2;
+      }
+
+      .stage-note {
+        margin-top: auto;
+        font-size: 0.72rem;
+        line-height: 1.45;
+        color: var(--muted);
+      }
+
+      .stage svg.inset {
+        display: block;
+        width: 100%;
+        height: auto;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+      }
+
+      .flow-pipe {
+        flex: 0 0 22px;
+        align-self: center;
+        position: relative;
+        height: 6px;
+        background: var(--line);
+        border-radius: 3px;
+      }
+
+      .flow-pipe::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -1px;
+        border: 6px solid transparent;
+        border-left-color: var(--line-strong);
+        transform: translateY(-50%);
+      }
+
+      /* ---- Stage 1: chuột + mạch điện ---- */
+
+      .lever {
+        transform: rotate(-32deg);
+        transform-origin: 100px 60px;
+        transform-box: view-box;
+        transition: transform 130ms ease;
+      }
+
+      .mouse-svg.is-closed .lever {
+        transform: rotate(0deg);
+      }
+
+      .press-flash {
+        opacity: 0;
+        transition: opacity 120ms ease;
+      }
+
+      .mouse-svg.is-closed .press-flash {
+        opacity: 0.3;
+      }
+
+      .led-body {
+        fill: #d8dee6;
+        transition: fill 160ms ease;
+      }
+
+      .mouse-svg.is-closed .led-body {
+        fill: #f4c430;
+      }
+
+      .led-glow {
+        opacity: 0;
+        transition: opacity 180ms ease;
+      }
+
+      .mouse-svg.is-closed .led-glow {
+        opacity: 0.55;
+      }
+
+      .current {
+        opacity: 0;
+        stroke-dasharray: 5 7;
+        transition: opacity 140ms ease;
+      }
+
+      .mouse-svg.is-closed .current {
+        opacity: 1;
+        animation: currentMarch calc(600ms * var(--speed-dur)) linear infinite;
+      }
+
+      @keyframes currentMarch {
+        to {
+          stroke-dashoffset: -12;
+        }
+      }
+
+      .spark {
+        opacity: 0;
+        transform-box: fill-box;
+        transform-origin: center;
+      }
+
+      .spark.is-spark {
+        animation: sparkPop 240ms ease-out;
+      }
+
+      @keyframes sparkPop {
+        0% {
+          opacity: 1;
+          transform: scale(0.4);
+        }
+        60% {
+          opacity: 1;
+          transform: scale(1.25);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1.4);
+        }
+      }
+
+      /* ---- Stage 2: cáp ---- */
+
+      .comet {
+        fill: none;
+        stroke: var(--press);
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-dasharray: 16 184;
+        stroke-dashoffset: 16;
+        opacity: 0;
+      }
+
+      .comet.is-press {
+        stroke: var(--press);
+      }
+
+      .comet.is-release {
+        stroke: var(--release);
+      }
+
+      .comet.is-travel {
+        opacity: 1;
+        animation: cometTravel calc(620ms * var(--speed-dur)) ease-in-out
+          forwards;
+      }
+
+      @keyframes cometTravel {
+        from {
+          stroke-dashoffset: 16;
+        }
+        to {
+          stroke-dashoffset: -100;
+        }
+      }
+
+      .port-screen {
+        fill: #dbe4ee;
+      }
+
+      .port-screen.is-arrive {
+        animation: portGlow calc(360ms * var(--speed-dur)) ease-out;
+      }
+
+      @keyframes portGlow {
+        0% {
+          fill: #dbe4ee;
+        }
+        35% {
+          fill: #9fd0ef;
+        }
+        100% {
+          fill: #dbe4ee;
+        }
+      }
+
+      /* ---- Stage 3: event queue ---- */
+
+      .queue-box {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px;
+      }
+
+      .queue-tube {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: flex-start;
+        gap: 4px;
+        min-height: 92px;
+        max-height: 92px;
+        overflow: hidden;
+        border: 2px dashed var(--line);
+        border-radius: 8px;
+        padding: 4px;
+        position: relative;
+      }
+
+      .queue-tube:empty::after {
+        content: 'queue trống';
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: 0.68rem;
+        color: var(--line-strong);
+      }
+
+      .q-chip {
+        flex: 0 0 auto;
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.66rem;
+        font-weight: 700;
+        text-align: center;
+        color: #fff;
+        border-radius: 6px;
+        padding: 3px 4px;
+        animation: chipIn calc(340ms * var(--speed-dur))
+          cubic-bezier(0.2, 1.4, 0.4, 1);
+      }
+
+      .q-chip.q-press {
+        background: var(--press);
+      }
+
+      .q-chip.q-release {
+        background: var(--release);
+      }
+
+      .q-chip.is-out {
+        animation: chipOut calc(260ms * var(--speed-dur)) ease-in forwards;
+      }
+
+      @keyframes chipIn {
+        0% {
+          opacity: 0;
+          transform: translateY(-28px);
+        }
+        70% {
+          opacity: 1;
+          transform: translateY(3px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes chipOut {
+        to {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+      }
+
+      .flag-cell {
+        display: grid;
+        gap: 4px;
+        align-content: start;
+        justify-items: center;
+        min-width: 74px;
+        background: var(--panel-soft);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 6px 6px;
+        perspective: 240px;
+      }
+
+      .flag-q {
+        font-size: 0.62rem;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .flag-value {
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: var(--cancel);
+      }
+
+      .flag-cell.is-true .flag-value {
+        color: var(--command);
+      }
+
+      .flag-value.is-flip {
+        animation: flagFlip calc(320ms * var(--speed-dur)) ease-out;
+      }
+
+      @keyframes flagFlip {
+        from {
+          transform: rotateX(90deg);
+        }
+        to {
+          transform: rotateX(0deg);
+        }
+      }
+
+      /* ---- Stage 4: mainloop ---- */
+
+      .rotor-arc {
+        stroke: var(--press);
+        transition: stroke 160ms ease;
+      }
+
+      .rotor-head {
+        fill: var(--press);
+        transition: fill 160ms ease;
+      }
+
+      .loop-svg.is-paused .rotor-arc {
+        stroke: var(--warn);
+      }
+
+      .loop-svg.is-paused .rotor-head {
+        fill: var(--warn);
+      }
+
+      .peek {
+        opacity: 0;
+      }
+
+      .peek.is-peek {
+        animation: peekFlash calc(300ms * var(--speed-dur)) ease-out;
+      }
+
+      @keyframes peekFlash {
+        0% {
+          opacity: 0;
+        }
+        30% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      .peek.is-peek-hold {
+        opacity: 1;
+      }
+
+      .dispatch-ray {
+        opacity: 0;
+      }
+
+      .dispatch-ray.is-dispatch {
+        animation: peekFlash calc(420ms * var(--speed-dur)) ease-out;
+      }
+
+      .loop-chip {
+        opacity: 0;
+        transition: opacity 140ms ease;
+      }
+
+      .loop-chip.is-shown {
+        opacity: 1;
+      }
+
+      .loop-badge {
+        display: none;
+        font-size: 0.68rem;
+        font-weight: 700;
+        line-height: 1.35;
+        color: var(--warn);
+        background: color-mix(in srgb, var(--warn) 12%, #ffffff);
+        border: 1px solid color-mix(in srgb, var(--warn) 40%, #ffffff);
+        border-radius: 8px;
+        padding: 5px 7px;
+      }
+
+      .loop-badge.is-shown {
+        display: block;
+      }
+
+      /* ---- Stage 5: cửa sổ Tk ---- */
+
+      .tk-window {
+        background: #e9edf2;
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 6px 16px -12px var(--shadow);
+      }
+
+      .tk-titlebar {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: linear-gradient(180deg, #dfe6ee, #cdd7e2);
+        border-bottom: 1px solid var(--line-strong);
+        padding: 4px 8px;
+      }
+
+      .tk-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--line-strong);
+      }
+
+      .tk-title {
+        margin-left: auto;
+        font-size: 0.66rem;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      .tk-body {
+        display: grid;
+        gap: 10px;
+        justify-items: center;
+        padding: 12px 10px 14px;
+      }
+
+      .tk-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .tk-label.is-swap {
+        animation: labelSwap calc(380ms * var(--speed-dur)) ease-out;
+      }
+
+      @keyframes labelSwap {
+        0% {
+          opacity: 0.15;
+          transform: translateY(-5px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .tk-button {
+        font: inherit;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--ink);
+        background: #e8edf3;
+        border: 2px solid;
+        border-color: #ffffff #94a3b8 #94a3b8 #ffffff;
+        border-radius: 3px;
+        padding: 6px 18px;
+        cursor: pointer;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      .tk-button.is-pressed {
+        border-color: #94a3b8 #ffffff #ffffff #94a3b8;
+        background: #dde3ea;
+        transform: translate(1px, 1px);
+      }
+
+      .tk-button.is-aimed {
+        outline: 2px dashed var(--press);
+        outline-offset: 3px;
+      }
+
+      .gate-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .gate-wrap {
+        display: inline-grid;
+        justify-items: center;
+        gap: 1px;
+      }
+
+      .gate-wrap svg {
+        display: block;
+        width: 82px;
+        height: auto;
+      }
+
+      .gate-label {
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.64rem;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      .gate-bar {
+        stroke: var(--cancel);
+        transform: rotate(0deg);
+        transform-origin: 60px 22px;
+        transform-box: view-box;
+        transition:
+          transform calc(260ms * var(--speed-dur)) ease,
+          stroke 160ms ease;
+      }
+
+      .gate-svg.is-open .gate-bar {
+        stroke: var(--command);
+        transform: rotate(-90deg);
+      }
+
+      .gate-flow {
+        opacity: 0;
+        stroke-dasharray: 4 6;
+      }
+
+      .gate-svg.is-open .gate-flow {
+        opacity: 1;
+        animation: currentMarch calc(500ms * var(--speed-dur)) linear infinite;
+      }
+
+      .gate-x {
+        opacity: 0;
+        transition: opacity 120ms ease;
+      }
+
+      .gate-svg.is-refused .gate-x {
+        opacity: 1;
+      }
+
+      .gate-wrap.is-shake {
+        animation: gateShake calc(380ms * var(--speed-dur)) ease-in-out;
+      }
+
+      @keyframes gateShake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20%,
+        60% {
+          transform: translateX(-4px);
+        }
+        40%,
+        80% {
+          transform: translateX(4px);
+        }
+      }
+
+      .fn-chip {
+        font-size: 0.68rem;
+        font-weight: 700;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        padding: 3px 7px;
+      }
+
+      .fn-chip.is-run {
+        animation: fnRun calc(650ms * var(--speed-dur)) ease-out;
+      }
+
+      @keyframes fnRun {
+        0% {
+          background: var(--command-soft);
+          border-color: var(--command);
+          transform: scale(1.12);
+        }
+        100% {
+          background: var(--panel);
+          transform: scale(1);
+        }
+      }
+
+      .fn-chip.is-pop {
+        animation: countPop calc(420ms * var(--speed-dur))
+          cubic-bezier(0.2, 1.6, 0.4, 1);
+      }
+
+      @keyframes countPop {
+        0% {
+          transform: scale(1);
+        }
+        45% {
+          transform: scale(1.3);
+          border-color: var(--command);
+          background: var(--command-soft);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* ============ Thanh điều khiển ============ */
+
+      .control-bar {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+        margin-top: 12px;
+        background: var(--panel-soft);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 12px;
+      }
+
+      .control-bar label {
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+
+      .control-bar input[type='range'] {
+        flex: 1 1 140px;
+        min-width: 110px;
+        accent-color: var(--press);
+      }
+
+      .speed-readout {
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.8rem;
+        font-weight: 800;
+        min-width: 3.6ch;
+      }
+
+      .speed-chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .chip {
+        font: inherit;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--ink);
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 3px 10px;
+        cursor: pointer;
+      }
+
+      .chip.is-active {
+        color: #fff;
+        background: var(--press);
+        border-color: var(--press);
+      }
+
+      .reset {
+        font: inherit;
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: var(--cancel);
+        background: var(--panel);
+        border: 1px solid var(--cancel);
+        border-radius: 10px;
+        padding: 5px 14px;
+        cursor: pointer;
+        margin-left: auto;
+      }
+
+      .reset:hover {
+        background: var(--cancel-soft);
+      }
+
+      /* ============ Code + transcript ============ */
+
+      .lesson-grid {
+        display: grid;
+        grid-template-columns: 1.25fr 1fr;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .lesson-grid > .panel {
+        min-width: 0;
+      }
+
+      pre {
+        margin: 0;
+        background: var(--code);
+        color: #e5e7eb;
+        border-radius: 12px;
+        padding: 14px 16px;
+        overflow-x: auto;
+        font-size: 0.82rem;
+        line-height: 1.55;
+      }
+
+      pre code {
+        background: none;
+        padding: 0;
+        color: inherit;
+      }
+
+      .code-note {
+        margin-top: 10px;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        color: var(--muted);
+      }
+
+      .transcript-list {
+        margin: 0;
+        padding-left: 26px;
+        display: grid;
+        gap: 5px;
+        max-height: 340px;
+        overflow-y: auto;
+        font-size: 0.78rem;
+        line-height: 1.45;
+      }
+
+      .transcript-list li {
+        border-left: 3px solid transparent;
+        padding-left: 7px;
+      }
+
+      .transcript-list li.t-hw {
+        border-left-color: var(--line-strong);
+      }
+
+      .transcript-list li.t-os {
+        border-left-color: var(--release);
+      }
+
+      .transcript-list li.t-loop {
+        border-left-color: var(--press);
+      }
+
+      .transcript-list li.t-stage {
+        border-left-color: var(--press);
+      }
+
+      .transcript-list li.t-callback {
+        border-left-color: var(--command);
+        color: var(--command);
+      }
+
+      .transcript-list li.t-value {
+        border-left-color: var(--command);
+        font-weight: 700;
+      }
+
+      .transcript-list li.t-cancel {
+        border-left-color: var(--cancel);
+        color: var(--cancel);
+      }
+
+      /* ============ Ghi chú ============ */
+
+      .tap-note {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .tap-card {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 0.82rem;
+        line-height: 1.5;
+      }
+
+      .tap-dot {
+        flex: 0 0 auto;
+        width: 10px;
+        height: 10px;
+        margin-top: 4px;
+        border-radius: 50%;
+        background: var(--press);
+      }
+
+      .tap-card.command .tap-dot {
+        background: var(--command);
+      }
+
+      .footer-note {
+        max-width: 940px;
+        font-size: 0.8rem;
+        line-height: 1.55;
+        color: var(--muted);
+      }
+
+      /* ============ Responsive ============ */
+
+      @media (max-width: 1080px) {
+        .stage-head h3 {
+          font-size: 0.85rem;
+        }
+      }
+
+      @media (max-width: 960px) {
+        .stage-row {
+          flex-direction: column;
+        }
+
+        .stage svg.inset {
+          max-width: 340px;
+          margin: 0 auto;
+        }
+
+        .flow-pipe {
+          flex-basis: auto;
+          width: 6px;
+          height: 22px;
+          margin: 0 auto;
+        }
+
+        .flow-pipe::after {
+          top: auto;
+          right: 50%;
+          bottom: -2px;
+          border: 6px solid transparent;
+          border-top-color: var(--line-strong);
+          transform: translateX(50%);
+        }
+
+        .lesson-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .tap-note {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 520px) {
+        main {
+          padding-inline: 10px;
+        }
+
+        .control-bar {
+          gap: 8px;
+        }
+
+        .reset {
+          margin-left: 0;
+          width: 100%;
+        }
+
+        pre {
+          padding: 10px;
+          font-size: 0.74rem;
+        }
+      }
+
+      /* Chế độ giảm chuyển động: điều khiển bằng lớp trên <html> (toggle
+         "Giảm chuyển động" trong thanh điều khiển; mặc định lấy theo
+         prefers-reduced-motion lúc tải trang). Không dùng media query trực
+         tiếp để người dùng luôn có thể bật/tắt lại bằng một cú click, kể cả
+         khi trình duyệt báo sai. */
+      html.reduced-motion *,
+      html.reduced-motion *::before,
+      html.reduced-motion *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.001ms !important;
+      }
+
+      .motion-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.74rem;
+        font-weight: 700;
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      .motion-toggle input {
+        accent-color: var(--press);
+        margin: 0;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="page-head">
+        <a href="../../">Archive</a>
+        <h1>Điều gì xảy ra bên trong khi click một nút Tkinter</h1>
+        <p class="intro">
+          Nhấn giữ rồi thả nút <strong>"Bấm tôi"</strong> ở stage 5 và quan sát
+          cả chuỗi: công tắc trong chuột đóng mạch điện, tín hiệu chạy dọc cáp,
+          OS đẩy event vào <em>event queue</em>, còn <code>mainloop()</code> —
+          cứ mỗi nhịp lại quay trọn một vòng để kiểm tra — tự đến lấy từng event
+          ra để xử lý. Kéo tốc độ xuống 0.25× để thấy điểm mấu chốt: nút chỉ lún
+          xuống khi <code>mainloop()</code> xử lý <code>ButtonPress</code>, chứ
+          không phải ngay lúc ngón tay nhấn chuột.
+        </p>
+      </header>
+
+      <section class="panel" aria-labelledby="scene-title">
+        <div class="stage-row">
+          <!-- Stage 1: chuột -->
+          <article class="stage" aria-labelledby="s1-title">
+            <header class="stage-head">
+              <span class="kicker">Stage 1 · Phần cứng</span>
+              <h3 id="s1-title">Chuột — mạch điện</h3>
+            </header>
+            <svg
+              class="inset mouse-svg"
+              id="mouse-svg"
+              viewBox="0 0 220 150"
+              role="img"
+              aria-label="Sơ đồ mạch điện bên trong chuột: pin, công tắc, đèn LED"
+            >
+              <!-- thân chuột -->
+              <path
+                d="M110 14 C146 14 166 40 166 80 C166 118 144 140 110 140 C76 140 54 118 54 80 C54 40 74 14 110 14 Z"
+                fill="var(--panel-soft)"
+                stroke="var(--line-strong)"
+                stroke-width="2"
+              />
+              <path
+                d="M110 16 V46"
+                stroke="var(--line)"
+                stroke-width="1.5"
+                fill="none"
+              />
+              <path
+                d="M60 50 Q86 46 110 46"
+                stroke="var(--line)"
+                stroke-width="1.5"
+                fill="none"
+              />
+              <ellipse
+                class="press-flash"
+                cx="85"
+                cy="31"
+                rx="19"
+                ry="11"
+                fill="var(--press)"
+              />
+              <!-- dây mạch -->
+              <path
+                class="wire"
+                d="M84 60 V108 H104 M112 108 H140 V84 M140 68 V60 H122 M100 60 H84"
+                fill="none"
+                stroke="var(--line-strong)"
+                stroke-width="2"
+              />
+              <path
+                class="current"
+                d="M84 60 V108 H104 M112 108 H140 V84 M140 68 V60 H122 M100 60 H84"
+                fill="none"
+                stroke="var(--press)"
+                stroke-width="2.5"
+              />
+              <!-- pin -->
+              <line
+                x1="104"
+                y1="98"
+                x2="104"
+                y2="118"
+                stroke="var(--ink)"
+                stroke-width="2.5"
+              />
+              <line
+                x1="112"
+                y1="103"
+                x2="112"
+                y2="113"
+                stroke="var(--ink)"
+                stroke-width="4"
+              />
+              <text
+                x="108"
+                y="132"
+                font-size="8"
+                fill="var(--muted)"
+                text-anchor="middle"
+              >
+                pin
+              </text>
+              <!-- công tắc -->
+              <line
+                class="lever"
+                x1="100"
+                y1="60"
+                x2="122"
+                y2="60"
+                stroke="var(--ink)"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              />
+              <circle cx="100" cy="60" r="2.5" fill="var(--ink)" />
+              <circle cx="122" cy="60" r="2.5" fill="var(--ink)" />
+              <text
+                x="107"
+                y="42"
+                font-size="8"
+                fill="var(--muted)"
+                text-anchor="middle"
+              >
+                công tắc
+              </text>
+              <!-- tia lửa -->
+              <g
+                class="spark"
+                id="spark"
+                stroke="#f4c430"
+                stroke-width="2"
+                stroke-linecap="round"
+              >
+                <line x1="122" y1="52" x2="122" y2="45" />
+                <line x1="127" y1="55" x2="132" y2="50" />
+                <line x1="117" y1="55" x2="112" y2="50" />
+                <line x1="128" y1="61" x2="134" y2="63" />
+              </g>
+              <!-- LED -->
+              <circle class="led-glow" cx="140" cy="76" r="14" fill="#f4c430" />
+              <circle
+                class="led-body"
+                cx="140"
+                cy="76"
+                r="7"
+                stroke="var(--ink)"
+                stroke-width="1.5"
+              />
+              <text x="156" y="79" font-size="8" fill="var(--muted)">LED</text>
+            </svg>
+            <p class="stage-note">
+              Nhấn chuột = đóng công tắc, dòng điện chạy (vệt xanh chuyển động),
+              LED sáng. Thả chuột = mở công tắc. Đây là phần vật lý — không có
+              "event" nào ở đây cả.
+            </p>
+          </article>
+
+          <div class="flow-pipe" aria-hidden="true"></div>
+
+          <!-- Stage 2: cáp -->
+          <article class="stage" aria-labelledby="s2-title">
+            <header class="stage-head">
+              <span class="kicker">Stage 2 · Truyền dẫn</span>
+              <h3 id="s2-title">Cáp — tín hiệu điện</h3>
+            </header>
+            <svg
+              class="inset"
+              id="cable-svg"
+              viewBox="0 0 220 150"
+              role="img"
+              aria-label="Tín hiệu chạy dọc cáp từ chuột đến máy tính"
+            >
+              <!-- đầu cắm phía chuột -->
+              <rect
+                x="8"
+                y="58"
+                width="22"
+                height="34"
+                rx="4"
+                fill="var(--panel-soft)"
+                stroke="var(--line-strong)"
+                stroke-width="2"
+              />
+              <text
+                x="19"
+                y="106"
+                font-size="8"
+                fill="var(--muted)"
+                text-anchor="middle"
+              >
+                chuột
+              </text>
+              <!-- máy tính -->
+              <rect
+                x="170"
+                y="40"
+                width="42"
+                height="54"
+                rx="4"
+                fill="var(--panel-soft)"
+                stroke="var(--line-strong)"
+                stroke-width="2"
+              />
+              <rect
+                class="port-screen"
+                id="port-screen"
+                x="176"
+                y="46"
+                width="30"
+                height="34"
+                rx="2"
+              />
+              <rect
+                x="184"
+                y="94"
+                width="14"
+                height="8"
+                fill="var(--line-strong)"
+              />
+              <text
+                x="191"
+                y="116"
+                font-size="8"
+                fill="var(--muted)"
+                text-anchor="middle"
+              >
+                máy tính
+              </text>
+              <!-- cáp -->
+              <path
+                id="cable-path"
+                d="M30 75 C70 75 62 112 106 112 C150 112 142 45 170 68"
+                fill="none"
+                stroke="var(--line-strong)"
+                stroke-width="4"
+                stroke-linecap="round"
+              />
+              <path
+                class="comet"
+                id="comet"
+                d="M30 75 C70 75 62 112 106 112 C150 112 142 45 170 68"
+                pathLength="100"
+              />
+            </svg>
+            <p class="stage-note">
+              Mỗi lần nhấn/thả, một xung tín hiệu chạy về máy tính:
+              <span style="color: var(--press); font-weight: 700">xanh</span> =
+              nhấn,
+              <span style="color: var(--release); font-weight: 700">cam</span>
+              = thả.
+            </p>
+          </article>
+
+          <div class="flow-pipe" aria-hidden="true"></div>
+
+          <!-- Stage 3: event queue -->
+          <article class="stage" aria-labelledby="s3-title">
+            <header class="stage-head">
+              <span class="kicker">Stage 3 · Hệ điều hành</span>
+              <h3 id="s3-title">OS — event queue</h3>
+            </header>
+            <div class="queue-box">
+              <div
+                class="queue-tube"
+                id="queue-tube"
+                aria-label="Event queue (FIFO)"
+              ></div>
+              <div class="flag-cell" id="flag-cell">
+                <span class="flag-q">có sự kiện?</span>
+                <span class="flag-value" id="flag-value">False</span>
+              </div>
+            </div>
+            <p class="stage-note">
+              OS dịch tín hiệu điện thành event <code>ButtonPress</code> /
+              <code>ButtonRelease</code> rồi xếp vào queue (FIFO). Cờ bên cạnh
+              chỉ mang tính minh hoạ — <code>mainloop()</code> đọc thẳng từ
+              queue.
+            </p>
+          </article>
+
+          <div class="flow-pipe" aria-hidden="true"></div>
+
+          <!-- Stage 4: mainloop -->
+          <article class="stage" aria-labelledby="s4-title">
+            <header class="stage-head">
+              <span class="kicker">Stage 4 · Vòng lặp Tk</span>
+              <h3 id="s4-title">mainloop()</h3>
+            </header>
+            <svg
+              class="inset loop-svg"
+              id="loop-svg"
+              viewBox="0 0 220 150"
+              role="img"
+              aria-label="mainloop lặp mãi: mỗi nhịp quay trọn một vòng để kiểm tra event queue"
+            >
+              <circle
+                cx="110"
+                cy="72"
+                r="44"
+                fill="none"
+                stroke="var(--line)"
+                stroke-width="2"
+                stroke-dasharray="2 5"
+              />
+              <!-- vạch mốc + trục quay: giúp mắt bắt được chuyển động quay -->
+              <g stroke="var(--line)" stroke-width="2" aria-hidden="true">
+                <line x1="110" y1="24" x2="110" y2="32" />
+                <line x1="110" y1="112" x2="110" y2="120" />
+                <line x1="62" y1="72" x2="70" y2="72" />
+                <line x1="150" y1="72" x2="158" y2="72" />
+              </g>
+              <circle cx="110" cy="72" r="3" fill="var(--line-strong)" />
+              <g id="loop-rotor">
+                <path
+                  class="rotor-arc"
+                  d="M110 28 A44 44 0 1 1 71.9 50"
+                  fill="none"
+                  stroke-width="5"
+                  stroke-linecap="round"
+                />
+                <polygon
+                  class="rotor-head"
+                  points="77.9,39.6 76.7,52.8 67.1,47.3"
+                />
+              </g>
+              <!-- tia "ngó" về queue -->
+              <g
+                class="peek"
+                id="peek"
+                stroke="var(--press)"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <line x1="60" y1="72" x2="26" y2="72" />
+                <circle
+                  cx="22"
+                  cy="72"
+                  r="4"
+                  fill="var(--press)"
+                  stroke="none"
+                />
+              </g>
+              <!-- tia phát event tới app -->
+              <g
+                class="dispatch-ray"
+                id="dispatch-ray"
+                stroke="var(--command)"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <line x1="158" y1="72" x2="198" y2="72" />
+                <polygon
+                  points="198,66 210,72 198,78"
+                  fill="var(--command)"
+                  stroke="none"
+                />
+              </g>
+              <text
+                class="loop-chip"
+                id="loop-chip"
+                x="110"
+                y="76"
+                font-size="11"
+                font-weight="800"
+                font-family="ui-monospace, Menlo, monospace"
+                text-anchor="middle"
+                fill="var(--ink)"
+              ></text>
+              <text
+                x="110"
+                y="140"
+                font-size="11"
+                font-weight="700"
+                font-family="ui-monospace, Menlo, monospace"
+                text-anchor="middle"
+                fill="var(--muted)"
+              >
+                mainloop()
+              </text>
+            </svg>
+            <div class="loop-badge" id="loop-badge" role="status">
+              Callback đang chạy — mainloop tạm dừng. Callback chạy lâu = GUI
+              "đơ".
+            </div>
+            <p class="stage-note">
+              Chạy ngay từ khi trang tải: nghỉ một nhịp rồi quay nhanh trọn một
+              vòng. Mỗi vòng quay = một lần kiểm tra queue (chớp về stage 3); có
+              event thì lấy ra và gửi cho widget.
+            </p>
+          </article>
+
+          <div class="flow-pipe" aria-hidden="true"></div>
+
+          <!-- Stage 5: app Tk -->
+          <article class="stage" aria-labelledby="s5-title">
+            <header class="stage-head">
+              <span class="kicker">Stage 5 · Widget &amp; callback</span>
+              <h3 id="s5-title">Ứng dụng Tk</h3>
+            </header>
+            <div class="tk-window">
+              <div class="tk-titlebar" aria-hidden="true">
+                <span class="tk-dot"></span>
+                <span class="tk-dot"></span>
+                <span class="tk-dot"></span>
+                <span class="tk-title">tk</span>
+              </div>
+              <div class="tk-body">
+                <span class="tk-label" id="tk-label" aria-live="polite"
+                  >Đã click 0 lần</span
+                >
+                <button class="tk-button" id="tk-button" type="button">
+                  Bấm tôi
+                </button>
+              </div>
+            </div>
+            <div class="gate-row">
+              <span class="gate-wrap" id="gate-wrap">
+                <svg
+                  class="gate-svg"
+                  id="gate-svg"
+                  viewBox="0 0 120 44"
+                  aria-hidden="true"
+                >
+                  <line
+                    x1="6"
+                    y1="22"
+                    x2="114"
+                    y2="22"
+                    stroke="var(--line-strong)"
+                    stroke-width="6"
+                    stroke-linecap="round"
+                  />
+                  <line
+                    class="gate-flow"
+                    x1="6"
+                    y1="22"
+                    x2="114"
+                    y2="22"
+                    stroke="var(--command)"
+                    stroke-width="3"
+                  />
+                  <line
+                    class="gate-bar"
+                    x1="60"
+                    y1="8"
+                    x2="60"
+                    y2="36"
+                    stroke-width="5"
+                    stroke-linecap="round"
+                  />
+                  <text
+                    class="gate-x"
+                    x="60"
+                    y="14"
+                    font-size="14"
+                    font-weight="900"
+                    text-anchor="middle"
+                    fill="var(--cancel)"
+                  >
+                    ✕
+                  </text>
+                </svg>
+                <span class="gate-label">command=</span>
+              </span>
+              <code class="fn-chip" id="handle-chip">handle_click()</code>
+              <code class="fn-chip" id="count-chip">count = 0</code>
+            </div>
+            <p class="stage-note">
+              Nhấn giữ rồi thả <em>bên trong</em> nút → cổng
+              <code>command=</code> mở, callback chạy. Thử cả: nhấn bên trong,
+              kéo con trỏ ra ngoài rồi mới thả.
+            </p>
+          </article>
+        </div>
+
+        <div class="control-bar">
+          <label for="speed-slider">Tốc độ hoạt hình</label>
+          <input
+            type="range"
+            id="speed-slider"
+            min="0.25"
+            max="2"
+            step="0.05"
+            value="1"
+          />
+          <span class="speed-readout" id="speed-readout">1×</span>
+          <span class="speed-chips" role="group" aria-label="Tốc độ đặt sẵn">
+            <button class="chip" type="button" data-speed="0.25">0.25×</button>
+            <button class="chip" type="button" data-speed="0.5">0.5×</button>
+            <button class="chip is-active" type="button" data-speed="1">
+              1×
+            </button>
+            <button class="chip" type="button" data-speed="2">2×</button>
+          </span>
+          <label class="motion-toggle">
+            <input type="checkbox" id="motion-toggle" />
+            Giảm chuyển động
+          </label>
+          <button class="reset" id="reset-button" type="button">Reset</button>
+        </div>
+      </section>
+
+      <div class="lesson-grid">
+        <section class="panel" aria-labelledby="code-title">
+          <h2 id="code-title">Code Python tương ứng</h2>
+          <pre><code>import tkinter as tk
+
+count = 0
+
+def handle_click():
+    global count
+    count += 1
+    label.config(text=f"Đã click {count} lần")
+
+root = tk.Tk()
+
+label = tk.Label(root, text="Đã click 0 lần")
+label.pack(pady=8)
+
+button = tk.Button(root, text="Bấm tôi", command=handle_click)
+button.pack(pady=8)
+
+root.mainloop()</code></pre>
+          <p class="code-note">
+            <code>root.mainloop()</code> chính là vòng quay ở stage 4: nó lấy
+            từng event ra khỏi queue và điều phối. <code>handle_click</code>
+            chỉ được gọi khi Tk chấp nhận cả chuỗi press-bên-trong +
+            release-bên-trong.
+          </p>
+        </section>
+
+        <section class="panel" aria-labelledby="transcript-title">
+          <h2 id="transcript-title">Nhật ký sự kiện</h2>
+          <ol
+            class="transcript-list"
+            id="event-transcript"
+            aria-live="polite"
+          ></ol>
+        </section>
+      </div>
+
+      <p class="footer-note">
+        Trang này là một mô hình đã được đơn giản hóa. Thực tế
+        <code>mainloop()</code> không "quay" liên tục như trong mô hình mà
+        <em>block (chờ/đợi)</em> cho đến khi có event; vòng quay ở đây là cách
+        mô hình hoá việc nó liên tục là bên chủ động lấy event ra khỏi queue. Tk
+        thật ra còn nhiều chi tiết khác nữa (grab,
+        <code>&lt;Enter&gt;</code>/<code>&lt;Leave&gt;</code>
+        khi đang giữ nút, khác biệt giữa các nền tảng), nhưng quy tắc
+        press-bên-trong / release-bên-trong và việc callback, tức là hàm
+        handle_click chặn event loop là đúng với thực tế.
+      </p>
+    </main>
+
+    <script>
+      (() => {
+        /* ---------- Tham chiếu DOM ---------- */
+        const rootEl = document.documentElement;
+        const mouseSvg = document.querySelector('#mouse-svg');
+        const sparkEl = document.querySelector('#spark');
+        const cometEl = document.querySelector('#comet');
+        const portScreen = document.querySelector('#port-screen');
+        const queueTube = document.querySelector('#queue-tube');
+        const flagCell = document.querySelector('#flag-cell');
+        const flagValue = document.querySelector('#flag-value');
+        const loopSvg = document.querySelector('#loop-svg');
+        const loopRotor = document.querySelector('#loop-rotor');
+        const peekEl = document.querySelector('#peek');
+        const dispatchRay = document.querySelector('#dispatch-ray');
+        const loopChip = document.querySelector('#loop-chip');
+        const loopBadge = document.querySelector('#loop-badge');
+        const tkLabel = document.querySelector('#tk-label');
+        const tkButton = document.querySelector('#tk-button');
+        const gateSvg = document.querySelector('#gate-svg');
+        const gateWrap = document.querySelector('#gate-wrap');
+        const handleChip = document.querySelector('#handle-chip');
+        const countChip = document.querySelector('#count-chip');
+        const transcript = document.querySelector('#event-transcript');
+        const speedSlider = document.querySelector('#speed-slider');
+        const speedReadout = document.querySelector('#speed-readout');
+        const speedChips = [...document.querySelectorAll('.chip[data-speed]')];
+        const motionToggle = document.querySelector('#motion-toggle');
+        const resetButton = document.querySelector('#reset-button');
+
+        /* ---------- Trạng thái toàn cục ---------- */
+        const CANCELLED = Symbol('cancelled');
+        const reduceMotionQuery = window.matchMedia(
+          '(prefers-reduced-motion: reduce)',
+        );
+
+        const state = {
+          speed: 1,
+          epoch: 0, // tăng khi Reset — huỷ mọi timeline
+          queue: [], // event queue của "OS": { kind, inside }
+          count: 0,
+          reduceMotion: false, // đặt qua setReduceMotion() bên dưới
+        };
+
+        let pressSeq = 0; // tăng mỗi pointerdown — huỷ hardware timeline đang chạy
+        let dispatching = false;
+        let loopPaused = false;
+        let activePointerId = null;
+        let keyHeld = false;
+
+        /* ---------- Giảm chuyển động ----------
+           Mặc định theo prefers-reduced-motion, nhưng người dùng luôn có thể
+           bật/tắt bằng toggle (Reset KHÔNG động vào lựa chọn này). */
+
+        let motionOverridden = false;
+
+        function setReduceMotion(on) {
+          state.reduceMotion = on;
+          motionToggle.checked = on;
+          rootEl.classList.toggle('reduced-motion', on);
+        }
+
+        motionToggle.addEventListener('change', () => {
+          motionOverridden = true;
+          setReduceMotion(motionToggle.checked);
+        });
+
+        reduceMotionQuery.addEventListener?.('change', event => {
+          if (!motionOverridden) setReduceMotion(event.matches);
+        });
+
+        /* ---------- Tiện ích ---------- */
+
+        function replay(el, cls) {
+          el.classList.remove(cls);
+          // Ép reflow để animation một-lần chạy lại được.
+          el.getBoundingClientRect();
+          el.classList.add(cls);
+        }
+
+        // Chờ `ms` (đã nhân tốc độ) bằng rAF; tốc độ đổi giữa chừng vẫn áp
+        // dụng ngay vì mỗi frame cộng dồn dt * state.speed.
+        function wait(ms, isCancelled) {
+          return new Promise(resolve => {
+            let acc = 0;
+            let last = performance.now();
+            function frame(now) {
+              if (isCancelled()) {
+                resolve(CANCELLED);
+                return;
+              }
+              const dt = Math.min(now - last, 100);
+              last = now;
+              acc += dt * state.speed;
+              if (state.reduceMotion || acc >= ms) {
+                resolve(null);
+                return;
+              }
+              requestAnimationFrame(frame);
+            }
+            requestAnimationFrame(frame);
+          });
+        }
+
+        function say(text, kind) {
+          const li = document.createElement('li');
+          li.textContent = text;
+          if (kind) li.classList.add(`t-${kind}`);
+          transcript.append(li);
+          while (transcript.children.length > 60) {
+            transcript.firstElementChild.remove();
+          }
+          transcript.scrollTop = transcript.scrollHeight;
+        }
+
+        function resetTranscript() {
+          transcript.replaceChildren();
+          say(
+            'Sẵn sàng. mainloop() đang chạy — mỗi nhịp nó quay trọn một vòng để kiểm tra event queue. ' +
+              'Hãy nhấn giữ rồi thả nút "Bấm tôi" ở stage 5.',
+            'loop',
+          );
+        }
+
+        /* ---------- Tốc độ ---------- */
+
+        function formatSpeed(v) {
+          return `${String(parseFloat(v.toFixed(2)))}×`;
+        }
+
+        function setSpeed(value) {
+          const v = Math.min(2, Math.max(0.25, value));
+          state.speed = v;
+          rootEl.style.setProperty('--speed-dur', String(1 / v));
+          speedSlider.value = String(v);
+          speedReadout.textContent = formatSpeed(v);
+          speedChips.forEach(chip => {
+            chip.classList.toggle(
+              'is-active',
+              Math.abs(parseFloat(chip.dataset.speed) - v) < 0.001,
+            );
+          });
+        }
+
+        speedSlider.addEventListener('input', () => {
+          setSpeed(parseFloat(speedSlider.value));
+        });
+
+        speedChips.forEach(chip => {
+          chip.addEventListener('click', () => {
+            setSpeed(parseFloat(chip.dataset.speed));
+          });
+        });
+
+        /* ---------- Stage 3: queue + cờ ---------- */
+
+        function updateFlag() {
+          const hasEvent = state.queue.length > 0;
+          const text = hasEvent ? 'True' : 'False';
+          if (flagValue.textContent !== text) {
+            flagValue.textContent = text;
+            flagCell.classList.toggle('is-true', hasEvent);
+            replay(flagValue, 'is-flip');
+          }
+        }
+
+        function enqueueEvent(evt) {
+          state.queue.push(evt);
+          const chip = document.createElement('span');
+          chip.className = `q-chip ${evt.kind === 'press' ? 'q-press' : 'q-release'}`;
+          chip.textContent =
+            evt.kind === 'press' ? 'ButtonPress' : 'ButtonRelease';
+          queueTube.append(chip);
+          updateFlag();
+        }
+
+        function consumeChipDom() {
+          const chip = queueTube.firstElementChild;
+          if (!chip) return;
+          chip.classList.add('is-out');
+          const drop = () => chip.remove();
+          chip.addEventListener('animationend', drop, { once: true });
+          setTimeout(drop, 1200); // lưới an toàn
+        }
+
+        /* ---------- Hardware timeline (stage 1 → 3) ---------- */
+
+        // Công tắc là vật lý: bám theo ngón tay, không theo tốc độ hoạt hình.
+        function physicalDown() {
+          mouseSvg.classList.add('is-closed');
+          replay(sparkEl, 'is-spark');
+        }
+
+        function physicalUp() {
+          mouseSvg.classList.remove('is-closed');
+          replay(sparkEl, 'is-spark');
+        }
+
+        const hwPending = [];
+        let hwPumping = false;
+
+        async function runHardware(evt) {
+          const startSeq = pressSeq;
+          const { epoch } = state;
+          const cancelled = () =>
+            startSeq !== pressSeq || epoch !== state.epoch;
+          let committed = false;
+          // Khi bị huỷ giữa chừng (click mới đè lên), vẫn "tua nhanh" phần
+          // logic: event phải vào queue, chỉ phần hoạt hình bị bỏ qua.
+          const commit = () => {
+            if (committed || epoch !== state.epoch) return;
+            committed = true;
+            enqueueEvent(evt);
+          };
+          const isPress = evt.kind === 'press';
+          const eventName = isPress ? 'ButtonPress' : 'ButtonRelease';
+
+          // Stage 1 — mạch điện (công tắc đã đóng/mở sẵn trong physicalDown/Up)
+          if (isPress) {
+            say(
+              'Khi nhấn nút chuột — công tắc bên trong đóng mạch, dòng điện chạy, LED sáng.',
+              'hw',
+            );
+          } else {
+            say(
+              evt.inside
+                ? 'Khi thả nút chuột (con trỏ vẫn trong nút) — công tắc mở, mạch ngắt.'
+                : 'Khi thả nút chuột (con trỏ đã ra NGOÀI nút) — công tắc mở, mạch ngắt.',
+              'hw',
+            );
+          }
+          if ((await wait(340, cancelled)) === CANCELLED) return commit();
+
+          // Stage 2 — xung tín hiệu chạy dọc cáp
+          cometEl.classList.remove('is-press', 'is-release');
+          cometEl.classList.add(isPress ? 'is-press' : 'is-release');
+          replay(cometEl, 'is-travel');
+          say(
+            `Xung tín hiệu ${isPress ? 'nhấn' : 'thả'} chạy dọc cáp về máy tính.`,
+            'hw',
+          );
+          if ((await wait(620, cancelled)) === CANCELLED) return commit();
+
+          replay(portScreen, 'is-arrive');
+          if ((await wait(180, cancelled)) === CANCELLED) return commit();
+
+          // Stage 3 — OS tạo event và xếp vào queue
+          commit();
+          say(
+            `OS dịch tín hiệu thành event ${eventName} và đẩy vào event queue. ` +
+              'Nó KHÔNG gọi thẳng chương trình — mainloop() sẽ tự đến lấy.',
+            'os',
+          );
+          await wait(260, cancelled);
+          return undefined;
+        }
+
+        async function pumpHardware() {
+          hwPumping = true;
+          try {
+            while (hwPending.length > 0) {
+              // eslint-disable-next-line no-await-in-loop
+              await runHardware(hwPending.shift());
+            }
+          } finally {
+            hwPumping = false;
+          }
+        }
+
+        function queueHardware(evt) {
+          hwPending.push(evt);
+          if (!hwPumping) pumpHardware();
+        }
+
+        /* ---------- Stage 4: vòng quay mainloop ---------- */
+
+        function setLoopPaused(paused) {
+          loopPaused = paused;
+          loopSvg.classList.toggle('is-paused', paused);
+          loopBadge.classList.toggle('is-shown', paused);
+        }
+
+        function flashPeek() {
+          if (state.reduceMotion) {
+            // Không dùng animation: bật/tắt lớp tĩnh để "chớp" rời rạc.
+            peekEl.classList.remove('is-peek'); // dọn lớp cũ từ chế độ thường
+            peekEl.classList.add('is-peek-hold');
+            setTimeout(() => peekEl.classList.remove('is-peek-hold'), 180);
+          } else {
+            replay(peekEl, 'is-peek');
+          }
+        }
+
+        /* Mô hình quay-rồi-nghỉ: mỗi chu kỳ = NGHỈ (rotor đứng yên) rồi QUAY
+           nhanh trọn một vòng 360°. Một vòng quay = một lần mainloop kiểm
+           tra queue — nên chớp "ngó" và quyết định dequeue xảy ra đúng lúc
+           vòng quay hoàn tất. Rotor luôn quay lại chu kỳ mới, không bao giờ
+           đứng im vĩnh viễn (kể cả ở chế độ giảm chuyển động — khi đó vòng
+           quay chỉ chậm hơn). */
+        const CYCLE_MS = 1500; // một chu kỳ (nghỉ + quay) ở 1×
+        const SPIN_MS = 500; // thời gian quay ở 1×
+        const SPIN_MS_REDUCED = 900; // giảm chuyển động: quay chậm hơn
+
+        let loopPhase = 'rest'; // 'rest' | 'spin'
+        let phaseAcc = 0;
+        let lastTick = performance.now();
+
+        const easeInOut = t =>
+          t < 0.5 ? 2 * t * t : 1 - ((-2 * t + 2) * (-2 * t + 2)) / 2;
+
+        function setRotor(deg) {
+          loopRotor.setAttribute(
+            'transform',
+            `rotate(${deg.toFixed(2)} 110 72)`,
+          );
+        }
+
+        function renderCountAndLabel() {
+          countChip.textContent = `count = ${state.count}`;
+          tkLabel.textContent = `Đã click ${state.count} lần`;
+        }
+
+        function showLoopChip(text) {
+          loopChip.textContent = text;
+          loopChip.classList.add('is-shown');
+        }
+
+        function hideLoopChip() {
+          loopChip.classList.remove('is-shown');
+        }
+
+        async function dispatchEvent_(evt) {
+          const { epoch } = state;
+          const dead = () => epoch !== state.epoch;
+          const isPress = evt.kind === 'press';
+          const eventName = isPress ? 'ButtonPress' : 'ButtonRelease';
+
+          try {
+            consumeChipDom();
+            updateFlag();
+            showLoopChip(eventName);
+            say(`mainloop() lấy ${eventName} ra khỏi event queue.`, 'loop');
+            if ((await wait(420, dead)) === CANCELLED) return;
+
+            replay(dispatchRay, 'is-dispatch');
+
+            if (isPress) {
+              tkButton.classList.add('is-pressed');
+              say(
+                'Tk gửi ButtonPress tới widget button — BÂY GIỜ nút mới lún xuống. ' +
+                  'Ở tốc độ chậm, ta có thể thấy rõ độ trễ giữa ngón tay và giao diện.',
+                'stage',
+              );
+              if ((await wait(480, dead)) === CANCELLED) return;
+            } else if (evt.inside) {
+              tkButton.classList.remove('is-pressed');
+              say(
+                'ButtonRelease bên trong nút → widget được kích hoạt.',
+                'stage',
+              );
+              if ((await wait(360, dead)) === CANCELLED) return;
+
+              gateSvg.classList.add('is-open');
+              say('Cổng command= mở — Tk gọi callback đã đăng ký.', 'callback');
+              if ((await wait(420, dead)) === CANCELLED) return;
+
+              setLoopPaused(true);
+              replay(handleChip, 'is-run');
+              say(
+                'handle_click() đang chạy — mainloop tạm dừng: trong lúc callback ' +
+                  'chưa trả về, không event nào được xử lý.',
+                'callback',
+              );
+              if ((await wait(750, dead)) === CANCELLED) return;
+
+              state.count += 1;
+              renderCountAndLabel();
+              replay(countChip, 'is-pop');
+              replay(tkLabel, 'is-swap');
+              say(
+                `count = ${state.count}; label đổi thành "Đã click ${state.count} lần".`,
+                'value',
+              );
+              if ((await wait(480, dead)) === CANCELLED) return;
+
+              gateSvg.classList.remove('is-open');
+              setLoopPaused(false);
+              say(
+                'Callback trả về — mainloop quay tiếp, chờ event kế.',
+                'loop',
+              );
+            } else {
+              tkButton.classList.remove('is-pressed');
+              gateSvg.classList.add('is-refused');
+              replay(gateWrap, 'is-shake');
+              say(
+                'ButtonRelease bên NGOÀI nút → Tk huỷ kích hoạt: cổng command= ' +
+                  'đóng chặt, handle_click() KHÔNG được gọi, count giữ nguyên.',
+                'cancel',
+              );
+              if ((await wait(650, dead)) === CANCELLED) return;
+              gateSvg.classList.remove('is-refused');
+            }
+
+            hideLoopChip();
+          } finally {
+            if (epoch === state.epoch) {
+              dispatching = false;
+              setLoopPaused(false);
+            }
+          }
+        }
+
+        function onRevolution() {
+          flashPeek();
+          if (state.queue.length > 0 && !dispatching) {
+            dispatching = true;
+            dispatchEvent_(state.queue.shift());
+          }
+        }
+
+        function tick(now) {
+          const dt = Math.min(now - lastTick, 100);
+          lastTick = now;
+          if (!loopPaused) {
+            phaseAcc += dt * state.speed;
+            const spinMs = state.reduceMotion ? SPIN_MS_REDUCED : SPIN_MS;
+            const restMs = Math.max(CYCLE_MS - spinMs, 0);
+            if (loopPhase === 'rest' && phaseAcc >= restMs) {
+              phaseAcc -= restMs;
+              loopPhase = 'spin';
+            }
+            if (loopPhase === 'spin') {
+              if (phaseAcc >= spinMs) {
+                phaseAcc -= spinMs;
+                loopPhase = 'rest';
+                setRotor(0); // kết thúc đúng tư thế ban đầu
+                onRevolution();
+              } else {
+                setRotor(360 * easeInOut(phaseAcc / spinMs));
+              }
+            }
+          }
+          requestAnimationFrame(tick);
+        }
+
+        /* ---------- Theo dõi con trỏ (port từ bản trước) ---------- */
+
+        function isInsideButton(event) {
+          const rect = tkButton.getBoundingClientRect();
+          return (
+            event.clientX >= rect.left &&
+            event.clientX <= rect.right &&
+            event.clientY >= rect.top &&
+            event.clientY <= rect.bottom
+          );
+        }
+
+        function beginPress(event) {
+          if (activePointerId !== null || keyHeld) return;
+          if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+          event.preventDefault();
+          activePointerId = event.pointerId;
+
+          if (tkButton.setPointerCapture) {
+            try {
+              tkButton.setPointerCapture(activePointerId);
+            } catch {
+              // Pointer event tổng hợp (test) có thể không tạo capture được.
+            }
+          }
+
+          pressSeq += 1; // huỷ hardware timeline đang bay (nếu có)
+          tkButton.classList.add('is-aimed');
+          physicalDown();
+          queueHardware({ kind: 'press', inside: true });
+        }
+
+        function trackPress(event) {
+          if (event.pointerId !== activePointerId) return;
+          tkButton.classList.toggle('is-aimed', isInsideButton(event));
+        }
+
+        function endPress(event) {
+          if (event.pointerId !== activePointerId) return;
+
+          event.preventDefault();
+          const endedInside = isInsideButton(event);
+          activePointerId = null;
+
+          if (
+            tkButton.releasePointerCapture &&
+            tkButton.hasPointerCapture?.(event.pointerId)
+          ) {
+            try {
+              tkButton.releasePointerCapture(event.pointerId);
+            } catch {
+              // Guard tương ứng cho pointer event tổng hợp.
+            }
+          }
+
+          tkButton.classList.remove('is-aimed');
+          physicalUp();
+          queueHardware({ kind: 'release', inside: endedInside });
+        }
+
+        function cancelPress(event) {
+          if (event.pointerId !== activePointerId) return;
+          activePointerId = null;
+          tkButton.classList.remove('is-aimed');
+          physicalUp();
+          queueHardware({ kind: 'release', inside: false });
+        }
+
+        tkButton.addEventListener('pointerdown', beginPress);
+        document.addEventListener('pointermove', trackPress);
+        document.addEventListener('pointerup', endPress);
+        document.addEventListener('pointercancel', cancelPress);
+
+        // Bàn phím: Space/Enter mô phỏng nhấn + thả bên trong.
+        tkButton.addEventListener('keydown', event => {
+          if (event.key !== ' ' && event.key !== 'Enter') return;
+          event.preventDefault();
+          if (event.repeat || keyHeld || activePointerId !== null) return;
+          keyHeld = true;
+          pressSeq += 1;
+          physicalDown();
+          queueHardware({ kind: 'press', inside: true });
+        });
+
+        tkButton.addEventListener('keyup', event => {
+          if (event.key !== ' ' && event.key !== 'Enter') return;
+          if (!keyHeld) return;
+          keyHeld = false;
+          physicalUp();
+          queueHardware({ kind: 'release', inside: true });
+        });
+
+        tkButton.addEventListener('click', event => event.preventDefault());
+
+        // Mất focus giữa chừng (Alt-Tab…): keyup/pointerup sẽ không bao giờ
+        // tới — thả "công tắc" ra để không kẹt trạng thái nhấn giữ.
+        window.addEventListener('blur', () => {
+          if (keyHeld) {
+            keyHeld = false;
+            physicalUp();
+            queueHardware({ kind: 'release', inside: true });
+          }
+          if (activePointerId !== null) {
+            activePointerId = null;
+            tkButton.classList.remove('is-aimed');
+            physicalUp();
+            queueHardware({ kind: 'release', inside: false });
+          }
+        });
+
+        /* ---------- Reset ---------- */
+
+        function clearVisualState() {
+          mouseSvg.classList.remove('is-closed');
+          sparkEl.classList.remove('is-spark');
+          cometEl.classList.remove('is-travel', 'is-press', 'is-release');
+          portScreen.classList.remove('is-arrive');
+          queueTube.replaceChildren();
+          flagValue.textContent = 'False';
+          flagValue.classList.remove('is-flip');
+          flagCell.classList.remove('is-true');
+          hideLoopChip();
+          peekEl.classList.remove('is-peek', 'is-peek-hold');
+          dispatchRay.classList.remove('is-dispatch');
+          gateSvg.classList.remove('is-open', 'is-refused');
+          gateWrap.classList.remove('is-shake');
+          handleChip.classList.remove('is-run');
+          countChip.classList.remove('is-pop');
+          tkLabel.classList.remove('is-swap');
+          tkButton.classList.remove('is-pressed', 'is-aimed');
+          setLoopPaused(false);
+        }
+
+        function resetAll() {
+          state.epoch += 1; // huỷ mọi timeline đang chạy
+          pressSeq += 1;
+          hwPending.length = 0;
+          state.queue.length = 0;
+          state.count = 0;
+          dispatching = false;
+          activePointerId = null;
+          keyHeld = false;
+          clearVisualState();
+          renderCountAndLabel();
+          resetTranscript();
+          say(
+            'Đã reset. mainloop() vẫn lặp tiếp — nó không bao giờ dừng hẳn.',
+            'loop',
+          );
+        }
+
+        resetButton.addEventListener('click', resetAll);
+
+        /* ---------- Khởi động ---------- */
+
+        setSpeed(0.25);
+        setReduceMotion(false);
+        renderCountAndLabel();
+        resetTranscript();
+        setRotor(0);
+        requestAnimationFrame(now => {
+          lastTick = now;
+          requestAnimationFrame(tick);
+        });
+      })();
+    </script>
+  </body>
+</html>

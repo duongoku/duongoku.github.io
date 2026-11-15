@@ -1,0 +1,523 @@
+/* ============================================================
+   Bình Dương & Hồng Vân — Wedding invitation · MINIMAL (one screen)
+   White · Burgundy #9E1B32 · Ink #1A1A1A · Luxurious Roman + Pinyon Script + Tinos
+
+   The whole invitation is one card that always fits the viewport — no
+   scrolling. Everything is sized in a single fluid unit:
+
+     --u  = min(viewport width / design width, viewport height / design height)
+
+   so the card scales like a printed card. `--u` never goes below 1px, which
+   keeps the smallest text at 11px (the design is drawn at 320×568). Shorter
+   portrait viewports (browser / in-app toolbars showing) first give up the
+   card's slack, then the closing line; only below ~320×494 (or landscape
+   below ~700×320) does the page scroll. Leftover height on tall screens
+   (`--extra`) is shared out between the blocks.
+   ============================================================ */
+
+:root {
+  --burgundy: #9E1B32;
+  --ink: #1A1A1A;
+  --hairline: rgba(158, 27, 50, 0.35);
+  --serif-display: "Luxurious Roman", "Times New Roman", Times, serif;
+  --serif-body: "Tinos", "Times New Roman", Times, serif;
+  --script: "Pinyon Script", cursive;
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* design box (unitless px at --u = 1px) + upper bound for the unit */
+  --dw: 320;
+  --dh: 568;
+  --umax: 1.9px;
+  --extra-max: 170;
+
+  --vh: 1vh; /* 100vh fallback; 100dvh where supported (below) */
+  --u: clamp(1px, min(calc(100vw / var(--dw)), calc(100 * var(--vh) / var(--dh))), var(--umax));
+  /* height left over once the design box is placed (tall phones) */
+  --extra: clamp(0px, calc(100 * var(--vh) - var(--dh) * var(--u)), calc(var(--extra-max) * var(--u)));
+  --x: calc(var(--extra) / 8);
+  --gap: calc(var(--u) * 18 + var(--x) * 1.5);
+}
+
+@supports (height: 100dvh) {
+  :root { --vh: 1dvh; }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: var(--ink);
+  font-family: var(--serif-body);
+  font-size: calc(var(--u) * 11.5);
+  line-height: 1.35;
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Luxurious Roman / Pinyon Script ship a single 400 weight:
+   never let the browser fake bold/italic on display or script text */
+.eyebrow,
+.names,
+.script,
+.guest-name,
+.weekday,
+.date,
+.event-title {
+  font-weight: 400;
+  font-synthesis: none;
+}
+
+/* ---------- the card ---------- */
+
+.card {
+  position: relative;
+  width: calc(var(--u) * var(--dw));
+  max-width: 100%;
+  min-height: calc(var(--u) * var(--dh) + var(--extra));
+  padding: calc(var(--u) * 26) calc(var(--u) * 20);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+/* double hairline frame — purely decorative */
+.card::before,
+.card::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: 1px solid var(--hairline);
+}
+
+.card::before { inset: calc(var(--u) * 7); }
+
+.card::after {
+  inset: calc(var(--u) * 10);
+  border-color: rgba(158, 27, 50, 0.16);
+}
+
+.hero,
+.details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.details { gap: var(--gap); }
+
+/* ---------- names ---------- */
+
+.eyebrow {
+  font-family: var(--serif-display);
+  color: var(--burgundy);
+  letter-spacing: 0.5em;
+  text-indent: 0.5em; /* balance trailing letter-space */
+  font-size: calc(var(--u) * 11);
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: calc(var(--u) * 10 + var(--x));
+}
+
+.name {
+  font-family: var(--serif-display);
+  color: var(--burgundy);
+  letter-spacing: 0.17em;
+  text-indent: 0.17em;
+  font-size: calc(var(--u) * 30);
+  line-height: 1.2; /* >= the face's ascent + descent: nothing spills out of the line box */
+  white-space: nowrap;
+}
+
+.script-and {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 8);
+}
+
+.script {
+  font-family: var(--script);
+  color: var(--burgundy);
+  font-size: calc(var(--u) * 25);
+  line-height: 1.25;
+}
+
+.swash {
+  width: calc(var(--u) * 46);
+  height: auto;
+  flex: none;
+}
+
+.swash path {
+  fill: none;
+  stroke: var(--burgundy);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+/* ---------- invitation + guest name ---------- */
+
+.invite { margin-top: calc(var(--u) * 15 + var(--x)); }
+
+.invite-lead {
+  font-style: italic;
+  color: var(--burgundy);
+  font-size: calc(var(--u) * 13);
+  line-height: 1.3;
+}
+
+/* Fixed-height slot: a long name wraps to two lines (main.js shrinks the
+   type until it fits), so the card height never depends on the guest. */
+.guest {
+  position: relative;
+  height: calc(var(--u) * 54);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 calc(var(--u) * 4);
+}
+
+.guest-name {
+  display: block;
+  max-width: 100%;
+  font-family: var(--script);
+  color: var(--burgundy);
+  font-size: calc(var(--u) * 25);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+/* thin hairline under the name */
+.guest::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 72%;
+  height: 1px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, transparent, var(--burgundy) 16%, var(--burgundy) 84%, transparent);
+  opacity: 0.6;
+  transform-origin: center;
+}
+
+/* ---------- date ---------- */
+
+.weekday {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 10);
+  font-family: var(--serif-display);
+  color: var(--ink);
+  letter-spacing: 0.32em;
+  font-size: calc(var(--u) * 11);
+  line-height: 1.3;
+}
+
+.weekday span { margin-right: -0.32em; } /* optical centring */
+
+.weekday::before,
+.weekday::after {
+  content: '';
+  flex: none;
+  width: calc(var(--u) * 40);
+  height: 1px;
+  background: var(--ink);
+  opacity: 0.55;
+}
+
+.date {
+  font-family: var(--serif-display);
+  color: var(--burgundy);
+  font-size: calc(var(--u) * 27);
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+  line-height: 1.2;
+  margin-top: calc(var(--u) * 1);
+}
+
+.lunar {
+  font-style: italic;
+  font-size: calc(var(--u) * 11.5);
+  margin-top: calc(var(--u) * 1);
+}
+
+/* ---------- the two events ---------- */
+
+.events {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.event {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 calc(var(--u) * 6);
+}
+
+.event + .event { border-left: 1px solid var(--hairline); }
+
+.event-title {
+  font-family: var(--serif-display);
+  color: var(--burgundy);
+  letter-spacing: 0.1em;
+  text-indent: 0.1em;
+  font-size: calc(var(--u) * 12.5);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.event-time {
+  font-weight: 700;
+  font-size: calc(var(--u) * 24);
+  letter-spacing: 0.08em;
+  text-indent: 0.08em;
+  line-height: 1.2;
+}
+
+.event-venue {
+  font-weight: 700;
+  font-size: calc(var(--u) * 11.5);
+  line-height: 1.35;
+  margin-top: calc(var(--u) * 2);
+}
+
+.event-addr {
+  font-size: calc(var(--u) * 11);
+  line-height: 1.3;
+  text-wrap: balance;
+  margin-bottom: calc(var(--u) * 2);
+}
+
+/* location link: compact pill ("Xem vị trí"); on roomy viewports the QR
+   code is shown above the label inside the same link. The padding makes
+   the tap target larger than the visible pill. */
+.map-link {
+  margin-top: auto;
+  padding: calc(var(--u) * 6) calc(var(--u) * 8) 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--burgundy);
+  text-decoration: none;
+  border-radius: calc(var(--u) * 14);
+  -webkit-tap-highlight-color: rgba(158, 27, 50, 0.12);
+}
+
+.map-label {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 5);
+  min-height: calc(var(--u) * 26);
+  padding: 0 calc(var(--u) * 13);
+  border: 1px solid var(--burgundy);
+  border-radius: calc(var(--u) * 14);
+  font-size: calc(var(--u) * 11);
+  line-height: 1;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pin {
+  width: calc(var(--u) * 7.5);
+  height: calc(var(--u) * 10);
+  flex: none;
+}
+
+.pin path,
+.pin circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+}
+
+.map-link:active .map-label {
+  background: var(--burgundy);
+  color: #ffffff;
+}
+
+@media (hover: hover) {
+  .map-link:hover .map-label {
+    background: var(--burgundy);
+    color: #ffffff;
+  }
+}
+
+.map-link:focus-visible {
+  outline: 2px solid var(--burgundy);
+  outline-offset: 3px;
+}
+
+/* QR codes: only where there is room (wide / desktop / tablet) */
+.qr {
+  display: none;
+  width: calc(var(--u) * 62);
+  height: auto;
+  aspect-ratio: 1;
+  margin-bottom: calc(var(--u) * 7);
+  padding: calc(var(--u) * 3);
+  border: 1px solid var(--hairline);
+  border-radius: calc(var(--u) * 5);
+  background: #ffffff;
+}
+
+/* ---------- closing line ---------- */
+
+.closing {
+  font-style: italic;
+  font-size: calc(var(--u) * 11.5);
+  line-height: 1.4;
+  text-wrap: balance;
+  padding: 0 calc(var(--u) * 6);
+}
+
+/* ============================================================
+   Short portrait (a phone with browser / in-app toolbars showing, e.g.
+   375×553, 360×560): keep 11px text and still fit one screen.
+   The content is ~541 units tall, so the 568 box has slack to give up;
+   below that the closing line goes (content ~491 units).
+   ============================================================ */
+
+@media (max-aspect-ratio: 1249/1000) and (max-height: 567.98px) {
+  :root { --dh: 544; }
+}
+
+@media (max-aspect-ratio: 1249/1000) and (max-height: 543.98px) {
+  :root { --dh: 494; }
+
+  .closing { display: none; }
+}
+
+/* ============================================================
+   Tablet portrait: same single column, with QR codes
+   ============================================================ */
+
+@media (min-width: 700px) and (min-height: 900px) and (max-aspect-ratio: 5/4) {
+  :root {
+    --dh: 648;
+    --umax: 1.9px;
+  }
+
+  .qr { display: block; }
+}
+
+/* ============================================================
+   Wide viewports (landscape phone, laptop, desktop): two columns —
+   names + guest on the left, date + events on the right
+   ============================================================ */
+
+@media (min-aspect-ratio: 5/4) {
+  :root {
+    --dw: 700;
+    --dh: 320;
+    --umax: 2.2px;
+    --extra-max: 70;
+    --gap: calc(var(--u) * 14 + var(--x) * 2);
+  }
+
+  .card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr);
+    align-items: center;
+    gap: 0;
+    padding: calc(var(--u) * 24) calc(var(--u) * 30);
+  }
+
+  .hero { padding-right: calc(var(--u) * 26); }
+
+  .details {
+    padding-left: calc(var(--u) * 26);
+    border-left: 1px solid var(--hairline);
+  }
+
+  .event { padding: 0 calc(var(--u) * 12); }
+}
+
+/* laptop / desktop: taller design box → room for the QR codes */
+@media (min-aspect-ratio: 5/4) and (min-height: 600px) {
+  :root {
+    --dh: 400;
+    --extra-max: 60;
+  }
+
+  .qr { display: block; }
+}
+
+/* ============================================================
+   Motion — soft fade-up once the fonts are in (`html.ready`, set by the
+   inline gate). Hidden states are gated behind `.js`, so no-JS visitors
+   see everything immediately. Reduced motion: no movement at all.
+   ============================================================ */
+
+#petals-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.js .fade {
+  opacity: 0;
+  transform: translateY(calc(var(--u) * 8));
+  transition:
+    opacity 0.6s var(--ease-soft),
+    transform 0.6s var(--ease-soft);
+  transition-delay: calc(var(--i, 0) * 110ms);
+}
+
+.js.ready .fade {
+  opacity: 1;
+  transform: none;
+}
+
+.eyebrow.fade { --i: 0; }
+.names > .fade:nth-child(1) { --i: 1; }
+.names > .fade:nth-child(2) { --i: 2; }
+.names > .fade:nth-child(3) { --i: 3; }
+.invite-lead.fade { --i: 4; }
+.guest.fade { --i: 5; }
+.when.fade { --i: 6; }
+.events.fade { --i: 7; }
+.closing.fade { --i: 8; }
+
+.js .guest::after {
+  transform: scaleX(0);
+  transition: transform 0.9s var(--ease-soft) 900ms;
+}
+
+.js.ready .guest::after { transform: scaleX(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .js .fade,
+  .js .guest::after,
+  .map-label {
+    transition: none;
+  }
+
+  .js .fade { transform: none; }
+}

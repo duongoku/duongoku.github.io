@@ -1,0 +1,620 @@
+/* ============================================================
+   Bình Dương & Hồng Vân — invitation · BRIDE'S SIDE (one screen)
+   White · Burgundy #9E1B32 · Ink #1A1A1A · Luxurious Roman + Pinyon Script + Tinos
+
+   One card that always fits the viewport — no scrolling: three arched
+   photos of the couple, the names, the guest, and the one event (time ·
+   date · place). Everything is sized in a single fluid unit:
+
+     --u  = min(viewport width / design width, viewport height / design height)
+
+   so the card scales like a printed card. `--u` never goes below 1px, which
+   keeps the smallest text at 11px (the design is drawn at 320×568). Shorter
+   portrait viewports (browser / in-app toolbars showing) first shrink the
+   photos a little, then give up the closing line; a landscape phone with
+   the browser bars showing (under 380px tall) gets a smaller design box
+   (660×330: smaller collage and type, still >= 11px). Only below ~320×494
+   (or landscape below ~660×330) does the page scroll. Leftover height on tall
+   phones (`--extra`) goes mostly into a taller centre photo, the rest is
+   shared out between the blocks. Tablets get a larger triptych; wide
+   viewports put a collage (one tall arch + two stacked) beside the text.
+   ============================================================ */
+
+:root {
+  --burgundy: #9E1B32;
+  --ink: #1A1A1A;
+  --hairline: rgba(158, 27, 50, 0.35);
+  --serif-display: "Luxurious Roman", "Times New Roman", Times, serif;
+  --serif-body: "Tinos", "Times New Roman", Times, serif;
+  --script: "Pinyon Script", cursive;
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* design box (unitless px at --u = 1px) + upper bound for the unit */
+  --dw: 320;
+  --dh: 568;
+  --umax: 1.9px;
+  --extra-max: 170;
+
+  --vh: 1vh; /* 100vh fallback; 100dvh where supported (below) */
+  --u: clamp(1px, min(calc(100vw / var(--dw)), calc(100 * var(--vh) / var(--dh))), var(--umax));
+  /* height left over once the design box is placed (tall phones) */
+  --extra: clamp(0px, calc(100 * var(--vh) - var(--dh) * var(--u)), calc(var(--extra-max) * var(--u)));
+  --x: calc(var(--extra) / 8);
+  --gap: calc(var(--u) * 9.5 + var(--x) * 0.6);
+
+  /* photo triptych, in design units: centre arch + two side arches.
+     The centre arch grows by `--pm-grow` × --x on tall screens (its photo
+     has the room: the couple standing, faces near the top). The side
+     frames keep the aspect of their close-up photos. */
+  --pm-w: 108;
+  --pm-h: 138;
+  --pm-grow: 3;
+  --ps-w: 80;
+  --ps-h: 111;
+  --p-gap: 6;
+  --p-pad: 2.5;
+}
+
+@supports (height: 100dvh) {
+  :root { --vh: 1dvh; }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: var(--ink);
+  font-family: var(--serif-body);
+  font-size: calc(var(--u) * 11.5);
+  line-height: 1.35;
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Luxurious Roman / Pinyon Script ship a single 400 weight:
+   never let the browser fake bold/italic on display or script text */
+.eyebrow,
+.names,
+.script,
+.guest-name,
+.when-label,
+.when-value {
+  font-weight: 400;
+  font-synthesis: none;
+}
+
+/* ---------- the card ---------- */
+
+.card {
+  position: relative;
+  width: calc(var(--u) * var(--dw));
+  max-width: 100%;
+  min-height: calc(var(--u) * var(--dh) + var(--extra));
+  padding: calc(var(--u) * 21) calc(var(--u) * 20);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+/* double hairline frame — purely decorative */
+.card::before,
+.card::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: 1px solid var(--hairline);
+}
+
+.card::before { inset: calc(var(--u) * 7); }
+
+.card::after {
+  inset: calc(var(--u) * 10);
+  border-color: rgba(158, 27, 50, 0.16);
+}
+
+.text,
+.hero,
+.details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.text,
+.details { gap: var(--gap); }
+
+/* ---------- photos: arched triptych ---------- */
+
+.photos {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: calc(var(--u) * var(--p-gap));
+  min-width: 0;
+}
+
+/* frame: thin burgundy hairline following the arch, a sliver of white,
+   then the photo */
+.photo {
+  --w: var(--ps-w);
+  --h: var(--ps-h);
+  --grow: 0;
+  --arch: calc(var(--u) * var(--w) / 2);
+  flex: none;
+  width: calc(var(--u) * var(--w));
+  height: calc(var(--u) * var(--h) + var(--x) * var(--grow));
+  /* never much slimmer than the photo itself: the sides are not cropped away */
+  max-height: calc(var(--u) * var(--w) * 1.75);
+  padding: calc(var(--u) * var(--p-pad));
+  border: 1px solid rgba(158, 27, 50, 0.55);
+  border-radius: var(--arch) var(--arch) calc(var(--u) * 3) calc(var(--u) * 3);
+  background: #ffffff;
+}
+
+.photo-main {
+  --w: var(--pm-w);
+  --h: var(--pm-h);
+  --grow: var(--pm-grow);
+}
+
+.photo picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  border-radius:
+    calc(var(--arch) - var(--u) * var(--p-pad))
+    calc(var(--arch) - var(--u) * var(--p-pad))
+    calc(var(--u) * 1.5)
+    calc(var(--u) * 1.5);
+  background: #f4ecea; /* quiet tint while the photo decodes */
+}
+
+/* Faces stay inside every frame (verified by verify-wife.cjs):
+   centre — faces sit in the upper third, so anchor near the top;
+   camera close-up — the two faces span most of the width and the asset is
+   cropped with them (cheek to ear) centred: keep it centred;
+   laughing — faces on one horizontal band in the upper half. */
+.photo-main img { object-position: 50% 6%; }
+.photo-camera img { object-position: 50% 50%; }
+.photo-laugh img { object-position: 50% 42%; }
+
+/* ---------- names ---------- */
+
+.eyebrow {
+  font-family: var(--serif-display);
+  color: var(--burgundy);
+  letter-spacing: 0.5em;
+  text-indent: 0.5em; /* balance trailing letter-space */
+  font-size: calc(var(--u) * 11);
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: calc(var(--u) * 6 + var(--x) * 0.4);
+}
+
+.name {
+  font-family: var(--serif-display);
+  color: var(--burgundy);
+  letter-spacing: 0.17em;
+  text-indent: 0.17em;
+  font-size: calc(var(--u) * 27);
+  line-height: 1.2; /* >= the face's ascent + descent: nothing spills out of the line box */
+  white-space: nowrap;
+}
+
+.script-and {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 8);
+}
+
+.script {
+  font-family: var(--script);
+  color: var(--burgundy);
+  font-size: calc(var(--u) * 22);
+  line-height: 1.2;
+}
+
+.swash {
+  width: calc(var(--u) * 44);
+  height: auto;
+  flex: none;
+}
+
+.swash path {
+  fill: none;
+  stroke: var(--burgundy);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+/* ---------- invitation + guest name ---------- */
+
+.invite { margin-top: calc(var(--u) * 7 + var(--x) * 0.4); }
+
+.invite-lead {
+  font-style: italic;
+  color: var(--burgundy);
+  font-size: calc(var(--u) * 13);
+  line-height: 1.3;
+}
+
+/* Fixed-height slot: a long name wraps to two lines (main.js shrinks the
+   type until it fits), so the card height never depends on the guest. */
+.guest {
+  position: relative;
+  height: calc(var(--u) * 42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 calc(var(--u) * 4);
+}
+
+.guest-name {
+  display: block;
+  max-width: 100%;
+  font-family: var(--script);
+  color: var(--burgundy);
+  font-size: calc(var(--u) * 25);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+/* set by main.js only when the name still does not fit at 11px */
+.guest-name[data-tight] { line-height: 1.25; }
+
+/* thin hairline under the name */
+.guest::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 72%;
+  height: 1px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, transparent, var(--burgundy) 16%, var(--burgundy) 84%, transparent);
+  opacity: 0.6;
+  transform-origin: center;
+}
+
+/* ---------- the one event: what · when · where ---------- */
+
+.invite-to {
+  font-style: italic;
+  font-size: calc(var(--u) * 12);
+  line-height: 1.32;
+}
+
+.when-row {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: center;
+}
+
+.when-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 calc(var(--u) * 13);
+}
+
+.when-cell + .when-cell { border-left: 1px solid var(--hairline); }
+
+.when-label {
+  font-family: var(--serif-display);
+  color: var(--ink);
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  font-size: calc(var(--u) * 11);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.when-value {
+  font-family: var(--serif-display);
+  color: var(--burgundy);
+  font-size: calc(var(--u) * 24);
+  letter-spacing: 0.1em;
+  text-indent: 0.1em;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.lunar {
+  font-style: italic;
+  font-size: calc(var(--u) * 11.5);
+  margin-top: calc(var(--u) * 3);
+}
+
+.where {
+  font-size: calc(var(--u) * 12.5);
+  line-height: 1.3;
+  text-wrap: balance;
+  padding: 0 calc(var(--u) * 2);
+}
+
+.where-label {
+  font-style: italic;
+  color: var(--burgundy);
+}
+
+.where-addr { font-weight: 700; }
+
+/* the address only breaks after a comma, never inside a place name */
+.where-addr span { white-space: nowrap; }
+
+/* ---------- closing line ---------- */
+
+.closing {
+  font-style: italic;
+  font-size: calc(var(--u) * 11.5);
+  line-height: 1.35;
+  text-wrap: balance;
+  padding: 0 calc(var(--u) * 6);
+}
+
+/* ============================================================
+   Short portrait (a phone with browser / in-app toolbars showing, e.g.
+   375×553, 360×560): keep 11px text and still fit one screen.
+   First the photos shrink a little (side frames stay >= 70 units wide);
+   below that the closing line goes and the photos shrink once more.
+   ============================================================ */
+
+@media (max-aspect-ratio: 1249/1000) and (max-height: 567.98px) {
+  :root {
+    --dh: 544;
+    --pm-w: 94;
+    --pm-h: 117;
+    --ps-w: 72;
+    --ps-h: 100;
+  }
+}
+
+@media (max-aspect-ratio: 1249/1000) and (max-height: 543.98px) {
+  :root {
+    --dh: 494;
+    --pm-w: 88;
+    --pm-h: 108;
+    --ps-w: 70;
+    --ps-h: 97;
+  }
+
+  .closing { display: none; }
+}
+
+/* ============================================================
+   Tablet portrait: same single column on a wider, taller design box —
+   the extra room goes to a larger triptych
+   ============================================================ */
+
+@media (min-width: 700px) and (min-height: 900px) and (max-aspect-ratio: 1249/1000) {
+  :root {
+    --dw: 420;
+    --dh: 640;
+    --pm-w: 146;
+    --pm-h: 224;
+    --ps-w: 108;
+    --ps-h: 154;
+    --p-gap: 7;
+  }
+}
+
+/* ============================================================
+   Wide viewports (landscape phone, laptop, desktop): two columns —
+   a photo collage on the left (one tall arch + the two close-ups stacked
+   beside it, every frame in its photo's own aspect: nothing cropped but
+   the arch corners), all the text on the right
+   ============================================================ */
+
+@media (min-aspect-ratio: 5/4) {
+  :root {
+    --dw: 800;
+    --dh: 380;
+    --umax: 2.2px;
+    --extra-max: 60;
+    --gap: calc(var(--u) * 9 + var(--x) * 0.8);
+    --pm-w: 198;
+    --pm-h: 330;
+    --pm-grow: 0;
+    --ps-w: 116;
+    --ps-h: 161.5; /* (pm-h − p-gap) / 2 */
+    --p-gap: 7;
+  }
+
+  .card {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 0;
+    padding: calc(var(--u) * 21) calc(var(--u) * 28);
+  }
+
+  .photos {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    justify-content: center;
+    align-content: center;
+    padding-right: calc(var(--u) * 24);
+  }
+
+  .photo-main { grid-column: 1; grid-row: 1 / span 2; }
+  .photo-camera { grid-column: 2; grid-row: 1; }
+  .photo-laugh { grid-column: 2; grid-row: 2; }
+
+  .photo-main img,
+  .photo-camera img,
+  .photo-laugh img { object-position: 50% 50%; }
+
+  .text {
+    padding-left: calc(var(--u) * 24);
+    border-left: 1px solid var(--hairline);
+  }
+
+  /* keep the address on two balanced lines, no wider than the names */
+  .where {
+    width: 100%;
+    max-width: calc(var(--u) * 250);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .closing { display: none; }
+}
+
+/* short landscape — a landscape phone with the browser bars showing
+   (844×340, 915×360, 740×340, 667×331 …): a smaller design box, so the
+   card still fits one screen. Same collage (three photos) a little
+   smaller, type one step down (nothing under 11px), tighter spacing. */
+@media (min-aspect-ratio: 5/4) and (max-height: 379.98px) {
+  :root {
+    --dw: 660;
+    --dh: 330;
+    --gap: calc(var(--u) * 6 + var(--x) * 0.8);
+    --pm-w: 175;
+    --pm-h: 292;
+    --ps-w: 102;
+    --ps-h: 142.5; /* (pm-h − p-gap) / 2 */
+  }
+
+  .card { padding: calc(var(--u) * 15) calc(var(--u) * 22); }
+
+  .photos { padding-right: calc(var(--u) * 20); }
+
+  .text { padding-left: calc(var(--u) * 20); }
+
+  .names { margin-top: calc(var(--u) * 4); }
+
+  .name { font-size: calc(var(--u) * 24); }
+
+  .script {
+    font-size: calc(var(--u) * 19);
+    line-height: 1.15;
+  }
+
+  .swash { width: calc(var(--u) * 38); }
+
+  .invite { margin-top: calc(var(--u) * 5); }
+
+  .invite-lead { font-size: calc(var(--u) * 12); }
+
+  .guest-name { font-size: calc(var(--u) * 23); }
+
+  .invite-to {
+    font-size: calc(var(--u) * 11.5);
+    line-height: 1.3;
+  }
+
+  .when-value { font-size: calc(var(--u) * 22); }
+
+  .lunar {
+    font-size: calc(var(--u) * 11);
+    margin-top: calc(var(--u) * 2);
+  }
+
+  .where { font-size: calc(var(--u) * 12); }
+}
+
+/* laptop / desktop: taller design box → larger collage, closing line */
+@media (min-aspect-ratio: 5/4) and (min-height: 600px) {
+  :root {
+    --dh: 446;
+    --extra-max: 60;
+    --gap: calc(var(--u) * 12 + var(--x) * 0.8);
+    --pm-w: 232;
+    --pm-h: 386;
+    --ps-w: 136;
+    --ps-h: 189; /* (pm-h − p-gap) / 2 */
+    --p-gap: 8;
+  }
+
+  .card { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+
+  .name { font-size: calc(var(--u) * 30); }
+
+  .closing { display: block; }
+}
+
+/* ============================================================
+   Motion — soft fade-up once the fonts are in (`html.ready`, set by the
+   inline gate). Hidden states are gated behind `.js`, so no-JS visitors
+   see everything immediately. Reduced motion: no movement at all.
+   ============================================================ */
+
+#petals-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* behind the card: petals never cover the photos */
+  pointer-events: none;
+}
+
+.js .fade {
+  opacity: 0;
+  transform: translateY(calc(var(--u) * 8));
+  transition:
+    opacity 0.6s var(--ease-soft),
+    transform 0.6s var(--ease-soft);
+  transition-delay: calc(var(--i, 0) * 110ms);
+}
+
+.js.ready .fade {
+  opacity: 1;
+  transform: none;
+}
+
+.photos.fade { --i: 0; }
+.eyebrow.fade { --i: 1; }
+.names > .fade:nth-child(1) { --i: 2; }
+.names > .fade:nth-child(2) { --i: 3; }
+.names > .fade:nth-child(3) { --i: 4; }
+.invite-lead.fade { --i: 5; }
+.guest.fade { --i: 6; }
+.invite-to.fade { --i: 7; }
+.when.fade { --i: 8; }
+.where.fade { --i: 9; }
+.closing.fade { --i: 10; }
+
+.js .guest::after {
+  transform: scaleX(0);
+  transition: transform 0.9s var(--ease-soft) 900ms;
+}
+
+.js.ready .guest::after { transform: scaleX(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .js .fade,
+  .js .guest::after {
+    transition: none;
+  }
+
+  .js .fade { transform: none; }
+}
